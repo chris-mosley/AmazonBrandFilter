@@ -1,32 +1,40 @@
 {
   "manifest_version": 3,
   "name": "AmazonBrandFilter",
-  "version": "0.1",
-
+  "version": "0.0.1",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "abf@mosley.xyz",
+      "strict_min_version": "78.0"
+    },
+    "gecko_android": {
+      "strict_min_version": "79.0"
+    }
+  },
   "description": "Filters out all unknown brands from Amazon search results.",
 
   "icons": {
     "48": "icons/border-48.png"
   },
+  
+  
+
   "action": {
+    "default_title": "Amazon Brand Filter",
     "default_area": "navbar",
-    "default_icon": {
-     "32" : "icons/border-48.png",
-     "48" : "icons/border-48.png"
-    },
-    "default_title": "AmazonBrandFilter"
-  },
+     "default_popup": "popup/popup.html"
+    }
+  ,
+  
   "content_scripts": [
     {
       "matches": ["*://*.amazon.com/*"],
       "js": ["amazonbrandfilter.js"]
     }
   ],
-  "background": {
-    "scripts": ["background.js"]
-  },
+
   "content_security_policy": {
-    "extension_pages": "default-src 'self'"
+    "extension_pages": "default-src 'self'; script-src 'self'"
   },
 
   "web_accessible_resources": [
@@ -38,6 +46,14 @@
       "resources": ["brands.txt", "functions.js"],
       "matches":["*://*/*"]
     }
+  ],
+  
+  "permissions": [
+    "storage",
+    "webRequest",
+    "activeTab",
+    "scripting",
+    "tabs"
   ]
 
 

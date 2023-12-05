@@ -1,4 +1,15 @@
 
+function getSettings(){
+  console.log("AmazonBrandFilter: Starting getSettings");
+  var settings = browser.storage.local.get();
+  settings.then(function(result){
+    console.log("AmazonBrandFilter: Settings are " + result);
+    return result;
+  });
+}
+
+
+
 function getItemDivs(){
   console.log("AmazonBrandFilter: Starting getItemDivs");
   var divs = document.getElementsByClassName("s-result-item");
@@ -65,3 +76,22 @@ async function getBrands(){
     
   return brandsGet;
 }
+
+// async function addBorder(tab){
+//   console.log("AmazonBrandFilter: Starting addBorder");
+//   const tabInfo = await getCurrentTab();
+//   console.log(tabInfo)
+//   const [{ id: tabId }] = tabInfo;
+//   foreach(id in tabInfo){
+//     browser.tabs.body.style.border = "5px solid red";
+//   }
+//   // tab.body.style.border = "5px solid red";
+// }
+
+
+
+function addBorder(){
+  console.log("adding border");
+  document.border = "5px solid red";
+}
+
