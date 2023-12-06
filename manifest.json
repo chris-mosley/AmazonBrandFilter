@@ -5,7 +5,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "abf@mosley.xyz",
-      "strict_min_version": "78.0"
+      "strict_min_version": "103.0"
     },
     "gecko_android": {
       "strict_min_version": "79.0"
@@ -14,7 +14,7 @@
   "description": "Filters out all unknown brands from Amazon search results.",
 
   "icons": {
-    "48": "icons/border-48.png"
+    "48": "icons/abf-disabled-48.png"
   },
   
   
@@ -34,20 +34,23 @@
   ],
 
   "content_security_policy": {
-    "extension_pages": "default-src 'self'; script-src 'self'"
+    "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; connect-src https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/version.txt;"
   },
 
   "web_accessible_resources": [
     {
-      "resources": ["brands.txt"],
-      "matches":["https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/latest/*"]
+      "resources": ["latest.zip","brands.txt", "version.txt"],
+      "matches":["https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/*"]
     },
     {
       "resources": ["brands.txt", "functions.js"],
       "matches":["*://*/*"]
     }
   ],
-  
+  "background": {
+    "scripts": ["background.js"],
+    "type": "module"
+  },  
   "permissions": [
     "storage",
     "webRequest",

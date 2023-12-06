@@ -1,5 +1,6 @@
 console.log("AmazonBrandFilter: Starting amazonbrandfilter.js");
 
+
 abfSettings=browser.storage.local.get().then(function(settings){
   console.log("AmazonBrandFilter: settings are: " + JSON.stringify(settings));
   
@@ -27,30 +28,22 @@ else{
 }
 });
 
-
-// abdEnabled = settingsGet.resolve("enabled");
-
-// console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(abfEnabled));
-// .then(function(settings){
-//   console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(settings));
-//   if(!(settings.enabled)){
-//     console.log("AmazonBrandFilter: abfSettings is not enabled");
-//     return;
-//   }
-// });
-
 async function getBrands(){
   // gets the brands url from the extension browser store.
-  brands=[];
-  brandsUrl = browser.runtime.getURL("brands.txt");
-  // brandsUrl = 'https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/latest/brands.txt'
-  console.log("AmazonBrandFilter: Brands url is " + brandsUrl);
-  brandsGet = await fetch(brandsUrl, {mode: 'no-cors'})
-    .then(response => response.text())
-    .then(text => text.toUpperCase())
-    .then(text => text.split("\n"))
+  // brands=[];
+  // brandsUrl = browser.runtime.getURL("brands.txt");
+  // // brandsUrl = 'https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/latest/brands.txt'
+  // console.log("AmazonBrandFilter: Brands url is " + brandsUrl);
+  // brandsGet = await fetch(brandsUrl, {mode: 'no-cors'})
+  //   .then(response => response.text())
+  //   .then(text => text.toUpperCase())
+  //   .then(text => text.split("\n"))
     
-  return brandsGet;
+  console.log("attempting to get brands from storage");
+  browser.storage.local.get("brandsList").then(function(result){
+  console.log("AmazonBrandFilter: Brands are " + result.brandsList);
+    return result.brandsList;
+  });
 }
 
 function checkBrandFilter(){
@@ -84,8 +77,8 @@ function getItemDivs(){
 
 function filterBrands(settings){
   console.log("AmazonBrandFilter: Starting filterBrands");
-  brandsGet = getBrands();
-  brandsGet.then(function(brands){
+  brands = settings.brandsList;
+  // brandsGet.then(function(brands){
   console.log("AmazonBrandFilter: Brands are " + brands);
   if(brands.length != 0){
     console.log("AmazonBrandFilter: Brands found");
@@ -133,7 +126,7 @@ function filterBrands(settings){
   
 
 
-  });
+  // });
 }
 
 function filterRefiner(brands){
