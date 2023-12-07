@@ -4,7 +4,7 @@
 async function checkBrandsVersion(){
   while(true){
     console.log("AmazonBrandFilter: Checking latest brands list version");
-    var currentVersion = await getCurrentBrandsVersion();
+    var currentVersion = await getCurrentBrandsVersion().then(function(version){return version;});
     var versionUrl = 'https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/version.txt'
     var latestVersion = await fetch(versionUrl, {mode: 'cors'})
       .then(response => response.text())
@@ -19,8 +19,8 @@ async function checkBrandsVersion(){
         browser.storage.local.set({"brandsVersion": latestVersion});
       }
     
-      console.log("AmazonBrandFilter: backgroup.js sleeping for 30 seconds");
-    await sleep(30000);
+      console.log("AmazonBrandFilter: backgroup.js sleeping for one day");
+    await sleep(86400000);
   }
 }
 
@@ -47,9 +47,6 @@ async function getCurrentBrandsVersion(){
     console.log("AmazonBrandFilter: Current brands version is " + result.brandsVersion);
 
     var versionInt = parseInt(result.brandsVersion);
-    console.log("AmazonBrandFilter: intifyingValue is:  " + versionInt);
-
-
     return versionInt})
   }
 
@@ -59,6 +56,26 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function setIcon(){
+  await browser.storage.local.get("abf-enabled").then(function(enabled){
+  if(enabled){
+    browser.action.setIcon({
+      path: {
+        48: "icons/abf-enabled-48.png"
+      }
+    });
+  }
+  else{
+    browser.action.setIcon({
+      path: {
+        48: "icons/abf-disabled-48.png"
+      }
+    });
+  }
+});
+}
 
+// set the icon the first time the extension is loaded
+setIcon();
 // downloadLatestBrands();
 checkBrandsVersion();

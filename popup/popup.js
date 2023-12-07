@@ -53,12 +53,35 @@ function setPopupBoxStates(){
       console.log("AmazonBrandFilter: abfSettings.filterRefiner is not enabled");
       document.getElementById("abf-allow-refine-bypass").checked = false;
     }
+    setIcon();
+    document.getElementById("version-number").innerText= settings.brandsVersion;
 
   });
   };
   
   
-
+  async function setIcon(){
+    await browser.storage.local.get("enabled").then(function(result){
+      console.log("AmazonBrandFilter: abfSettings.enabled bool eval: " + JSON.stringify(result.enabled));
+      if(result.enabled == true){
+        console.log("AmazonBrandFilter: setting icon to enabled");
+      browser.action.setIcon({
+        path: {
+          48: "../icons/abf-enabled-48.png"
+        }
+      });
+      }
+      else{
+        console.log("AmazonBrandFilter: setting icon to disabled");
+        browser.action.setIcon({
+          path: {
+            48: "../icons/abf-disabled-48.png"
+          }
+        });
+      }
+  });
+  }
+  
 
 async function enableDisable(event){
   enabled=document.getElementById("abf-enabled").checked;
@@ -75,6 +98,7 @@ async function enableDisable(event){
   browser.storage.local.get("enabled").then(function(result){
     console.log("enabled: " + result.enabled);
   });
+  setIcon();
 }
 
 async function setFilterRefiner(event){
