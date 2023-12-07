@@ -29,16 +29,6 @@ else{
 });
 
 async function getBrands(){
-  // gets the brands url from the extension browser store.
-  // brands=[];
-  // brandsUrl = browser.runtime.getURL("brands.txt");
-  // // brandsUrl = 'https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/latest/brands.txt'
-  // console.log("AmazonBrandFilter: Brands url is " + brandsUrl);
-  // brandsGet = await fetch(brandsUrl, {mode: 'no-cors'})
-  //   .then(response => response.text())
-  //   .then(text => text.toUpperCase())
-  //   .then(text => text.split("\n"))
-    
   console.log("attempting to get brands from storage");
   browser.storage.local.get("brandsList").then(function(result){
   console.log("AmazonBrandFilter: Brands are " + result.brandsList);
