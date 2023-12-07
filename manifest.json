@@ -1,20 +1,20 @@
 {
   "manifest_version": 3,
   "name": "AmazonBrandFilter",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "browser_specific_settings": {
     "gecko": {
       "id": "abf@mosley.xyz",
-      "strict_min_version": "103.0"
+      "strict_min_version": "113.0"
     },
     "gecko_android": {
-      "strict_min_version": "79.0"
+      "strict_min_version": "113.0"
     }
   },
   "description": "Filters out all unknown brands from Amazon search results.",
 
   "icons": {
-      "48": "icons/abf-enabled-48.png"
+      "128": "icons/abf-enabled-128.png"
     },
   
   

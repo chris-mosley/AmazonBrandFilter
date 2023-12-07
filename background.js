@@ -61,14 +61,14 @@ async function setIcon(){
   if(enabled){
     browser.action.setIcon({
       path: {
-        48: "icons/abf-enabled-48.png"
+        48: "icons/abf-enabled-128.png"
       }
     });
   }
   else{
     browser.action.setIcon({
       path: {
-        48: "icons/abf-disabled-48.png"
+        48: "icons/abf-disabled-128.png"
       }
     });
   }

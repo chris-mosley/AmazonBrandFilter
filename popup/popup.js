@@ -67,7 +67,7 @@ function setPopupBoxStates(){
         console.log("AmazonBrandFilter: setting icon to enabled");
       browser.action.setIcon({
         path: {
-          48: "../icons/abf-enabled-48.png"
+          48: "../icons/abf-enabled-128.png"
         }
       });
       }
@@ -75,7 +75,7 @@ function setPopupBoxStates(){
         console.log("AmazonBrandFilter: setting icon to disabled");
         browser.action.setIcon({
           path: {
-            48: "../icons/abf-disabled-48.png"
+            48: "../icons/abf-disabled-128.png"
           }
         });
       }
