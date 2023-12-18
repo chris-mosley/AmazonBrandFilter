@@ -40,3 +40,8 @@ label:hover {
   margin-bottom: 1rem;
   border-bottom: none;
 }
+
+.last-run {
+  float: right;
+  
+}

@@ -6,7 +6,7 @@ abfSettings=browser.storage.local.get().then(function(settings){
   
 
 
-console.log("AmazonBrandFilter: abfSettings.enabled bool eval: " + settings);
+console.log("AmazonBrandFilter: abfSettings.enabled bool eval: " + settings.enabled);
 if(settings.enabled){
   console.log("AmazonBrandFilter: abf is enabled");
   let previousUrl = '';
@@ -15,7 +15,12 @@ if(settings.enabled){
           previousUrl = location.href;
           console.log(`URL data changed to ${location.href}`);
           sleep(1000).then(() => {
-          filterBrands(settings);
+            const timerStart = performance.now();
+            filterBrands(settings);
+            //filterBrandsByList(settings);
+            const timerEnd = performance.now();
+            console.log(`AmazonBrandFilter: filterBrands took ${timerEnd - timerStart} milliseconds.`);
+            browser.storage.local.set({lastMapRun: timerEnd - timerStart})
         });
       }
   });
@@ -31,8 +36,8 @@ else{
 async function getBrands(){
   console.log("attempting to get brands from storage");
   browser.storage.local.get("brandsList").then(function(result){
-  console.log("AmazonBrandFilter: Brands are " + result.brandsList);
-    return result.brandsList;
+  console.log("AmazonBrandFilter: Brands are " + result);
+    return result;
   });
 }
 
@@ -67,17 +72,11 @@ function getItemDivs(){
 
 function filterBrands(settings){
   console.log("AmazonBrandFilter: Starting filterBrands");
-  brands = settings.brandsList;
+  var brands = settings.brandsMap;
   // brandsGet.then(function(brands){
   console.log("AmazonBrandFilter: Brands are " + brands);
   if(brands.length != 0){
     console.log("AmazonBrandFilter: Brands found");
-    brands.forEach(function(brand){
-      console.debug(brand);
-    });
-    var maxLength= Math.max(...(brands.map(el => el.length)));
-    // doing this to hopefully filter out listings that add a bunch of random name brands to the title at the end, might improve performance too 
-    console.log("AmazonBrandFilter: Max length of brand is " + maxLength)
   }
   else{
     console.log("AmazonBrandFilter: No brands found");
@@ -95,28 +94,39 @@ function filterBrands(settings){
   var divs = getItemDivs();
 
   for(var i = 0; i < divs.length; i++){
-    console.debug("AmazonBrandFilter: Checking " + divs[i].className);
+    console.debug("AmazonBrandFilter: Checking " + divs[i].innerText);
 
-    shortText=divs[i].getElementsByClassName("a-color-base a-text-normal")
+    shortText=divs[i].getElementsByClassName("a-color-base a-text-normal");
     
     if(shortText.length == 0){continue;}
     
-    fullText=shortText[0].innerText.toUpperCase().slice(0, maxLength);
+      fullText=shortText[0].innerText.toUpperCase();
+      console.log("AmazonBrandFilter: Full text is " + fullText);
     // fullText=shortText[0].innerText.toUpperCase();
-    if(!(brands.some(filter => fullText.includes(filter)))){
+    wordList=fullText.split(" "); // we still need to deal with commas/punctuation here.
+    console.log("AmazonBrandFilter: Word list is " + wordList);
+    knownBrand=false;
+    for(var x =0; x < wordList.length; x++)
+    {
+      console.log("AmazonBrandFilter: [word] is: " + wordList[x] + " and brands.has([wordList[x]]) is: " + brands[wordList[x]]);
+      if(brands[wordList[x]]){
+        // check to see if each word is in the map.  if we dont stop then we hide it.
+        console.log("AmazonBrandFilter: Found " + wordList[x] + " in brands list");
+        knownBrand=true;
+        break;
+      }
+    }
+    if(!knownBrand){
       console.debug("AmazonBrandFilter: Hiding " + fullText);
       divs[i].style.display = "none";
-    };  
+    }
   }
 
   if(settings.filterRefiner){
     console.log("AmazonBrandFilter: filterRefiner is true, filtering refiner");
     filterRefiner(brands);
   }
-  
 
-
-  // });
 }
 
 function filterRefiner(brands){
@@ -130,8 +140,8 @@ function filterRefiner(brands){
     if(brand.length == 0){continue;}
     
     
-    if(!(brands.includes(brand))){
-      console.debug("AmazonBrandFilter: Hiding Refiner" + fullText);
+    if(!(brands[brand])){
+      console.debug("AmazonBrandFilter: Hiding Refiner " + fullText);
       divs[i].style.display = "none";
     };  
   }

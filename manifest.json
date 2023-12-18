@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AmazonBrandFilter",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "browser_specific_settings": {
     "gecko": {
       "id": "abf@mosley.xyz",
@@ -34,13 +34,14 @@
   ],
 
   "content_security_policy": {
-    "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; connect-src https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/version.txt;"
+    "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; connect-src https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest;"
   },
 
   "web_accessible_resources": [
     {
-      "resources": ["latest.zip","brands.txt", "version.txt"],
-      "matches":["https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/*"]
+      "resources": ["brands.txt"],
+      "matches":["https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt",
+                 "https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest"]
     },
     {
       "resources": ["brands.txt", "functions.js"],

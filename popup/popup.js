@@ -11,7 +11,7 @@ setPopupBoxStates();
 document.getElementById("abf-enabled").addEventListener("click", enableDisable)
 document.getElementById("abf-filter-refiner").addEventListener("click", setFilterRefiner)
 document.getElementById("abf-allow-refine-bypass").addEventListener("click", setRefinerBypass)
-document.getElementById("abf-hideall").addEventListener("click", hideAll)
+// document.getElementById("abf-hideall").addEventListener("click", hideAll)
 
 
 function clickTest(event){
@@ -54,11 +54,12 @@ function setPopupBoxStates(){
       document.getElementById("abf-allow-refine-bypass").checked = false;
     }
     setIcon();
-    document.getElementById("version-number").innerText= settings.brandsVersion;
+    document.getElementById("version-number").innerText = settings.brandsVersion;
+    document.getElementById("brand-count").innerText = settings.brandsCount;
+    document.getElementById("last-run").innerText = settings.lastMapRun + "ms";
 
   });
   };
-  
   
   async function setIcon(){
     await browser.storage.local.get("enabled").then(function(result){
