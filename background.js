@@ -3,6 +3,13 @@ function sleep(ms) {
 }
 
 async function getCurrentBrandsVersion(){
+  
+  
+  let mapStatus = await browser.storage.local.get("brandsMap");
+  if(mapStatus.brandsMap == undefined){
+    // if the map is undefined lets make sure to update regardless of version
+    return 0;
+  }
   let result = await browser.storage.local.get("brandsVersion");
   console.log("AmazonBrandFilter: Current brands version is " + result.brandsVersion);
   return result.brandsVersion
@@ -11,7 +18,6 @@ async function getCurrentBrandsVersion(){
 async function checkBrandsVersion(){
   while (true) {
     console.log("AmazonBrandFilter: Checking latest brands list version");
-    
     var currentVersion = await getCurrentBrandsVersion();
     var latestReleaseUrl = 'https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest';
     var latestRelease = await fetch(latestReleaseUrl, {mode: 'cors'}).then(response => response.json());
@@ -23,7 +29,7 @@ async function checkBrandsVersion(){
     if (currentVersion != latestVersion){
         console.log("AmazonBrandFilter: Downloading latest brands list");
         try{
-          updateBrandList();
+          // updateBrandList();
           updateBrandMap();
         }
         catch(err){
@@ -97,6 +103,7 @@ async function updateBrandMap(){
   browser.storage.local.set({"brandsCount": Object.keys(brandsMap).length});
   console.log("AmazonBrandFilter: Brands count is " + brandsGet.length);
   console.log("AmazonBrandFilter: Brands are " + [...Object.keys(brandsMap)]);
+  
   
   browser.storage.local.set({"brandsMap": brandsMap});
 }
