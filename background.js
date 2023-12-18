@@ -16,7 +16,6 @@ async function checkBrandsVersion(){
     var latestReleaseUrl = 'https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest';
     var latestRelease = await fetch(latestReleaseUrl, {mode: 'cors'}).then(response => response.json());
     var latestVersion = parseInt(latestRelease.tag_name.slice(1));
-    var currentVersion = 0;
     
     console.log("AmazonBrandFilter: Latest brands list version is " + latestVersion);
     console.log("AmazonBrandFilter: Current brands list version is " + currentVersion);
