@@ -108,7 +108,7 @@ function filterBrands(settings){
     knownBrand=false;
     for(var x =0; x < wordList.length; x++)
     {
-      console.log("AmazonBrandFilter: [word] is: " + wordList[x] + " and brands.has([wordList[x]]) is: " + brands[wordList[x]]);
+      console.debug("AmazonBrandFilter: [word] is: " + wordList[x] + " and brands.has([wordList[x]]) is: " + brands[wordList[x]]);
       if(brands[wordList[x]]){
         // check to see if each word is in the map.  if we dont stop then we hide it.
         console.log("AmazonBrandFilter: Found " + wordList[x] + " in brands list");
@@ -161,9 +161,6 @@ function filterRefiner(brands, settings){
   }
 
 }
-  
-
-
 
 function hideAllResults(){
   console.log("AmazonBrandFilter: Starting hideAllResults");
@@ -177,3 +174,6 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+document
+  .querySelector("#request")
+  .addEventListener("click", requestPermissions);
