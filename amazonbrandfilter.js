@@ -103,7 +103,7 @@ function filterBrands(settings){
       fullText=shortText[0].innerText.toUpperCase();
       console.log("AmazonBrandFilter: Full text is " + fullText);
     // fullText=shortText[0].innerText.toUpperCase();
-    wordList=fullText.split(" "); // we still need to deal with commas/punctuation here.
+    wordList=fullText.split(" ").slice(0,8); // we still need to deal with commas/punctuation here.
     console.log("AmazonBrandFilter: Word list is " + wordList);
     knownBrand=false;
     for(var x =0; x < wordList.length; x++)
@@ -113,23 +113,32 @@ function filterBrands(settings){
         // check to see if each word is in the map.  if we dont stop then we hide it.
         console.log("AmazonBrandFilter: Found " + wordList[x] + " in brands list");
         knownBrand=true;
+        if(settings.debugMode){
+          divs[i].style.backgroundColor = "green";
+          divs[i].getElementsByTagName("h2")[0].innerHTML = "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " + wordList[x] + "</span><br>"+ divs[i].getElementsByTagName("h2")[0].innerHTML;
+        }
         break;
       }
     }
     if(!knownBrand){
       console.debug("AmazonBrandFilter: Hiding " + fullText);
-      divs[i].style.display = "none";
+      if(settings.debugMode){
+        divs[i].style.backgroundColor = "red";
+      }
+      else{
+        divs[i].style.display = "none";
+      }
     }
   }
 
   if(settings.filterRefiner){
     console.log("AmazonBrandFilter: filterRefiner is true, filtering refiner");
-    filterRefiner(brands);
+    filterRefiner(brands, settings);
   }
 
 }
 
-function filterRefiner(brands){
+function filterRefiner(brands, settings){
   console.log("AmazonBrandFilter: Starting filterRefiner");
   refiner = document.getElementById("brandsRefinements");
   divs=refiner.getElementsByClassName("a-spacing-micro");
@@ -142,7 +151,12 @@ function filterRefiner(brands){
     
     if(!(brands[brand])){
       console.debug("AmazonBrandFilter: Hiding Refiner " + fullText);
-      divs[i].style.display = "none";
+      if(settings.debugMode){
+        divs[i].style.backgroundColor = "red";
+      }
+      else{
+        divs[i].style.display = "none";
+      }
     };  
   }
 

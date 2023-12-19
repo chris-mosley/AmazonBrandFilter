@@ -45,3 +45,10 @@ label:hover {
   float: right;
   
 }
+
+.abf-version{
+  float: right;
+  font-size: 0.8em;
+  color:grey;
+  font-weight: bold;
+}

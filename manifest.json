@@ -28,7 +28,10 @@
   
   "content_scripts": [
     {
-      "matches": ["*://*.amazon.com/*"],
+      "matches": ["*://*.amazon.com/*",
+        "*://*.amazon.ca/*",
+        "*://*.amazon.co.uk/*",
+        "*://*.amazon.mx/*"],
       "js": ["amazonbrandfilter.js"]
     }
   ],

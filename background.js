@@ -15,6 +15,12 @@ async function getCurrentBrandsVersion(){
   return result.brandsVersion
 }
 
+async function getFirstRun(){
+  let result = await browser.storage.local.get("abfFirstRun");
+  console.log("AmazonBrandFilter: first run status is: " + result.abfFirstRun);
+  return result.abfFirstRun;
+}
+
 async function checkBrandsVersion(){
   while (true) {
     console.log("AmazonBrandFilter: Checking latest brands list version");
@@ -85,7 +91,7 @@ async function updateBrandMap(){
   var brandsMap = {};
   for(var i=0; i <brandsGet.length; i++)
   {
-    console.log("AmazonBrandFilter: Adding " + brandsGet[i] + " to brands list");
+    console.debug("AmazonBrandFilter: Adding " + brandsGet[i] + " to brands list");
     
     // WIP here.
     // if(brandsGet[i].includes(" ")){
@@ -132,6 +138,19 @@ async function setIcon() {
       }
     });
   }
+}
+
+// set the default values for the extension
+if(await getFirstRun() != false){
+  console.log("AmazonBrandFilter: First run, setting defaults");
+  browser.storage.local.set({"enabled": true});
+  browser.storage.local.set({"brandsVersion": 0});
+  browser.storage.local.set({"brandsCount": 0});
+  browser.storage.local.set({"brandsMap": {}});
+  browser.storage.local.set({"abfFirstRun": false});
+}
+else{
+  console.log("AmazonBrandFilter: Not first run");
 }
 
 // set the icon the first time the extension is loaded

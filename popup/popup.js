@@ -11,6 +11,7 @@ setPopupBoxStates();
 document.getElementById("abf-enabled").addEventListener("click", enableDisable)
 document.getElementById("abf-filter-refiner").addEventListener("click", setFilterRefiner)
 document.getElementById("abf-allow-refine-bypass").addEventListener("click", setRefinerBypass)
+document.getElementById("abf-debug-mode").addEventListener("click", setDebugMode)
 // document.getElementById("abf-hideall").addEventListener("click", hideAll)
 
 
@@ -56,7 +57,17 @@ function setPopupBoxStates(){
     setIcon();
     document.getElementById("version-number").innerText = settings.brandsVersion;
     document.getElementById("brand-count").innerText = settings.brandsCount;
-    document.getElementById("last-run").innerText = settings.lastMapRun + "ms";
+    if(settings.lastMapRun != null){
+      document.getElementById("last-run").innerText = settings.lastMapRun + "ms";
+    }
+    else{
+        document.getElementById("last-run").innerText = "N/A";
+    }
+
+    if(settings.debugMode){
+      console.log("AmazonBrandFilter: abfSettings.debugMode is enabled");
+      document.getElementById("abf-debug-mode").checked = true;
+    }
 
   });
   };
@@ -131,6 +142,23 @@ async function setRefinerBypass(event){
     console.log("refinerBypass: " + result.refinerBypass);
   });
 }
+
+async function setDebugMode(event){
+  enabled=document.getElementById("abf-debug-mode").checked;
+  console.log("event: "+ event);
+  if(enabled){
+    browser.storage.local.set({"debugMode": true});
+  }
+  else{
+    browser.storage.local.set({"debugMode": false});
+  }
+  
+  browser.storage.local.get("debugMode").then(function(result){
+    console.log("debugMode: " + result.debugMode);
+  });
+}
+
+
 
 
 function unHideDivs(){
