@@ -70,7 +70,7 @@ function getItemDivs(){
   return divs;
 }
 
-function filterBrands(settings){
+async function filterBrands(settings){
   console.log("AmazonBrandFilter: Starting filterBrands");
   var brands = settings.brandsMap;
   // brandsGet.then(function(brands){
@@ -92,35 +92,24 @@ function filterBrands(settings){
   }
 
   var divs = getItemDivs();
-
+  console.log("AmazonBrandFilter: maxWordCount is " + settings.maxWordCount);
   for(var i = 0; i < divs.length; i++){
-    console.debug("AmazonBrandFilter: Checking " + divs[i].innerText);
-
     shortText=divs[i].getElementsByClassName("a-color-base a-text-normal");
-    
     if(shortText.length == 0){continue;}
+    console.debug("AmazonBrandFilter: Checking " + divs[i].innerText);
+    fullText=shortText[0].innerText.toUpperCase();
+    console.log("AmazonBrandFilter: Full text is " + fullText);
     
-      fullText=shortText[0].innerText.toUpperCase();
-      console.log("AmazonBrandFilter: Full text is " + fullText);
-    // fullText=shortText[0].innerText.toUpperCase();
-    wordList=fullText.split(" ").slice(0,8); // we still need to deal with commas/punctuation here.
-    console.log("AmazonBrandFilter: Word list is " + wordList);
-    knownBrand=false;
-    for(var x =0; x < wordList.length; x++)
-    {
-      console.debug("AmazonBrandFilter: [word] is: " + wordList[x] + " and brands.has([wordList[x]]) is: " + brands[wordList[x]]);
-      if(brands[wordList[x]]){
-        // check to see if each word is in the map.  if we dont stop then we hide it.
-        console.log("AmazonBrandFilter: Found " + wordList[x] + " in brands list");
-        knownBrand=true;
-        if(settings.debugMode){
-          divs[i].style.backgroundColor = "green";
-          divs[i].getElementsByTagName("h2")[0].innerHTML = "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " + wordList[x] + "</span><br>"+ divs[i].getElementsByTagName("h2")[0].innerHTML;
-        }
-        break;
+    let searchResult=await descriptionSearch(settings,fullText);
+    console.log("AmazonBrandFilter: knownBrand is " + knownBrand)
+    
+    if(searchResult != null){
+      if(settings.debugMode){
+        divs[i].style.backgroundColor = "green";
+        divs[i].getElementsByTagName("h2")[0].innerHTML = "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " + searchResult + "</span><br>"+ divs[i].getElementsByTagName("h2")[0].innerHTML;
       }
     }
-    if(!knownBrand){
+    else{
       console.debug("AmazonBrandFilter: Hiding " + fullText);
       if(settings.debugMode){
         divs[i].style.backgroundColor = "red";
@@ -129,16 +118,39 @@ function filterBrands(settings){
         divs[i].style.display = "none";
       }
     }
+    
+    
   }
 
   if(settings.filterRefiner){
     console.log("AmazonBrandFilter: filterRefiner is true, filtering refiner");
-    filterRefiner(brands, settings);
+    await filterRefiner(brands, settings);
   }
 
 }
 
-function filterRefiner(brands, settings){
+async function descriptionSearch(settings,text){
+  // goal here is to check the first 1 then 2 then 3 etc until we hit the max word count.  this is temporary until i get the trie working.
+  knownBrand=false;
+  
+  wordList=text.split(" ").slice(0,8); // we still need to deal with commas/punctuation here.
+  for(let w = 0; w < settings.maxWordCount; w++)
+  {
+    for(let x =0; x < wordList.length; x++)
+    {
+      let searchTerm=wordList.slice(x,w).join(" ");
+      console.debug("AmazonBrandFilter: searchTerm is: " + searchTerm);
+      if(settings.brandsMap[searchTerm]){
+        // check to see if each word is in the map.  if we dont stop then we hide it.
+        console.log("AmazonBrandFilter: Found " + searchTerm + " in brands list");
+        return searchTerm;
+      }
+    }
+  }
+    return null;
+}
+
+async function filterRefiner(brands, settings){
   console.log("AmazonBrandFilter: Starting filterRefiner");
   refiner = document.getElementById("brandsRefinements");
   divs=refiner.getElementsByClassName("a-spacing-micro");
@@ -173,7 +185,3 @@ function hideAllResults(){
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-document
-  .querySelector("#request")
-  .addEventListener("click", requestPermissions);

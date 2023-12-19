@@ -24,7 +24,8 @@ async function getFirstRun(){
 async function checkBrandsVersion(){
   while (true) {
     console.log("AmazonBrandFilter: Checking latest brands list version");
-    var currentVersion = await getCurrentBrandsVersion();
+    // var currentVersion = await getCurrentBrandsVersion();
+    var currentVersion = 0;
     var latestReleaseUrl = 'https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest';
     var latestRelease = await fetch(latestReleaseUrl, {mode: 'cors'}).then(response => response.json());
     var latestVersion = parseInt(latestRelease.tag_name.slice(1));
@@ -93,35 +94,58 @@ async function updateBrandMap(){
   {
     console.debug("AmazonBrandFilter: Adding " + brandsGet[i] + " to brands list");
     
-    // WIP here.
+
+    // we'll try to get this optimization in later.
     // if(brandsGet[i].includes(" ")){
     //   wordList = brandsGet[i].split(" ");
-    //   brandMap = createBrandMap(wordList, 0);
-    //   // console.log("AmazonBrandFilter: Brand map is " + JSON.stringify(brandMap));
-    //   console.log("word is " + wordList[0] + " and brand map is " + JSON.stringify(brandMap));
-    //   brandsMap[wordList[0]] = brandMap;
+    //   if(brandsMap[wordList] == undefined){
+    //     let brandMap = createBrandMap(wordList, 0);
+    //     brandsMap[wordList[0]] = brandMap;
+        
+    //   }
+    //   else{
+    //     let brandMap = createBrandMap(wordList, 1);
+    //     brandsMap[wordList[0]][wordList[1]] = brandMap;
+        
+    //   }
     // } 
     // else{
-    //   brandsMap[brandsGet[i]] = true;
+      brandsMap[brandsGet[i]] = true;
     // }
-    brandsMap[brandsGet[i]] = true;
   }
-  browser.storage.local.set({"brandsCount": Object.keys(brandsMap).length});
+  
+  
   console.log("AmazonBrandFilter: Brands count is " + brandsGet.length);
-  console.log("AmazonBrandFilter: Brands are " + [...Object.keys(brandsMap)]);
+  
   
   
   browser.storage.local.set({"brandsMap": brandsMap});
+
+  let keys = Object.keys(brandsMap);
+  var maxWordCount = 0;
+  for(var i=0; i < keys.length; i++){
+    if(keys[i].split(" ").length > maxWordCount){
+      maxWordCount = keys[i].split(" ").length;
+    }
+  }
+  browser.storage.local.set({"maxWordCount": maxWordCount});
+  console.log("AmazonBrandFilter: Max brand word count is " + maxWordCount);
+  // console.log("AmazonBrandFilter: Brands are " + [...Object.keys(brandsMap)]);
+  console.log("AmazonBrandFilter: Brands are " + keys);
+  browser.storage.local.set({"brandsCount": keys.length});
+  
+
 }
 
-function createBrandMap(wordList, depth=0){
-  if(depth == wordList.length - 1){
-    return true;
-  }
-  var brandMap = {};
-  brandMap[wordList[depth+1]] = createBrandMap(wordList, depth + 1);
-  return brandMap;
-}
+
+// function createBrandMap(wordList, depth=0){
+//   if(depth == wordList.length - 1){
+//     return true;
+//   }
+//   var brandMap = {};
+//   brandMap[wordList[depth+1]] = createBrandMap(wordList, depth + 1);
+//   return brandMap;
+// }
 
 async function setIcon() {
   let enabled = await browser.storage.local.get("abf-enabled");
@@ -147,6 +171,7 @@ if(await getFirstRun() != false){
   browser.storage.local.set({"brandsVersion": 0});
   browser.storage.local.set({"brandsCount": 0});
   browser.storage.local.set({"brandsMap": {}});
+  browser.storage.local.set({"refinerBypass": true})
   browser.storage.local.set({"abfFirstRun": false});
 }
 else{

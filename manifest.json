@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AmazonBrandFilter",
-  "version": "0.0.61",
+  "version": "0.0.70",
   "browser_specific_settings": {
     "gecko": {
       "id": "abf@mosley.xyz",
@@ -25,9 +25,11 @@
     "default_title": "Amazon Brand Filter",
     "default_area": "navbar",
      "default_popup": "popup/popup.html"
-    }
-  ,
-  
+    },
+  "background": {
+    "scripts": ["background.js"],
+    "type": "module"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -42,10 +44,6 @@
 
   "content_security_policy": {
     "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; connect-src https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest;"
-  },
-  "background": {
-    "scripts": ["background.js"],
-    "type": "module"
   },
   "web_accessible_resources": [
     {
