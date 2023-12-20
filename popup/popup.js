@@ -4,7 +4,7 @@ console.log("AmazonBrandFilter: Starting popup.js");
 
 
 setPopupBoxStates();
-
+setAddonVersion()
 
 // document.getElementById("abf-enabled").checked = true
 
@@ -71,6 +71,11 @@ function setPopupBoxStates(){
 
   });
   };
+  
+  async function setAddonVersion(){
+    var manifest = browser.runtime.getManifest();
+    document.getElementById("abf-version").innerText="v" + manifest.version;
+  }
   
   async function setIcon(){
     await browser.storage.local.get("enabled").then(function(result){
@@ -157,7 +162,6 @@ async function setDebugMode(event){
     console.log("debugMode: " + result.debugMode);
   });
 }
-
 
 
 

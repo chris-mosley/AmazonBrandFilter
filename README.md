@@ -24,6 +24,10 @@
 
  The allow list can be updated any time. By default the add-on will update this list at initial startup and then once a day after that.
 
+### Why not a block list instead of an allow list?
+
+  Because while it will certainly be a challenge and a very _very_ long road, an allow list has a hypothetical end while a block list would be impossible to "complete."  They will generate brands faster than we could ever update a block list.
+
 ### Why?
 
 Because we're all sick of crappy fake brands clogging up our search!
@@ -39,10 +43,12 @@ Please refer to the Submission Criteria in the AmazonBrandFilterList repo here: 
 If they have existed for more than a few years they likely belong on this list.
 
 A good (but not foolproof) rule of thumb is that if a brand has a dedicated website, it probably belongs on this list.
-### Upcoming Features
+
+### Roadmap
 In no particular order these are the things I would like to add eventually
 - Per department disabling of the filter
 - Caret or something on the page to indicate that things have been hidden
-- Currently working on a way to make it faster and more reliable, this is the next big update.
 - A way for users to report a missing brand from within the add-on popup
 - A personal list of brands to filter (say you hate a "real" brand for ethical reasons or otherwise) and to allow to bypass (this is probably for a brand that just hasn't been added yet)
+- Localization: A big one I wasn't expecting to need.  Sorry to all you guys outside the US that are trying the addon and finding it does not work.  I am adding permissions for different Amazon top-level domains based on where I see people downloading the addon from.
+- Along with localiztion I'm considering having different lists based on locale.  I'm not sure it will be necessary yet.

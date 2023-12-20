@@ -93,25 +93,11 @@ async function updateBrandMap(){
   for(var i=0; i <brandsGet.length; i++)
   {
     console.debug("AmazonBrandFilter: Adding " + brandsGet[i] + " to brands list");
-    
-
-    // we'll try to get this optimization in later.
-    // if(brandsGet[i].includes(" ")){
-    //   wordList = brandsGet[i].split(" ");
-    //   if(brandsMap[wordList] == undefined){
-    //     let brandMap = createBrandMap(wordList, 0);
-    //     brandsMap[wordList[0]] = brandMap;
-        
-    //   }
-    //   else{
-    //     let brandMap = createBrandMap(wordList, 1);
-    //     brandsMap[wordList[0]][wordList[1]] = brandMap;
-        
-    //   }
-    // } 
-    // else{
-      brandsMap[brandsGet[i]] = true;
-    // }
+      // protect against possible empty lines in the list
+    if(brandsGet[i] != "")
+      {
+        brandsMap[brandsGet[i]] = true;
+      }
   }
   
   

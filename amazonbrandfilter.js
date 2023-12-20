@@ -94,11 +94,38 @@ async function filterBrands(settings){
   var divs = getItemDivs();
   console.log("AmazonBrandFilter: maxWordCount is " + settings.maxWordCount);
   for(var i = 0; i < divs.length; i++){
+
+    itemHeader=divs[i].getElementsByClassName("s-line-clamp-1");
+    if(itemHeader.length != 0){
+      searchTerm=itemHeader[0].innerText.toUpperCase();
+      if(settings.brandsMap[searchTerm]){
+        // check to see if each word is in the map.  if we dont stop then we hide it.
+        console.log("AmazonBrandFilter: Found " + " in brands list");
+        if(settings.debugMode){
+          divs[i].style.backgroundColor = "green";
+          divs[i].innerHTML = "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " + searchTerm + "</span><br>"+ divs[i].innerHTML;
+        }
+        continue;
+      }
+      else{
+        console.debug("AmazonBrandFilter: Hiding " + searchTerm);
+        if(settings.debugMode){
+          divs[i].style.backgroundColor = "red";
+        }
+        else{
+          divs[i].style.display = "none";
+        }
+        continue;
+      }
+    }
+
     shortText=divs[i].getElementsByClassName("a-color-base a-text-normal");
     if(shortText.length == 0){continue;}
     console.debug("AmazonBrandFilter: Checking " + divs[i].innerText);
     fullText=shortText[0].innerText.toUpperCase();
     console.log("AmazonBrandFilter: Full text is " + fullText);
+    
+
     
     let searchResult=await descriptionSearch(settings,fullText);
     console.log("AmazonBrandFilter: knownBrand is " + knownBrand)
@@ -106,7 +133,7 @@ async function filterBrands(settings){
     if(searchResult != null){
       if(settings.debugMode){
         divs[i].style.backgroundColor = "green";
-        divs[i].getElementsByTagName("h2")[0].innerHTML = "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " + searchResult + "</span><br>"+ divs[i].getElementsByTagName("h2")[0].innerHTML;
+        divs[i].innerHTML = "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " + searchTerm + "</span><br>"+ divs[i].innerHTML;
       }
     }
     else{
@@ -130,9 +157,7 @@ async function filterBrands(settings){
 }
 
 async function descriptionSearch(settings,text){
-  // goal here is to check the first 1 then 2 then 3 etc until we hit the max word count.  this is temporary until i get the trie working.
   knownBrand=false;
-  
   wordList=text.split(" ").slice(0,8); // we still need to deal with commas/punctuation here.
   for(let w = 0; w < settings.maxWordCount; w++)
   {
