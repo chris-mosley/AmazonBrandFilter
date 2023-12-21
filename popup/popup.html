@@ -8,12 +8,21 @@
     <div><span><input type="checkbox" id="abf-enabled" option="abf-enabled">Enable Amazon Brand Filter</span><span id="abf-version" class="abf-version">v0.0.51</span></div>
     <div><input type="checkbox" id="abf-filter-refiner" option="abf-filter-refiner">Also filter Brands in Sidebar</div>
     <div><span class="indent"></span><input type="checkbox" id="abf-filter-refiner-hide"><span>Hide</span></span><input type="checkbox" id="abf-filter-refiner-grey"><span>Grey Out</span></div>
-  
-    <div alt="This will allow you to select a brand under *Feature Brands* even if it is not in the brand list"><input type="checkbox" id="abf-allow-refine-bypass" option="abf-allow-refine-bypass">Disable filter on Featured Brand selection</div>
+    <div><input type="checkbox" id="abf-allow-refine-bypass" option="abf-allow-refine-bypass">Disable filter on Featured Brand selection</div>
     <div><input type="checkbox" id="abf-debug-mode" option="abf-debug-mode">Debug Mode</div>
     <div class="spacer"></div>
-    <div>Brands list version: <span id="version-number"></span><span> | </span>
+    <div>Brands list version: <span id="version-number"></span>
+      <span> | </span>
     <span>Known Brands: </span><span id="brand-count"></span></div>
+    <div class="spacer"></div>
+    <div>
+      <div>
+        <input type="checkbox" id="abf-enabled" option="abf-enabled">
+        <span>Personal Blocklist</span>
+        <span><span id="abf-personal-block-saved-confirm" style="display:none">Saved!</span><button type="button" id="abf-personal-block-button" class="abf-personal-block-button">Save</button></span>
+      </div>
+      <span class="indent"></span><textarea id="abf-personal-block-text" class="abf-personal-block-text" cols="45"></textarea>
+    </div>
     <div class="spacer"></div>
     <div><a href="https://github.com/chris-mosley/AmazonBrandFilter/issues">Feeback?</a></div>
     <div><span><a href="https://github.com/chris-mosley/AmazonBrandFilterList/issues">Missing a brand?</a></span><span class="last-run"><span>Last Run: </span><span id="last-run"></span></span></div>

@@ -5,7 +5,7 @@ console.log("AmazonBrandFilter: Starting popup.js");
 
 setPopupBoxStates();
 setAddonVersion()
-
+setPersonalList()
 // document.getElementById("abf-enabled").checked = true
 
 document.getElementById("abf-enabled").addEventListener("click", enableDisable)
@@ -14,6 +14,7 @@ document.getElementById("abf-filter-refiner-hide").addEventListener("click", set
 document.getElementById("abf-filter-refiner-grey").addEventListener("click", setRefinerGrey)
 document.getElementById("abf-allow-refine-bypass").addEventListener("click", setRefinerBypass)
 document.getElementById("abf-debug-mode").addEventListener("click", setDebugMode)
+document.getElementById("abf-personal-block-button").addEventListener("click", savePersonalList)
 
 // document.getElementById("abf-hideall").addEventListener("click", hideAll)
 
@@ -253,3 +254,60 @@ function hideAll(){
   });})
 }
 
+async function savePersonalList(){
+  
+  userInput = await getSanitizedUserInput()
+  personalBrandsMap= new Map();
+  for(let brand of userInput){
+    console.log("AmazonBrandFilter: adding brand: " + brand)
+    personalBrandsMap[brand] = true;
+  }
+  console.log("AmazonBrandFilter: personalBrandsMap is: " + JSON.stringify(personalBrandsMap));
+  browser.storage.sync.set({"personalBrands": personalBrandsMap});
+  document.getElementById('abf-personal-block-saved-confirm').display = block;
+}
+
+async function setPersonalList(){
+  
+  personalBrands = await browser.storage.sync.get("personalBrands");
+  personalBrandsMap = personalBrands.personalBrands;
+
+  if(personalBrandsMap == undefined){
+    console.log("AmazonBrandFilter: personalBrandsMap is undefined");
+    return;
+  }
+  console.log("AmazonBrandFilter: personalBrandsMap is: " + JSON.stringify(personalBrandsMap));
+    if(personalBrandsMap == undefined){
+      return;
+    }
+    
+    console.log("personalbrandmap keys are: "+ Object.keys(personalBrandsMap));
+    textValue = Object.keys(personalBrandsMap);
+    textHeight = Object.keys(personalBrandsMap).length;
+    if(textHeight > 10){
+      textHeight = 10;
+      document.getElementById('abf-personal-block-text').style.overflow = "scroll";
+    }
+      
+    
+    textValue = textValue.join("\n");
+    console.log("AmazonBrandFilter: setting personal block list text area to: " + textValue);
+    document.getElementById('abf-personal-block-text').value = textValue;
+    document.getElementById('abf-personal-block-text').rows = textHeight;
+  
+}
+
+async function getSanitizedUserInput(){
+  // god so much santization to do here
+  let userInput= await document.getElementById('abf-personal-block-text').value.split("\n");
+  console.log(userInput);
+  sanitizedInput=[];
+  for(line of userInput){
+    // we'll come up with something smarter later.
+    if(line == "" || line == " " || line == "\n" || line == "\r\n" || line == "\r"){
+      continue;
+    }
+    sanitizedInput.push(line);
+  }
+  return sanitizedInput;
+}

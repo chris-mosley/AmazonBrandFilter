@@ -116,7 +116,6 @@ async function updateBrandMap(){
   }
   browser.storage.local.set({"maxWordCount": maxWordCount});
   console.log("AmazonBrandFilter: Max brand word count is " + maxWordCount);
-  // console.log("AmazonBrandFilter: Brands are " + [...Object.keys(brandsMap)]);
   console.log("AmazonBrandFilter: Brands are " + keys);
   browser.storage.local.set({"brandsCount": keys.length});
   

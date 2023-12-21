@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AmazonBrandFilter",
-  "version": "0.0.81",
+  "version": "0.0.90",
   "browser_specific_settings": {
     "gecko": {
       "id": "abf@mosley.xyz",
@@ -72,10 +72,9 @@
   "host_permissions": [
     "*://*.amazon.com/*",
     "*://*.amazon.ca/*",
-    "*://*.amazon.com.mx/*",
     "*://*.amazon.com.au/*",
-    "*://*.amazon.co.uk/*",
     "*://*.amazon.com.mx/*",
+    "*://*.amazon.co.uk/*",
     "*://*.amazon.de/*",
     "*://*.amazon.se/*"
   ]

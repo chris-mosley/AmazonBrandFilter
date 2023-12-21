@@ -54,5 +54,24 @@ label:hover {
 }
 
 .indent{  
-  margin-left: 1.1em;
+  margin-left: 1.3em;
+}
+
+.abf-personal-block-text{
+  margin-top: .5em;
+  margin-left: 1.6em;
+}
+
+#abf-personl-block-text{
+  resize:vertical;
+}
+.abf-personal-block-button{
+  margin-right: 1em;
+  margin-left:1em;
+  float:right;
+
+}
+
+.resizable-textarea {
+  resize: vertical;
 }
