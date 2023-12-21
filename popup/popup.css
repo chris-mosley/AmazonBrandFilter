@@ -52,3 +52,7 @@ label:hover {
   color:grey;
   font-weight: bold;
 }
+
+.indent{  
+  margin-left: 1.1em;
+}

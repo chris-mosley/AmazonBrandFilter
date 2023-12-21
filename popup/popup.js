@@ -10,8 +10,11 @@ setAddonVersion()
 
 document.getElementById("abf-enabled").addEventListener("click", enableDisable)
 document.getElementById("abf-filter-refiner").addEventListener("click", setFilterRefiner)
+document.getElementById("abf-filter-refiner-hide").addEventListener("click", setRefinerHide)
+document.getElementById("abf-filter-refiner-grey").addEventListener("click", setRefinerGrey)
 document.getElementById("abf-allow-refine-bypass").addEventListener("click", setRefinerBypass)
 document.getElementById("abf-debug-mode").addEventListener("click", setDebugMode)
+
 // document.getElementById("abf-hideall").addEventListener("click", hideAll)
 
 
@@ -53,6 +56,17 @@ function setPopupBoxStates(){
     else{
       console.log("AmazonBrandFilter: abfSettings.filterRefiner is not enabled");
       document.getElementById("abf-allow-refine-bypass").checked = false;
+    }
+
+    if(settings.refinerMode == "grey"){
+      console.log("AmazonBrandFilter: abfSettings.refinerMode is grey");
+      document.getElementById("abf-filter-refiner-grey").checked = true;
+      document.getElementById("abf-filter-refiner-hide").checked = false;
+    }
+    else{
+      console.log("AmazonBrandFilter: abfSettings.refinerMode is hide");
+      document.getElementById("abf-filter-refiner-hide").checked = true;
+      document.getElementById("abf-filter-refiner-grey").checked = false;
     }
     setIcon();
     document.getElementById("version-number").innerText = settings.brandsVersion;
@@ -102,7 +116,6 @@ function setPopupBoxStates(){
 
 async function enableDisable(event){
   enabled=document.getElementById("abf-enabled").checked;
-  console.log("event: "+ event);
   if(enabled){
     browser.storage.local.set({"enabled": true});
   }
@@ -120,7 +133,6 @@ async function enableDisable(event){
 
 async function setFilterRefiner(event){
   enabled=document.getElementById("abf-filter-refiner").checked;
-  console.log("event: "+ event);
   if(enabled){
     browser.storage.local.set({"filterRefiner": true});
   }
@@ -133,9 +145,39 @@ async function setFilterRefiner(event){
   });
 }
 
+async function setRefinerHide(event){
+  enabled=document.getElementById("abf-filter-refiner-hide").checked;
+  if(enabled){
+    browser.storage.local.set({"refinerMode": "hide"});
+    document.getElementById("abf-filter-refiner-grey").checked = false;
+  }
+  else{
+    browser.storage.local.set({"refinerMode": "grey"});
+  }
+  
+  browser.storage.local.get("refinerMode").then(function(result){
+    console.log("refinerMode: " + result.refinerMode);
+  });
+}
+
+async function setRefinerGrey(event){
+  enabled=document.getElementById("abf-filter-refiner-grey").checked;
+  if(enabled){
+    browser.storage.local.set({"refinerMode": "grey"});
+    document.getElementById("abf-filter-refiner-hide").checked = false;
+  }
+  else{
+    browser.storage.local.set({"refinerMode": "hide"});
+  }
+  
+  browser.storage.local.get("refinerMode").then(function(result){
+    console.log("refinerMode: " + result.refinerMode);
+  });
+}
+
+
 async function setRefinerBypass(event){
   enabled=document.getElementById("abf-allow-refine-bypass").checked;
-  console.log("event: "+ event);
   if(enabled){
     browser.storage.local.set({"refinerBypass": true});
   }
@@ -150,7 +192,6 @@ async function setRefinerBypass(event){
 
 async function setDebugMode(event){
   enabled=document.getElementById("abf-debug-mode").checked;
-  console.log("event: "+ event);
   if(enabled){
     browser.storage.local.set({"debugMode": true});
   }
