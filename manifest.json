@@ -39,6 +39,10 @@
         "*://*.amazon.co.uk/*",
         "*://*.amazon.com.mx/*",
         "*://*.amazon.de/*",
+        "*://*.amazon.fr/*",
+        "*://*.amazon.it/*",
+        "*://*.amazon.es/*",
+        "*://*.amazon.be/*",
         "*://*.amazon.se/*"
         ],
       "js": ["amazonbrandfilter.js"]
@@ -76,6 +80,10 @@
     "*://*.amazon.com.mx/*",
     "*://*.amazon.co.uk/*",
     "*://*.amazon.de/*",
+    "*://*.amazon.fr/*",
+    "*://*.amazon.it/*",
+    "*://*.amazon.es/*",
+    "*://*.amazon.be/*",
     "*://*.amazon.se/*"
   ]
 
