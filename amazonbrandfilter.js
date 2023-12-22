@@ -143,7 +143,6 @@ async function filterBrands(settings){
 
     shortText=divs[i].getElementsByClassName("a-color-base a-text-normal");
     if(shortText.length == 0){continue;}
-    console.debug("AmazonBrandFilter: Checking " + divs[i].innerText);
     await descriptionSearch(settings,divs[i]);
   }
 
@@ -160,19 +159,25 @@ async function descriptionSearch(settings,div){
   console.debug("AmazonBrandFilter: Checking " + div.innerText);
   let fullText=shortText[0].innerText.toUpperCase();
   console.log("AmazonBrandFilter: Full text is " + fullText);
-  var wordList=fullText.replace(", ",",").split(" ").slice(0,8);
+  var wordList=fullText.replace(", "," ").split(" ").slice(0,8);
+  console.log("AmazonBrandFilter: wordList is " + wordList);
   knownBrand=false;
-  
-  for(let w = 0; w < settings.maxWordCount; w++)
+  console.log("AmazonBrandFilter: maxWordCount is " + settings.maxWordCount)
+  console.log("AmazonBrandFilter: wordList.length is " + wordList.length)
+  for(let w = 0; w < settings.maxWordCount+3; w++)
   {
-    for(let x =0; x < wordList.length; x++)
+    
+    for(let x = 0; x < wordList.length; x++)
     {
       let searchTerm=wordList.slice(x,w).join(" ");
+      
+      if(searchTerm.length == 0){continue;}
+      console.log("AmazonBrandFilter: wordList slice is: (" + x + "," + w + "), wordlist.length is: " + wordList.length + " - " + JSON.stringify(wordList.slice(x,w)));
       console.debug("AmazonBrandFilter: searchTerm is: " + searchTerm);
       if(settings.brandsMap[searchTerm]){
         // check to see if each word is in the map.  if we dont stop then we hide it.
         console.log("AmazonBrandFilter: Found " + searchTerm + " in brands list");
-        if(settings.usePersonalBlock){
+        if(synchedSettings.usePersonalBlock){
           console.log("AmazonBrandFilter: personalBlockEnabled is true, checking personal block list");
           if(synchedSettings.personalBlockMap[searchTerm]){
             console.log("AmazonBrandFilter: Found " + searchTerm + " in personal block list");
