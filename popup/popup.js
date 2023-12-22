@@ -4,6 +4,7 @@ console.log("AmazonBrandFilter: Starting popup.js");
 
 
 setPopupBoxStates();
+setTextBoxStates();
 setAddonVersion()
 setPersonalList()
 // document.getElementById("abf-enabled").checked = true
@@ -29,7 +30,7 @@ function clickTest(event){
   }
 }
 
-function setPopupBoxStates(){
+async function setPopupBoxStates(){
   console.log("AmazonBrandFilter: Setting Popup Box States")
   browser.storage.local.get().then(function(settings){
   
@@ -72,12 +73,7 @@ function setPopupBoxStates(){
       document.getElementById("abf-filter-refiner-grey").checked = false;
     }
     
-    if(settings.usePersonalBlock == true){
-      console.log("AmazonBrandFilter: usePersonalBlock is true");
-      document.getElementById("abf-personal-block-enabled").checked = true;
-      document.getElementById('abf-personal-block-text').style.display = "block";
-      document.getElementById('abf-personal-block-button').style.display = "block";
-    }
+    
     
     setIcon();
     document.getElementById("version-number").innerText = settings.brandsVersion;
@@ -124,6 +120,16 @@ function setPopupBoxStates(){
   });
   }
   
+async function setTextBoxStates(){
+  syncSettings = await browser.storage.sync.get();
+  if(syncSettings.usePersonalBlock == true){
+    console.log("AmazonBrandFilter: usePersonalBlock is true");
+    document.getElementById("abf-personal-block-enabled").checked = true;
+    document.getElementById('abf-personal-block-text').style.display = "block";
+    document.getElementById('abf-personal-block-button').style.display = "block";
+  }
+}
+
 
 async function enableDisable(event){
   enabled=document.getElementById("abf-enabled").checked;
@@ -274,7 +280,7 @@ async function savePersonalBlock(){
   }
   console.log("AmazonBrandFilter: personalBlockMap is: " + JSON.stringify(personalBlockMap));
   browser.storage.sync.set({"personalBlockMap": personalBlockMap});
-  document.getElementById('abf-personal-block-saved-confirm').style.display = "inline";
+  document.getElementById('abf-personal-block-saved-confirm').style.display = "block";
 }
 
 async function setPersonalList(){
@@ -325,17 +331,36 @@ async function getSanitizedUserInput(){
 async function setPersonalBlockEnabled(){
   enabled=document.getElementById("abf-personal-block-enabled").checked;
   if(enabled){
-    browser.storage.local.set({"usePersonalBlock": true});
+    browser.storage.sync.set({"usePersonalBlock": true});
     document.getElementById('abf-personal-block-text').style.display = "block";
     document.getElementById('abf-personal-block-button').style.display = "block";
   }
   else{
-    browser.storage.local.set({"usePersonalBlock": false});
+    browser.storage.sync.set({"usePersonalBlock": false});
     document.getElementById('abf-personal-block-text').style.display = "none";
     document.getElementById('abf-personal-block-button').style.display = "none";
   }
   
-  browser.storage.local.get("usePersonalBlock").then(function(result){
-    console.log("usePersonalBlock: " + result.personalBlockEnabled);
+  browser.storage.sync.get("usePersonalBlock").then(function(result){
+    console.log("personalBlockEnabled: " + result.usePersonalBlock);
   });
+}
+
+async function getSettings(location){
+  if(location == "sync"){
+    settings = await browser.storage.sync.get().then(function(result){
+      console.log("AmazonBrandFilter: sync settings are: " + JSON.stringify(result));
+    });
+  }
+  else{
+    settings = await browser.storage.local.get().then(function(result){
+      console.log("AmazonBrandFilter: local settings are: " + JSON.stringify(result));
+    });
+  }
+  return settings;
+}
+
+function textAreaAdjust(element) {
+  element.style.height = "1px";
+  element.style.height = (25+element.scrollHeight)+"px";
 }

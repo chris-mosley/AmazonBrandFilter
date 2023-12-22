@@ -71,7 +71,7 @@ input[type="button"] {
 /* Instead of creating a spacer element, use this in 
     a div to add spacings above that div */
 .spaced {
-  margin-top: 1rem;
+  margin-top: 0.1rem;
 }
 
 /* Other */
@@ -102,13 +102,14 @@ section.clear-options > select,
 }
 
 #abf-personal-block-button {
+  position: right;
   float: right;
   display: none;
 }
 
 .abf-personal-block-saved-confirm{
   display:none;
-  float:inline-end;
+  float: right;
 }
 
 .resizable-textarea {
