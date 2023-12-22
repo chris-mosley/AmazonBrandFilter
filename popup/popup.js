@@ -14,7 +14,9 @@ document.getElementById("abf-filter-refiner-hide").addEventListener("click", set
 document.getElementById("abf-filter-refiner-grey").addEventListener("click", setRefinerGrey)
 document.getElementById("abf-allow-refine-bypass").addEventListener("click", setRefinerBypass)
 document.getElementById("abf-debug-mode").addEventListener("click", setDebugMode)
-document.getElementById("abf-personal-block-button").addEventListener("click", savePersonalList)
+document.getElementById("abf-personal-block-enabled").addEventListener("click", setPersonalBlockEnabled)
+document.getElementById("abf-personal-block-button").addEventListener("click", savePersonalBlock)
+
 
 // document.getElementById("abf-hideall").addEventListener("click", hideAll)
 
@@ -69,6 +71,14 @@ function setPopupBoxStates(){
       document.getElementById("abf-filter-refiner-hide").checked = true;
       document.getElementById("abf-filter-refiner-grey").checked = false;
     }
+    
+    if(settings.usePersonalBlock == true){
+      console.log("AmazonBrandFilter: usePersonalBlock is true");
+      document.getElementById("abf-personal-block-enabled").checked = true;
+      document.getElementById('abf-personal-block-text').style.display = "block";
+      document.getElementById('abf-personal-block-button').style.display = "block";
+    }
+    
     setIcon();
     document.getElementById("version-number").innerText = settings.brandsVersion;
     document.getElementById("brand-count").innerText = settings.brandsCount;
@@ -254,36 +264,36 @@ function hideAll(){
   });})
 }
 
-async function savePersonalList(){
+async function savePersonalBlock(){
   
   userInput = await getSanitizedUserInput()
-  personalBrandsMap= new Map();
+  personalBlockMap= new Map();
   for(let brand of userInput){
     console.log("AmazonBrandFilter: adding brand: " + brand)
-    personalBrandsMap[brand] = true;
+    personalBlockMap[brand] = true;
   }
-  console.log("AmazonBrandFilter: personalBrandsMap is: " + JSON.stringify(personalBrandsMap));
-  browser.storage.sync.set({"personalBrands": personalBrandsMap});
-  document.getElementById('abf-personal-block-saved-confirm').display = block;
+  console.log("AmazonBrandFilter: personalBlockMap is: " + JSON.stringify(personalBlockMap));
+  browser.storage.sync.set({"personalBlockMap": personalBlockMap});
+  document.getElementById('abf-personal-block-saved-confirm').style.display = "inline";
 }
 
 async function setPersonalList(){
   
-  personalBrands = await browser.storage.sync.get("personalBrands");
-  personalBrandsMap = personalBrands.personalBrands;
+  personalBlockMap = await browser.storage.sync.get("personalBlockMap");
+  personalBlockMap = personalBlockMap.personalBlockMap;
 
-  if(personalBrandsMap == undefined){
+  if(personalBlockMap == undefined){
     console.log("AmazonBrandFilter: personalBrandsMap is undefined");
     return;
   }
-  console.log("AmazonBrandFilter: personalBrandsMap is: " + JSON.stringify(personalBrandsMap));
-    if(personalBrandsMap == undefined){
+  console.log("AmazonBrandFilter: personalBrandsMap is: " + JSON.stringify(personalBlockMap));
+    if(personalBlockMap == undefined){
       return;
     }
     
-    console.log("personalbrandmap keys are: "+ Object.keys(personalBrandsMap));
-    textValue = Object.keys(personalBrandsMap);
-    textHeight = Object.keys(personalBrandsMap).length;
+    console.log("personalBlockMap keys are: "+ Object.keys(personalBlockMap));
+    textValue = Object.keys(personalBlockMap);
+    textHeight = Object.keys(personalBlockMap).length;
     if(textHeight > 10){
       textHeight = 10;
       document.getElementById('abf-personal-block-text').style.overflow = "scroll";
@@ -307,7 +317,25 @@ async function getSanitizedUserInput(){
     if(line == "" || line == " " || line == "\n" || line == "\r\n" || line == "\r"){
       continue;
     }
-    sanitizedInput.push(line);
+    sanitizedInput.push(line.toUpperCase());
   }
   return sanitizedInput;
+}
+
+async function setPersonalBlockEnabled(){
+  enabled=document.getElementById("abf-personal-block-enabled").checked;
+  if(enabled){
+    browser.storage.local.set({"usePersonalBlock": true});
+    document.getElementById('abf-personal-block-text').style.display = "block";
+    document.getElementById('abf-personal-block-button').style.display = "block";
+  }
+  else{
+    browser.storage.local.set({"usePersonalBlock": false});
+    document.getElementById('abf-personal-block-text').style.display = "none";
+    document.getElementById('abf-personal-block-button').style.display = "none";
+  }
+  
+  browser.storage.local.get("usePersonalBlock").then(function(result){
+    console.log("usePersonalBlock: " + result.personalBlockEnabled);
+  });
 }
