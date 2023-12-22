@@ -1,33 +1,83 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 
 body {
-  width: 25em;
+  width: 25rem;
   font-family: "Open Sans Light", sans-serif;
-  font-size: 0.9em;
-  font-weight: 300;
+  font-size: 16px;
+  font-weight: normal;
+  padding: 0.6rem;
 }
 
-section.clear-options {
-  padding: 0.5em 0;
-  margin: 1em 0;
-}
-
-#clear-button {
-  margin: 0 1.3em 1em 0;
-}
-
-section.clear-options input,
-section.clear-options>select,
-#clear-button {
-  float: right;
+label,
+input[type="checkbox"],
+input[type="radio"],
+input[type="button"] {
+  cursor: pointer;
 }
 
 label {
-  display: block;
-  padding: 0.2em 0;
+  user-select: none;
+  padding: 0.2rem 0;
 }
 
-label:hover {
-  background-color: #EAEFF2;
+input[type="button"] {
+  padding: 0 0.6rem;
+}
+
+/* label:hover {
+  background-color: #eaeff2;
+} */
+
+/* Version span style */
+.abf-version {
+  position: absolute;
+  inset: 0 0 auto auto;
+  width: fit-content;
+
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: grey;
+}
+
+/* Last Run span style */
+.last-run {
+  position: absolute;
+  inset: auto 0 0 auto;
+  width: fit-content;
+}
+
+/* Options Style */
+.options {
+  position: relative;
+  width: 100%;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0.2rem 0;
+}
+
+.options-links > a {
+  display: block;
+}
+
+.indent {
+  margin-left: 1.3rem;
+}
+
+/* Instead of creating a spacer element, use this in 
+    a div to add spacings above that div */
+.spaced {
+  margin-top: 1rem;
+}
+
+/* Other */
+section.clear-options {
+  padding: 0.5em 0;
+  margin: 1em 0;
 }
 
 .title {
@@ -35,51 +85,35 @@ label:hover {
   margin-bottom: 0.5em;
 }
 
-.spacer {
-  display: block;
-  margin-bottom: 1rem;
-  border-bottom: none;
+#clear-button {
+  margin: 0 1.3em 1em 0;
 }
 
-.last-run {
+section.clear-options input,
+section.clear-options > select,
+#clear-button {
   float: right;
-  
 }
 
-.abf-version{
-  float: right;
-  font-size: 0.8em;
-  color:grey;
-  font-weight: bold;
-}
-
-.indent{  
-  margin-left: 1.3em;
-}
-
-.abf-personal-block-text{
-  margin-top: .1em;
-  margin-left: 1.6em;
-  display:none;
-}
-
-#abf-personl-block-text{
-  resize:vertical;
-  
-}
-
-.abf-personal-block-button{
-  margin-right: 1.2em;
-  margin-left:1em;
-  float:right;
-  display:none;
-}
-
-.resizable-textarea {
+#abf-personal-block-text {
   resize: vertical;
+  width: 100%;
+  margin-inline: 1em 1.2em;
+  display:none;
+}
+
+#abf-personal-block-button {
+  position: absolute;
+  inset: auto 0 auto auto;
+  margin-inline: 1em 1.2em;
+  display: none;
 }
 
 .abf-personal-block-saved-confirm{
   display:none;
   float:inline-end;
+}
+
+.resizable-textarea {
+  resize: vertical;
 }
