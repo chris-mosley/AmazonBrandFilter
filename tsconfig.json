@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "ES2015"],
+    "target": "es6",
+    "module": "commonjs",
+    "baseUrl": "./src",
+    "paths": {
+      "~/*": ["./src"]
+    },
+    "types": ["web", "chrome", "node", "webextension-polyfill-ts"],
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    // "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    // "noPropertyAccessFromIndexSignature": true,
+    "allowUnusedLabels": true,
+    "allowUnreachableCode": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+
+  <body>
+    <div class="options" id="option-boxes">
+      <!-- Version -->
+      <span id="abf-version" class="abf-version">v0.0.51</span>
+
+      <div>
+        <input type="checkbox" id="abf-enabled" option="abf-enabled" />
+        <label for="abf-enabled">Enable Amazon Brand Filter</label>
+      </div>
+
+      <div>
+        <input type="checkbox" id="abf-filter-refiner" option="abf-filter-refiner" />
+        <label for="abf-filter-refiner">Also filter Brands in Sidebar</label>
+      </div>
+
+      <div class="indent">
+        <input type="checkbox" id="abf-filter-refiner-hide" />
+        <label for="abf-filter-refiner-hide">Hide</label>
+
+        <input type="checkbox" id="abf-filter-refiner-grey" />
+        <label for="abf-filter-refiner-grey">Grey Out</label>
+      </div>
+
+      <div>
+        <input type="checkbox" id="abf-allow-refine-bypass" option="abf-allow-refine-bypass" />
+        <label for="abf-allow-refine-bypass">Disable filter on Featured Brand selection</label>
+      </div>
+
+      <div>
+        <input type="checkbox" id="abf-debug-mode" option="abf-debug-mode" />
+        <label for="abf-debug-mode">Debug Mode</label>
+      </div>
+
+      <div>
+        <input type="checkbox" id="abf-personal-block-enabled" option="abf-personal-block-enabled" />
+        <label for="abf-personal-block-enabled">Personal Blocklist</label>
+
+        <span id="abf-personal-block-saved-confirm" class="abf-personal-block-saved-confirm">Saved!</span>
+        <span
+          ><input type="button" id="abf-personal-block-button" class="abf-personal-block-button" value="Save"
+        /></span>
+      </div>
+
+      <div class="indent spaced">
+        <textarea id="abf-personal-block-text" class="abf-personal-block-text" cols="45"></textarea>
+      </div>
+
+      <div class="spaced">
+        <span
+          >Brands list version: <span id="version-number"></span> | Known Brands: <span id="brand-count"></span
+        ></span>
+      </div>
+
+      <div class="options-links spaced">
+        <a href="https://github.com/chris-mosley/AmazonBrandFilter/issues">Feeback?</a>
+        <a href="https://github.com/chris-mosley/AmazonBrandFilterList/issues">Missing a brand?</a>
+      </div>
+
+      <!-- Last Run -->
+      <div class="last-run">
+        <span>Last Run: </span>
+        <span id="last-run"></span>
+      </div>
+
+      <!-- <div>
+      <input type="button" id="abf-hideall" option="abf-hideall" value="Hide All Results">
+      <input type="button" id="abf-showall" option="abf-showall" value="Show All Results">
+    </div> -->
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
