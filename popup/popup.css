@@ -98,14 +98,11 @@ section.clear-options > select,
 #abf-personal-block-text {
   resize: vertical;
   width: 100%;
-  margin-inline: 1em 1.2em;
   display:none;
 }
 
 #abf-personal-block-button {
-  position: absolute;
-  inset: auto 0 auto auto;
-  margin-inline: 1em 1.2em;
+  float: right;
   display: none;
 }
 
