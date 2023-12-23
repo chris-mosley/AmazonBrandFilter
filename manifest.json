@@ -26,19 +26,8 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "*://*.amazon.com/*",
-        "*://*.amazon.ca/*",
-        "*://*.amazon.com.au/*",
-        "*://*.amazon.co.uk/*",
-        "*://*.amazon.com.mx/*",
-        "*://*.amazon.de/*",
-        "*://*.amazon.fr/*",
-        "*://*.amazon.it/*",
-        "*://*.amazon.es/*",
-        "*://*.amazon.be/*",
-        "*://*.amazon.se/*"
-      ],
+      "matches": ["*://*/*"],
+      "include_globs": ["*://*.amazon.*/*"],
       "js": ["content.js"]
     }
   ],
@@ -54,22 +43,9 @@
       ]
     },
     {
-      "resources": ["brands.txt", "functions.js"],
+      "resources": ["brands.txt"],
       "matches": ["*://*/*"]
     }
   ],
-  "permissions": ["storage", "webRequest", "activeTab", "scripting", "tabs"],
-  "host_permissions": [
-    "*://*.amazon.com/*",
-    "*://*.amazon.ca/*",
-    "*://*.amazon.com.au/*",
-    "*://*.amazon.com.mx/*",
-    "*://*.amazon.co.uk/*",
-    "*://*.amazon.de/*",
-    "*://*.amazon.fr/*",
-    "*://*.amazon.it/*",
-    "*://*.amazon.es/*",
-    "*://*.amazon.be/*",
-    "*://*.amazon.se/*"
-  ]
+  "permissions": ["storage", "webRequest", "activeTab", "scripting", "tabs"]
 }
