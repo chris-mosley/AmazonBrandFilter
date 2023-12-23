@@ -1,6 +1,4 @@
-import { browser } from "webextension-polyfill-ts";
-
-import { getStorageValue, setStorageValue } from "utils/helpers";
+import { getCurrentTab, getManifest, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
 console.log("AmazonBrandFilter: Starting popup.js");
 
@@ -74,28 +72,8 @@ const setPopupBoxStates = async () => {
 };
 
 const setAddonVersion = () => {
-  const manifest = browser.runtime.getManifest();
+  const manifest = getManifest();
   abfVersion.innerText = "v" + manifest.version;
-};
-
-const setIcon = async () => {
-  const result = await getStorageValue("enabled");
-  console.log("AmazonBrandFilter: abfSettings.enabled bool eval: " + JSON.stringify(result.enabled));
-  if (result.enabled == true) {
-    console.log("AmazonBrandFilter: setting icon to enabled");
-    browser.action.setIcon({
-      path: {
-        48: "../icons/abf-enabled-128.png",
-      },
-    });
-  } else {
-    console.log("AmazonBrandFilter: setting icon to disabled");
-    browser.action.setIcon({
-      path: {
-        48: "../icons/abf-disabled-128.png",
-      },
-    });
-  }
 };
 
 const setTextBoxStates = async () => {
@@ -184,59 +162,6 @@ const setDebugMode = (_event: Event) => {
     console.log("debugMode: " + result.debugMode);
   });
 };
-
-// const unHideDivs = () => {
-//   const divs = getItemDivs();
-//   for (const div of divs) {
-//     div.style.display = "block";
-//   }
-// }
-
-// const logCurrentTab = async () => {
-//   const tab = await getCurrentTab();
-//   console.log(tab);
-// }
-
-const getCurrentTab = () => {
-  console.log("AmazonBrandFilter: Starting getCurrentTab");
-  const tab = browser.tabs.query({ currentWindow: true, active: true });
-  return tab;
-};
-
-// const addBorder = () => {
-//   document.border = "5px solid red";
-// }
-
-// const addBorderToTab = async () => {
-//   const tab = await getCurrentTab();
-//   const tabId = tab[0].id;
-//   if (!tabId) {
-//     return;
-//   }
-//   console.log(`tab is: ${tabId}`);
-//   browser.scripting.executeScript({
-//     func: filterBrands(),
-//     files: ["content.js"],
-//     injectImmediately: true,
-//     target: { tabId: tabId },
-//   });
-// }
-
-// const hideAll = async () => {
-//   console.log("AmazonBrandFilter: Starting hideAll");
-//   const tab = await getCurrentTab();
-//   const tabId = tab[0].id;
-//   if (!tabId) {
-//     return;
-//   }
-//   console.log(`tab is: ${tabId}`);
-//   browser.scripting.executeScript({
-//     func: hideAllResults(),
-//     files: ["../content.js"],
-//     injectImmediately: true,
-//     target: { tabId: tabId },
-//   });
-// }
 
 const savePersonalBlock = async () => {
   const userInput = await getSanitizedUserInput();

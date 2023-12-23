@@ -1,6 +1,4 @@
-import { browser } from "webextension-polyfill-ts";
-
-import { getStorageValue, setStorageValue } from "utils/helpers";
+import { getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -122,23 +120,6 @@ const updateBrandMap = async () => {
 //   brandMap[wordList[depth+1]] = createBrandMap(wordList, depth + 1);
 //   return brandMap;
 // }
-
-const setIcon = async () => {
-  const enabled = await getStorageValue("abf-enabled");
-  if (enabled) {
-    browser.action.setIcon({
-      path: {
-        48: "icons/abf-enabled-128.png",
-      },
-    });
-  } else {
-    browser.action.setIcon({
-      path: {
-        48: "icons/abf-disabled-128.png",
-      },
-    });
-  }
-};
 
 (async () => {
   // set the default values for the extension
