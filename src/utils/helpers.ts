@@ -25,7 +25,7 @@ export const unHideDivs = () => {
  * @returns
  */
 export const getStorageValue = async (
-  key?: string | string[]
+  keys?: string | string[]
 ): Promise<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [s: string]: any;
@@ -33,13 +33,13 @@ export const getStorageValue = async (
   if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
     // chromium or similar
     return await new Promise((resolve) => {
-      chrome.storage.local.get(key ?? null, (result) => {
+      chrome.storage.local.get(keys ?? null, (result) => {
         resolve(result);
       });
     });
   } else if (typeof browser !== "undefined" && browser.storage && browser.storage.local) {
     // firefox or similar
-    return await browser.storage.local.get(key);
+    return await browser.storage.local.get(keys);
   } else {
     // unsupported environment
     throw new Error("Storage API not found.");
