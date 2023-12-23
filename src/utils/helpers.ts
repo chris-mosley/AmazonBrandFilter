@@ -39,7 +39,7 @@ export const getStorageValue = async (
       });
     });
   } else if (engine === "gecko" && browser.storage && browser.storage.local) {
-    return await getStorageValue(keys);
+    return await browser.storage.local.get(keys);
   } else {
     throw new Error("Storage API not found.");
   }
@@ -65,7 +65,7 @@ export const setStorageValue = async (
       });
     });
   } else if (engine === "gecko" && browser.storage && browser.storage.local) {
-    return setStorageValue(data);
+    return browser.storage.local.set(data);
   } else {
     throw new Error("Storage API not found.");
   }
