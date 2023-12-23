@@ -46,7 +46,17 @@ const checkBrandFilter = (): boolean => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const filterBrands = async (settings: any) => {
-  const synchedSettings = await getStorageValue();
+  const synchedSettings = await getStorageValue("sync");
+  console.log("AmazonBrandFilter: synchedSettings are: " + JSON.stringify(synchedSettings));
+  console.log("AmazonBrandFilter: Starting filterBrands");
+  const brands = settings.brandsMap;
+  console.log("AmazonBrandFilter: Brands are " + JSON.stringify(brands));
+  if (brands.length != 0) {
+    console.log("AmazonBrandFilter: Brands found");
+  } else {
+    console.log("AmazonBrandFilter: No brands found");
+    return;
+  }
 
   if (settings.refinerBypass) {
     if (checkBrandFilter()) {
@@ -114,7 +124,8 @@ const filterBrands = async (settings: any) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const descriptionSearch = async (settings: any, div: HTMLDivElement) => {
-  const synchedSettings = await getStorageValue();
+  const synchedSettings = await getStorageValue("sync");
+  console.log("AmazonBrandFilter: synchedSettings are: " + JSON.stringify(synchedSettings));
   const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length == 0) {
     return;

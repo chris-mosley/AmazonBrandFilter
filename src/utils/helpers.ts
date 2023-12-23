@@ -1,6 +1,6 @@
 import { browser } from "webextension-polyfill-ts";
 
-import { Engine, StorageSettings } from "utils/types";
+import { Engine, StorageApiProps, StorageSettings } from "utils/types";
 
 /**
  * Retrieves the name of the browser engine based on the runtime environment.
@@ -19,29 +19,31 @@ export const getEngine = (): Engine => {
 };
 
 // use function overloading to allow for multiple return types with different params
-export async function getStorageValue(): Promise<StorageSettings>;
+export async function getStorageValue(prop?: StorageApiProps): Promise<StorageSettings>;
 export async function getStorageValue<T extends keyof StorageSettings>(
-  keys: T | T[]
+  keys: T | T[],
+  prop?: StorageApiProps
 ): Promise<Record<T, StorageSettings[T]>>;
 /**
  * Retrieves a value from storage based on the current browser environment.
- * using "local" instead of "sync" for larger storage quota (QUOTA_BYTES_PER_ITEM)
+ * watch out for QUOTA_BYTES_PER_ITEM error when using "sync" prop
  *
  * @param keys - The key/keys to look up in storage. Use null if undefined, which will return all keys.
  * @returns
  */
 export async function getStorageValue<T extends keyof StorageSettings>(
-  keys?: T | T[]
+  keys?: T | T[],
+  prop: StorageApiProps = "local"
 ): Promise<Record<T, StorageSettings[T]>> {
   const engine = getEngine();
-  if (engine === "chromium" && chrome.storage && chrome.storage.local) {
+  if (engine === "chromium" && chrome.storage && chrome.storage[prop]) {
     return await new Promise((resolve) => {
-      chrome.storage.local.get(keys ?? null, (result) => {
+      chrome.storage[prop].get(keys ?? null, (result) => {
         resolve(result as Record<T, StorageSettings[T]>);
       });
     });
-  } else if (engine === "gecko" && browser.storage && browser.storage.local) {
-    const result = await browser.storage.local.get(keys ?? null);
+  } else if (engine === "gecko" && browser.storage && browser.storage[prop]) {
+    const result = await browser.storage[prop].get(keys ?? null);
     return result as Record<T, StorageSettings[T]>;
   } else {
     throw new Error("Storage API not found.");
@@ -50,24 +52,23 @@ export async function getStorageValue<T extends keyof StorageSettings>(
 
 /**
  * set value in storage
- * again, using "local" instead of "sync"
  *
  * @param data
  * @returns
  */
 export const setStorageValue = async (
-  data: Partial<StorageSettings>
-  // options?: chrome.storage.StorageObject | browser.storage.StorageObject // TODO: maybe require this later
+  data: Partial<StorageSettings>,
+  prop: StorageApiProps = "local"
 ): Promise<void> => {
   const engine = getEngine();
-  if (engine === "chromium" && chrome.storage && chrome.storage.local) {
+  if (engine === "chromium" && chrome.storage && chrome.storage[prop]) {
     return new Promise((resolve) => {
-      chrome.storage.local.set(data, () => {
+      chrome.storage[prop].set(data, () => {
         resolve();
       });
     });
-  } else if (engine === "gecko" && browser.storage && browser.storage.local) {
-    return browser.storage.local.set(data);
+  } else if (engine === "gecko" && browser.storage && browser.storage[prop]) {
+    return browser.storage[prop].set(data);
   } else {
     throw new Error("Storage API not found.");
   }

@@ -17,8 +17,9 @@ const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
 const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
 const setPopupBoxStates = async () => {
-  const settings = await getStorageValue();
-  console.log(settings);
+  console.log("AmazonBrandFilter: Setting Popup Box States");
+  const settings = await getStorageValue("sync");
+  console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(settings));
   if (settings.enabled) {
     abfEnabled.checked = true;
   } else {
@@ -65,7 +66,7 @@ const setAddonVersion = () => {
 };
 
 const setTextBoxStates = async () => {
-  const syncSettings = await getStorageValue();
+  const syncSettings = await getStorageValue("sync");
   if (syncSettings.usePersonalBlock == true) {
     abfPersonalBlockEnabled.checked = true;
     abfPersonalBlockText.style.display = "block";
@@ -130,12 +131,13 @@ const savePersonalBlock = async () => {
   for (const brand of userInput) {
     personalBlockMap.set(brand, true);
   }
-  setStorageValue({ personalBlockMap: personalBlockMap });
+  console.log("AmazonBrandFilter: personalBlockMap is: " + JSON.stringify(personalBlockMap));
+  setStorageValue({ personalBlockMap }, "sync");
   abfPersonalBlockSavedConfirm.style.display = "block";
 };
 
 const setPersonalList = async () => {
-  let personalBlockMap = await getStorageValue("personalBlockMap");
+  let personalBlockMap = await getStorageValue("personalBlockMap", "sync");
   personalBlockMap = personalBlockMap.personalBlockMap;
   if (!personalBlockMap) {
     return;
@@ -168,11 +170,11 @@ const getSanitizedUserInput = () => {
 
 const setPersonalBlockEnabled = () => {
   if (abfPersonalBlockEnabled.checked) {
-    setStorageValue({ usePersonalBlock: true });
+    setStorageValue({ usePersonalBlock: true }, "sync");
     abfPersonalBlockText.style.display = "block";
     abfPersonalBlockButton.style.display = "block";
   } else {
-    setStorageValue({ usePersonalBlock: false });
+    setStorageValue({ usePersonalBlock: false }, "sync");
     abfPersonalBlockText.style.display = "none";
     abfPersonalBlockButton.style.display = "none";
   }

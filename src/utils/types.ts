@@ -1,5 +1,6 @@
 export type Engine = "gecko" | "chromium";
 
+export type StorageApiProps = "local" | "sync";
 export interface StorageSettings {
   abfFirstRun: boolean;
   brandsCount: number;
