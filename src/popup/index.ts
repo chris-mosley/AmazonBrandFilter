@@ -20,7 +20,7 @@ const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
 const setPopupBoxStates = async () => {
   console.log("AmazonBrandFilter: Setting Popup Box States");
-  const settings = await getStorageValue();
+  const settings = await getStorageValue(undefined, "sync");
   console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(settings));
   if (settings.enabled) {
     console.log("AmazonBrandFilter: abfSettings.enabled is enabled");
@@ -77,7 +77,7 @@ const setAddonVersion = () => {
 };
 
 const setTextBoxStates = async () => {
-  const syncSettings = await getStorageValue();
+  const syncSettings = await getStorageValue(undefined, "sync");
   if (syncSettings.usePersonalBlock == true) {
     console.log("AmazonBrandFilter: usePersonalBlock is true");
     abfPersonalBlockEnabled.checked = true;
@@ -164,19 +164,19 @@ const setDebugMode = (_event: Event) => {
 };
 
 const savePersonalBlock = async () => {
-  const userInput = await getSanitizedUserInput();
+  const userInput = getSanitizedUserInput();
   const personalBlockMap = new Map();
   for (const brand of userInput) {
     console.log("AmazonBrandFilter: adding brand: " + brand);
     personalBlockMap.set(brand, true);
   }
   console.log("AmazonBrandFilter: personalBlockMap is: " + JSON.stringify(personalBlockMap));
-  setStorageValue({ personalBlockMap: personalBlockMap });
+  setStorageValue({ personalBlockMap }, "sync");
   abfPersonalBlockSavedConfirm.style.display = "block";
 };
 
 const setPersonalList = async () => {
-  let personalBlockMap = await getStorageValue("personalBlockMap");
+  let personalBlockMap = await getStorageValue("personalBlockMap", "sync");
   personalBlockMap = personalBlockMap.personalBlockMap;
 
   if (personalBlockMap == undefined) {
@@ -218,16 +218,16 @@ const getSanitizedUserInput = () => {
 
 const setPersonalBlockEnabled = () => {
   if (abfPersonalBlockEnabled.checked) {
-    setStorageValue({ usePersonalBlock: true });
+    setStorageValue({ usePersonalBlock: true }, "sync");
     abfPersonalBlockText.style.display = "block";
     abfPersonalBlockButton.style.display = "block";
   } else {
-    setStorageValue({ usePersonalBlock: false });
+    setStorageValue({ usePersonalBlock: false }, "sync");
     abfPersonalBlockText.style.display = "none";
     abfPersonalBlockButton.style.display = "none";
   }
 
-  getStorageValue("usePersonalBlock").then((result) => {
+  getStorageValue("usePersonalBlock", "sync").then((result) => {
     console.log("personalBlockEnabled: " + result.usePersonalBlock);
   });
 };

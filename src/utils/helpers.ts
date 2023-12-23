@@ -1,6 +1,6 @@
 import { browser } from "webextension-polyfill-ts";
 
-import { Engine } from "utils/types";
+import { Engine, StorageApiProps } from "utils/types";
 
 /**
  * Retrieves the name of the browser engine based on the runtime environment.
@@ -20,26 +20,27 @@ export const getEngine = (): Engine => {
 
 /**
  * Retrieves a value from storage based on the current browser environment.
- * using "local" instead of "sync" for larger storage quota (QUOTA_BYTES_PER_ITEM)
+ * watch out for QUOTA_BYTES_PER_ITEM error when using "sync" prop
  *
  * @param {string} keys - The key/keys to look up in storage.
  * @returns
  */
 export const getStorageValue = async (
-  keys?: string | string[]
+  keys?: string | string[],
+  prop: StorageApiProps = "local"
 ): Promise<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [s: string]: any;
 }> => {
   const engine = getEngine();
-  if (engine === "chromium" && chrome.storage && chrome.storage.local) {
+  if (engine === "chromium" && chrome.storage && chrome.storage[prop]) {
     return await new Promise((resolve) => {
-      chrome.storage.local.get(keys ?? null, (result) => {
+      chrome.storage[prop].get(keys ?? null, (result) => {
         resolve(result);
       });
     });
-  } else if (engine === "gecko" && browser.storage && browser.storage.local) {
-    return await browser.storage.local.get(keys);
+  } else if (engine === "gecko" && browser.storage && browser.storage[prop]) {
+    return await browser.storage[prop].get(keys);
   } else {
     throw new Error("Storage API not found.");
   }
@@ -47,25 +48,24 @@ export const getStorageValue = async (
 
 /**
  * set value in storage
- * again, using "local" instead of "sync"
  *
  * @param data
  * @returns
  */
 export const setStorageValue = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: { [key: string]: any }
-  // options?: chrome.storage.StorageObject | browser.storage.StorageObject // TODO: maybe require this later
+  data: { [key: string]: any },
+  prop: StorageApiProps = "local"
 ): Promise<void> => {
   const engine = getEngine();
-  if (engine === "chromium" && chrome.storage && chrome.storage.local) {
+  if (engine === "chromium" && chrome.storage && chrome.storage[prop]) {
     return new Promise((resolve) => {
-      chrome.storage.local.set(data, () => {
+      chrome.storage[prop].set(data, () => {
         resolve();
       });
     });
-  } else if (engine === "gecko" && browser.storage && browser.storage.local) {
-    return browser.storage.local.set(data);
+  } else if (engine === "gecko" && browser.storage && browser.storage[prop]) {
+    return browser.storage[prop].set(data);
   } else {
     throw new Error("Storage API not found.");
   }
