@@ -18,21 +18,17 @@
   "action": {
     "default_title": "Amazon Brand Filter",
     "default_area": "navbar",
-     "default_popup": "popup/popup.html"
-    },
+    "default_popup": "popup.html"
+  },
   "background": {
     "scripts": ["background.js"],
     "type": "module"
   },
   "content_scripts": [
     {
-      "matches": [
-        "*://*/*"
-      ],
-      "include_globs": [
-        "*://*.amazon.*/*"
-      ],
-      "js": ["amazonbrandfilter.js"]
+      "matches": ["*://*/*"],
+      "include_globs": ["*://*.amazon.*/*"],
+      "js": ["content.js"]
     }
   ],
   "content_security_policy": {
@@ -41,21 +37,15 @@
   "web_accessible_resources": [
     {
       "resources": ["brands.txt"],
-      "matches":[
+      "matches": [
         "https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt",
         "https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest"
       ]
     },
     {
-      "resources": ["brands.txt", "functions.js"],
-      "matches":["*://*/*"]
+      "resources": ["brands.txt"],
+      "matches": ["*://*/*"]
     }
   ],
-  "permissions": [
-    "storage",
-    "webRequest",
-    "activeTab",
-    "scripting",
-    "tabs"
-  ]
+  "permissions": ["storage", "webRequest", "activeTab", "scripting", "tabs"]
 }
