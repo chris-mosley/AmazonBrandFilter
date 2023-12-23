@@ -122,8 +122,8 @@ const updateBrandMap = async () => {
 // }
 
 const setIcon = async () => {
-  const enabled = await browser.storage.local.get("abf-enabled");
-  if (enabled) {
+  const result = await browser.storage.local.get("abf-enabled");
+  if (result.enabled) {
     browser.action.setIcon({
       path: {
         48: "icons/abf-enabled-128.png",
