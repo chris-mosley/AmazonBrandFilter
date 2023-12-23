@@ -76,7 +76,7 @@ async function checkBrandsListVersion(callDelay = 8.64e7) {
     browser.storage.local.set({ brandsVersion: latestBrandsVersion });
 
     // Download the latest brands list
-    downloadBrandList();
+    updateBrandList();
   } else {
     console.log(
       "AmazonBrandFilter: %cCurrent version match the latest version!",
@@ -104,7 +104,7 @@ async function getCurrentBrandsVersion() {
   return brandsVersion ?? 0;
 }
 
-async function downloadBrandList() {
+async function updateBrandList() {
   console.log(
     "AmazonBrandFilter: %cDownloading new release!",
     "color: lightgreen"
@@ -114,10 +114,11 @@ async function downloadBrandList() {
 
   // Fetch the brand list AS A TEXT FILE!
   const brandsListFetch = await fetch(brandsListUrl)
-    .then((r) => r.text())
-    .then((t) => t.split("\n"))
-    .catch((e) => {
-      console.error(e, "AmazonBrandFilter: Failed downloading brands list!");
+    .then((res) => res.text())
+    .then((text) => text.toUpperCase())
+    .then((text) => text.split("\n"))
+    .catch((err) => {
+      console.error(err, "AmazonBrandFilter: Failed downloading brands list!");
     });
 
   // Initialize variables
