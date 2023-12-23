@@ -44,7 +44,7 @@ export const getStorage = async (): Promise<StorageSettings> => {
  * Retrieves a value from storage based on the current browser environment.
  * using "local" instead of "sync" for larger storage quota (QUOTA_BYTES_PER_ITEM)
  *
- * @param {string} keys - The key/keys to look up in storage.
+ * @param {T | T[]} keys - The key/keys to look up in storage.
  * @returns {Promise<Record<T, StorageSettings[T]>>}
  */
 export const getStorageValue = async <T extends keyof StorageSettings>(
