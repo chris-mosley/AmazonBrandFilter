@@ -18,52 +18,35 @@ export const getEngine = (): Engine => {
   }
 };
 
-/**
- * Retrieves a value from storage based on the current browser environment.
- * using "local" instead of "sync" for larger storage quota (QUOTA_BYTES_PER_ITEM)
- *
- * @returns {Promise<StorageSettings>}
- */
-export const getStorage = async (): Promise<StorageSettings> => {
-  const engine = getEngine();
-  if (engine === "chromium" && chrome.storage && chrome.storage.local) {
-    return await new Promise((resolve) => {
-      chrome.storage.local.get(null, (result) => {
-        resolve(result as StorageSettings);
-      });
-    });
-  } else if (engine === "gecko" && browser.storage && browser.storage.local) {
-    const result = await browser.storage.local.get(null);
-    return result as StorageSettings;
-  } else {
-    throw new Error("Storage API not found.");
-  }
-};
-
-/**
- * Retrieves a value from storage based on the current browser environment.
- * using "local" instead of "sync" for larger storage quota (QUOTA_BYTES_PER_ITEM)
- *
- * @param {T | T[]} keys - The key/keys to look up in storage.
- * @returns {Promise<Record<T, StorageSettings[T]>>}
- */
-export const getStorageValue = async <T extends keyof StorageSettings>(
+// use function overloading to allow for multiple return types with different params
+export async function getStorageValue(): Promise<StorageSettings>;
+export async function getStorageValue<T extends keyof StorageSettings>(
   keys: T | T[]
-): Promise<Record<T, StorageSettings[T]>> => {
+): Promise<Record<T, StorageSettings[T]>>;
+/**
+ * Retrieves a value from storage based on the current browser environment.
+ * using "local" instead of "sync" for larger storage quota (QUOTA_BYTES_PER_ITEM)
+ *
+ * @param keys - The key/keys to look up in storage. Use null if undefined, which will return all keys.
+ * @returns
+ */
+export async function getStorageValue<T extends keyof StorageSettings>(
+  keys?: T | T[]
+): Promise<Record<T, StorageSettings[T]>> {
   const engine = getEngine();
   if (engine === "chromium" && chrome.storage && chrome.storage.local) {
     return await new Promise((resolve) => {
-      chrome.storage.local.get(keys, (result) => {
+      chrome.storage.local.get(keys ?? null, (result) => {
         resolve(result as Record<T, StorageSettings[T]>);
       });
     });
   } else if (engine === "gecko" && browser.storage && browser.storage.local) {
-    const result = await browser.storage.local.get(keys);
+    const result = await browser.storage.local.get(keys ?? null);
     return result as Record<T, StorageSettings[T]>;
   } else {
     throw new Error("Storage API not found.");
   }
-};
+}
 
 /**
  * set value in storage
@@ -92,8 +75,8 @@ export const setStorageValue = async (
 
 export const setIcon = async () => {
   const engine = getEngine();
-  const enabled = await getStorageValue("enabled");
-  if (enabled) {
+  const result = await getStorageValue("enabled");
+  if (result.enabled) {
     (engine === "chromium" ? chrome : browser).action.setIcon({
       path: {
         48: "icons/abf-enabled-128.png",

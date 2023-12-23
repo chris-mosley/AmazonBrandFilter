@@ -1,4 +1,4 @@
-import { getManifest, getStorage, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
+import { getManifest, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
 const abfFilterRefiner = document.getElementById("abf-filter-refiner")! as HTMLInputElement;
@@ -17,7 +17,7 @@ const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
 const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
 const setPopupBoxStates = async () => {
-  const settings = await getStorage();
+  const settings = await getStorageValue();
   console.log(settings);
   if (settings.enabled) {
     abfEnabled.checked = true;
@@ -65,7 +65,7 @@ const setAddonVersion = () => {
 };
 
 const setTextBoxStates = async () => {
-  const syncSettings = await getStorage();
+  const syncSettings = await getStorageValue();
   if (syncSettings.usePersonalBlock == true) {
     abfPersonalBlockEnabled.checked = true;
     abfPersonalBlockText.style.display = "block";

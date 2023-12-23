@@ -1,8 +1,8 @@
-import { getItemDivs, getStorage, setStorageValue, sleep, unHideDivs } from "utils/helpers";
+import { getItemDivs, getStorageValue, setStorageValue, sleep, unHideDivs } from "utils/helpers";
 
 unHideDivs();
 
-getStorage().then((settings) => {
+getStorageValue().then((settings) => {
   if (settings.enabled) {
     let previousUrl = "";
     const observer = new MutationObserver((_mutations) => {
@@ -46,7 +46,7 @@ const checkBrandFilter = (): boolean => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const filterBrands = async (settings: any) => {
-  const synchedSettings = await getStorage();
+  const synchedSettings = await getStorageValue();
 
   if (settings.refinerBypass) {
     if (checkBrandFilter()) {
@@ -114,7 +114,7 @@ const filterBrands = async (settings: any) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const descriptionSearch = async (settings: any, div: HTMLDivElement) => {
-  const synchedSettings = await getStorage();
+  const synchedSettings = await getStorageValue();
   const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length == 0) {
     return;
