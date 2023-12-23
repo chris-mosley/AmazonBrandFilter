@@ -21,7 +21,7 @@ export const unHideDivs = () => {
 /**
  * Retrieves a value from local storage based on the current browser environment.
  *
- * @param {string} key - The key to look up in local storage.
+ * @param {string} keys - The key/keys to look up in local storage.
  * @returns
  */
 export const getStorageValue = async (
