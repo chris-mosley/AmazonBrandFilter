@@ -1,6 +1,6 @@
 import { browser } from "webextension-polyfill-ts";
 
-import { Engine } from "utils/types";
+import { Engine, StorageSettings } from "utils/types";
 
 /**
  * Retrieves the name of the browser engine based on the runtime environment.
@@ -22,24 +22,44 @@ export const getEngine = (): Engine => {
  * Retrieves a value from storage based on the current browser environment.
  * using "local" instead of "sync" for larger storage quota (QUOTA_BYTES_PER_ITEM)
  *
- * @param {string} keys - The key/keys to look up in storage.
- * @returns
+ * @returns {Promise<StorageSettings>}
  */
-export const getStorageValue = async (
-  keys?: string | string[]
-): Promise<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [s: string]: any;
-}> => {
+export const getStorage = async (): Promise<StorageSettings> => {
   const engine = getEngine();
   if (engine === "chromium" && chrome.storage && chrome.storage.local) {
     return await new Promise((resolve) => {
-      chrome.storage.local.get(keys ?? null, (result) => {
-        resolve(result);
+      chrome.storage.local.get(null, (result) => {
+        resolve(result as StorageSettings);
       });
     });
   } else if (engine === "gecko" && browser.storage && browser.storage.local) {
-    return await browser.storage.local.get(keys);
+    const result = await browser.storage.local.get(null);
+    return result as StorageSettings;
+  } else {
+    throw new Error("Storage API not found.");
+  }
+};
+
+/**
+ * Retrieves a value from storage based on the current browser environment.
+ * using "local" instead of "sync" for larger storage quota (QUOTA_BYTES_PER_ITEM)
+ *
+ * @param {string} keys - The key/keys to look up in storage.
+ * @returns {Promise<Record<T, StorageSettings[T]>>}
+ */
+export const getStorageValue = async <T extends keyof StorageSettings>(
+  keys: T | T[]
+): Promise<Record<T, StorageSettings[T]>> => {
+  const engine = getEngine();
+  if (engine === "chromium" && chrome.storage && chrome.storage.local) {
+    return await new Promise((resolve) => {
+      chrome.storage.local.get(keys, (result) => {
+        resolve(result as Record<T, StorageSettings[T]>);
+      });
+    });
+  } else if (engine === "gecko" && browser.storage && browser.storage.local) {
+    const result = await browser.storage.local.get(keys);
+    return result as Record<T, StorageSettings[T]>;
   } else {
     throw new Error("Storage API not found.");
   }
@@ -53,8 +73,7 @@ export const getStorageValue = async (
  * @returns
  */
 export const setStorageValue = async (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: { [key: string]: any }
+  data: Partial<StorageSettings>
   // options?: chrome.storage.StorageObject | browser.storage.StorageObject // TODO: maybe require this later
 ): Promise<void> => {
   const engine = getEngine();
@@ -73,7 +92,7 @@ export const setStorageValue = async (
 
 export const setIcon = async () => {
   const engine = getEngine();
-  const enabled = await getStorageValue("abf-enabled");
+  const enabled = await getStorageValue("enabled");
   if (enabled) {
     (engine === "chromium" ? chrome : browser).action.setIcon({
       path: {
@@ -132,13 +151,11 @@ export const sleep = (ms: number) => {
 };
 
 export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
-  console.log("AmazonBrandFilter: Starting getItemDivs");
   const divs = document.getElementsByClassName("s-result-item");
   return divs as HTMLCollectionOf<HTMLDivElement>;
 };
 
 export const unHideDivs = () => {
-  console.log("AmazonBrandFilter: Starting unHideDivs");
   const divs = getItemDivs();
   for (let i = 0; i < divs.length; i++) {
     divs[i].style.display = "block";

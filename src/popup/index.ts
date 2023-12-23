@@ -1,6 +1,4 @@
-import { getCurrentTab, getManifest, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
-
-console.log("AmazonBrandFilter: Starting popup.js");
+import { getManifest, getStorage, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
 const abfFilterRefiner = document.getElementById("abf-filter-refiner")! as HTMLInputElement;
@@ -19,54 +17,44 @@ const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
 const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
 const setPopupBoxStates = async () => {
-  console.log("AmazonBrandFilter: Setting Popup Box States");
-  const settings = await getStorageValue();
-  console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(settings));
+  const settings = await getStorage();
+  console.log(settings);
   if (settings.enabled) {
-    console.log("AmazonBrandFilter: abfSettings.enabled is enabled");
     abfEnabled.checked = true;
   } else {
-    console.log("AmazonBrandFilter: abfSettings is not enabled");
     abfEnabled.checked = false;
   }
 
   if (settings.filterRefiner) {
-    console.log("AmazonBrandFilter: abfSettings.filterRefiner is enabled");
     abfFilterRefiner.checked = true;
   } else {
-    console.log("AmazonBrandFilter: abfSettings.filterRefiner is not enabled");
     abfFilterRefiner.checked = false;
   }
 
   if (settings.refinerBypass) {
-    console.log("AmazonBrandFilter: abfSettings.filterRefiner is enabled");
     abfAllowRefineBypass.checked = true;
   } else {
-    console.log("AmazonBrandFilter: abfSettings.filterRefiner is not enabled");
     abfAllowRefineBypass.checked = false;
   }
 
   if (settings.refinerMode == "grey") {
-    console.log("AmazonBrandFilter: abfSettings.refinerMode is grey");
     abfFilterRefinerGrey.checked = true;
     abfFilterRefinerHide.checked = false;
   } else {
-    console.log("AmazonBrandFilter: abfSettings.refinerMode is hide");
     abfFilterRefinerHide.checked = true;
     abfFilterRefinerGrey.checked = false;
   }
 
   setIcon();
-  versionNumber.innerText = settings.brandsVersion;
-  brandCount.innerText = settings.brandsCount;
+  versionNumber.innerText = settings.brandsVersion.toString();
+  brandCount.innerText = settings.brandsCount.toString();
   if (settings.lastMapRun != null) {
     lastRun.innerText = settings.lastMapRun + "ms";
   } else {
     lastRun.innerText = "N/A";
   }
 
-  if (settings.debugMode) {
-    console.log("AmazonBrandFilter: abfSettings.debugMode is enabled");
+  if (settings.useDebugMode) {
     abfDebugMode.checked = true;
   }
 };
@@ -77,9 +65,8 @@ const setAddonVersion = () => {
 };
 
 const setTextBoxStates = async () => {
-  const syncSettings = await getStorageValue();
+  const syncSettings = await getStorage();
   if (syncSettings.usePersonalBlock == true) {
-    console.log("AmazonBrandFilter: usePersonalBlock is true");
     abfPersonalBlockEnabled.checked = true;
     abfPersonalBlockText.style.display = "block";
     abfPersonalBlockButton.style.display = "block";
@@ -90,14 +77,8 @@ const enableDisable = async (_event: Event) => {
   if (abfEnabled.checked) {
     setStorageValue({ enabled: true });
   } else {
-    const tab = await getCurrentTab();
-    console.log(tab);
     setStorageValue({ enabled: false });
   }
-
-  getStorageValue("enabled").then((result) => {
-    console.log("enabled: " + result.enabled);
-  });
   setIcon();
 };
 
@@ -107,10 +88,6 @@ const setFilterRefiner = (_event: Event) => {
   } else {
     setStorageValue({ filterRefiner: false });
   }
-
-  getStorageValue("filterRefiner").then((result) => {
-    console.log("filterRefiner: " + result.filterRefiner);
-  });
 };
 
 const setRefinerHide = (_event: Event) => {
@@ -120,10 +97,6 @@ const setRefinerHide = (_event: Event) => {
   } else {
     setStorageValue({ refinerMode: "grey" });
   }
-
-  getStorageValue("refinerMode").then((result) => {
-    console.log("refinerMode: " + result.refinerMode);
-  });
 };
 
 const setRefinerGrey = (_event: Event) => {
@@ -133,10 +106,6 @@ const setRefinerGrey = (_event: Event) => {
   } else {
     setStorageValue({ refinerMode: "hide" });
   }
-
-  getStorageValue("refinerMode").then((result) => {
-    console.log("refinerMode: " + result.refinerMode);
-  });
 };
 
 const setRefinerBypass = (_event: Event) => {
@@ -145,32 +114,22 @@ const setRefinerBypass = (_event: Event) => {
   } else {
     setStorageValue({ refinerBypass: false });
   }
-
-  getStorageValue("refinerBypass").then((result) => {
-    console.log("refinerBypass: " + result.refinerBypass);
-  });
 };
 
 const setDebugMode = (_event: Event) => {
   if (abfDebugMode.checked) {
-    setStorageValue({ debugMode: true });
+    setStorageValue({ useDebugMode: true });
   } else {
-    setStorageValue({ debugMode: false });
+    setStorageValue({ useDebugMode: false });
   }
-
-  getStorageValue("debugMode").then((result) => {
-    console.log("debugMode: " + result.debugMode);
-  });
 };
 
 const savePersonalBlock = async () => {
-  const userInput = await getSanitizedUserInput();
+  const userInput = getSanitizedUserInput();
   const personalBlockMap = new Map();
   for (const brand of userInput) {
-    console.log("AmazonBrandFilter: adding brand: " + brand);
     personalBlockMap.set(brand, true);
   }
-  console.log("AmazonBrandFilter: personalBlockMap is: " + JSON.stringify(personalBlockMap));
   setStorageValue({ personalBlockMap: personalBlockMap });
   abfPersonalBlockSavedConfirm.style.display = "block";
 };
@@ -178,17 +137,10 @@ const savePersonalBlock = async () => {
 const setPersonalList = async () => {
   let personalBlockMap = await getStorageValue("personalBlockMap");
   personalBlockMap = personalBlockMap.personalBlockMap;
-
-  if (personalBlockMap == undefined) {
-    console.log("AmazonBrandFilter: personalBrandsMap is undefined");
-    return;
-  }
-  console.log("AmazonBrandFilter: personalBrandsMap is: " + JSON.stringify(personalBlockMap));
-  if (personalBlockMap == undefined) {
+  if (!personalBlockMap) {
     return;
   }
 
-  console.log("personalBlockMap keys are: " + Object.keys(personalBlockMap));
   const textValue = Object.keys(personalBlockMap);
   let textHeight = Object.keys(personalBlockMap).length;
   if (textHeight > 10) {
@@ -196,7 +148,6 @@ const setPersonalList = async () => {
     abfPersonalBlockText.style.overflow = "scroll";
   }
 
-  console.log("AmazonBrandFilter: setting personal block list text area to: " + textValue.join("\n"));
   abfPersonalBlockText.value = textValue.join("\n");
   abfPersonalBlockText.rows = textHeight;
 };
@@ -204,7 +155,6 @@ const setPersonalList = async () => {
 const getSanitizedUserInput = () => {
   // god so much santization to do here
   const userInput = abfPersonalBlockText.value.split("\n");
-  console.log(userInput);
   const sanitizedInput = [];
   for (const line of userInput) {
     // we'll come up with something smarter later.
@@ -226,10 +176,6 @@ const setPersonalBlockEnabled = () => {
     abfPersonalBlockText.style.display = "none";
     abfPersonalBlockButton.style.display = "none";
   }
-
-  getStorageValue("usePersonalBlock").then((result) => {
-    console.log("personalBlockEnabled: " + result.usePersonalBlock);
-  });
 };
 
 setPopupBoxStates();
