@@ -1,12 +1,12 @@
 import { browser } from "webextension-polyfill-ts";
 
-import { getItemDivs, sleep, unHideDivs } from "utils/helpers";
+import { getItemDivs, getStorageValue, sleep, unHideDivs } from "utils/helpers";
 
 unHideDivs();
 
 console.log("AmazonBrandFilter: Starting content.js");
 
-browser.storage.local.get().then((settings) => {
+getStorageValue().then((settings) => {
   console.log("AmazonBrandFilter: settings are: " + JSON.stringify(settings));
 
   console.log("AmazonBrandFilter: abfSettings.enabled bool eval: " + settings.enabled);
@@ -37,7 +37,7 @@ browser.storage.local.get().then((settings) => {
 
 // const getBrands = () => {
 //   console.log("attempting to get brands from storage");
-//   browser.storage.local.get("brandsList").then((result) => {
+//   getStorageValue("brandsList").then((result) => {
 //     console.log("AmazonBrandFilter: Brands are " + result);
 //     return result;
 //   });
@@ -288,6 +288,6 @@ const filterRefiner = (settings: any, syncSettings: any) => {
 //   if (type == "sync") {
 //     settings = await browser.storage.sync.get();
 //   } else {
-//     settings = await browser.storage.local.get();
+//     settings = await getStorageValue();
 //   }
 // }

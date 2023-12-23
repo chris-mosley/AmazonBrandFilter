@@ -1,22 +1,24 @@
 import { browser } from "webextension-polyfill-ts";
 
+import { getStorageValue } from "utils/helpers";
+
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 // const getCurrentBrandsVersion = async () => {
-//   const mapStatus = await browser.storage.local.get("brandsMap");
+//   const mapStatus = await getStorageValue("brandsMap");
 //   if (mapStatus.brandsMap == undefined) {
 //     // if the map is undefined lets make sure to update regardless of version
 //     return 0;
 //   }
-//   const result = await browser.storage.local.get("brandsVersion");
+//   const result = await getStorageValue("brandsVersion");
 //   console.log("AmazonBrandFilter: Current brands version is " + result.brandsVersion);
 //   return result.brandsVersion;
 // }
 
 const getFirstRun = async () => {
-  const result = await browser.storage.local.get("abfFirstRun");
+  const result = await getStorageValue("abfFirstRun");
   console.log("AmazonBrandFilter: first run status is: " + result.abfFirstRun);
   return result.abfFirstRun;
 };
@@ -122,7 +124,7 @@ const updateBrandMap = async () => {
 // }
 
 const setIcon = async () => {
-  const enabled = await browser.storage.local.get("abf-enabled");
+  const enabled = await getStorageValue("abf-enabled");
   if (enabled) {
     browser.action.setIcon({
       path: {

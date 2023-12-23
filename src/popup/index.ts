@@ -1,5 +1,7 @@
 import { browser } from "webextension-polyfill-ts";
 
+import { getStorageValue } from "utils/helpers";
+
 console.log("AmazonBrandFilter: Starting popup.js");
 
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
@@ -20,7 +22,7 @@ const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
 const setPopupBoxStates = async () => {
   console.log("AmazonBrandFilter: Setting Popup Box States");
-  const settings = await browser.storage.local.get();
+  const settings = await getStorageValue();
   console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(settings));
   if (settings.enabled) {
     console.log("AmazonBrandFilter: abfSettings.enabled is enabled");
@@ -77,7 +79,7 @@ const setAddonVersion = () => {
 };
 
 const setIcon = async () => {
-  const result = await browser.storage.local.get("enabled");
+  const result = await getStorageValue("enabled");
   console.log("AmazonBrandFilter: abfSettings.enabled bool eval: " + JSON.stringify(result.enabled));
   if (result.enabled == true) {
     console.log("AmazonBrandFilter: setting icon to enabled");
@@ -115,7 +117,7 @@ const enableDisable = async (_event: Event) => {
     browser.storage.local.set({ enabled: false });
   }
 
-  browser.storage.local.get("enabled").then((result) => {
+  getStorageValue("enabled").then((result) => {
     console.log("enabled: " + result.enabled);
   });
   setIcon();
@@ -128,7 +130,7 @@ const setFilterRefiner = (_event: Event) => {
     browser.storage.local.set({ filterRefiner: false });
   }
 
-  browser.storage.local.get("filterRefiner").then((result) => {
+  getStorageValue("filterRefiner").then((result) => {
     console.log("filterRefiner: " + result.filterRefiner);
   });
 };
@@ -141,7 +143,7 @@ const setRefinerHide = (_event: Event) => {
     browser.storage.local.set({ refinerMode: "grey" });
   }
 
-  browser.storage.local.get("refinerMode").then((result) => {
+  getStorageValue("refinerMode").then((result) => {
     console.log("refinerMode: " + result.refinerMode);
   });
 };
@@ -154,7 +156,7 @@ const setRefinerGrey = (_event: Event) => {
     browser.storage.local.set({ refinerMode: "hide" });
   }
 
-  browser.storage.local.get("refinerMode").then((result) => {
+  getStorageValue("refinerMode").then((result) => {
     console.log("refinerMode: " + result.refinerMode);
   });
 };
@@ -166,7 +168,7 @@ const setRefinerBypass = (_event: Event) => {
     browser.storage.local.set({ refinerBypass: false });
   }
 
-  browser.storage.local.get("refinerBypass").then((result) => {
+  getStorageValue("refinerBypass").then((result) => {
     console.log("refinerBypass: " + result.refinerBypass);
   });
 };
@@ -178,7 +180,7 @@ const setDebugMode = (_event: Event) => {
     browser.storage.local.set({ debugMode: false });
   }
 
-  browser.storage.local.get("debugMode").then((result) => {
+  getStorageValue("debugMode").then((result) => {
     console.log("debugMode: " + result.debugMode);
   });
 };
@@ -312,7 +314,7 @@ const setPersonalBlockEnabled = () => {
 //       console.log("AmazonBrandFilter: sync settings are: " + JSON.stringify(result));
 //     });
 //   } else {
-//     settings = await browser.storage.local.get().then((result) => {
+//     settings = await getStorageValue().then((result) => {
 //       console.log("AmazonBrandFilter: local settings are: " + JSON.stringify(result));
 //     });
 //   }
