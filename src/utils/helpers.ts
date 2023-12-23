@@ -19,9 +19,10 @@ export const unHideDivs = () => {
 };
 
 /**
- * Retrieves a value from local storage based on the current browser environment.
+ * Retrieves a value from storage based on the current browser environment.
+ * using "local" instead of "sync" for larger storage quota (QUOTA_BYTES_PER_ITEM)
  *
- * @param {string} keys - The key/keys to look up in local storage.
+ * @param {string} keys - The key/keys to look up in storage.
  * @returns
  */
 export const getStorageValue = async (
@@ -39,9 +40,30 @@ export const getStorageValue = async (
     });
   } else if (typeof browser !== "undefined" && browser.storage && browser.storage.local) {
     // firefox or similar
-    return await browser.storage.local.get(keys);
+    return await getStorageValue(keys);
   } else {
     // unsupported environment
+    throw new Error("Storage API not found.");
+  }
+};
+
+export const setStorageValue = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: { [key: string]: any }
+  // options?: chrome.storage.StorageObject | browser.storage.StorageObject
+): Promise<void> => {
+  if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+    // Chromium or similar
+    return new Promise((resolve) => {
+      chrome.storage.local.set(data, () => {
+        resolve();
+      });
+    });
+  } else if (typeof browser !== "undefined" && browser.storage && browser.storage.local) {
+    // Firefox or similar
+    return setStorageValue(data);
+  } else {
+    // Unsupported environment
     throw new Error("Storage API not found.");
   }
 };

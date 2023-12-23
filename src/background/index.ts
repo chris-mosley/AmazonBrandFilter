@@ -1,6 +1,6 @@
 import { browser } from "webextension-polyfill-ts";
 
-import { getStorageValue } from "utils/helpers";
+import { getStorageValue, setStorageValue } from "utils/helpers";
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -43,7 +43,7 @@ const checkBrandsVersion = async () => {
       console.error("AmazonBrandFilter: Error downloading brands list");
       return;
     }
-    browser.storage.local.set({ brandsVersion: latestVersion });
+    setStorageValue({ brandsVersion: latestVersion });
   }
 
   console.log("AmazonBrandFilter: background.js sleeping for one day");
@@ -64,10 +64,10 @@ const checkBrandsVersion = async () => {
 //     console.error("AmazonBrandFilter: Error downloading brands list");
 //     return;
 //   }
-//   browser.storage.local.set({ brandsCount: brandsGet.length });
+//   setStorageValue({ brandsCount: brandsGet.length });
 //   console.log("AmazonBrandFilter: Brands count is " + brandsGet.length);
 //   console.log("AmazonBrandFilter: Brands are " + brandsGet);
-//   browser.storage.local.set({ brandsList: brandsGet });
+//   setStorageValue({ brandsList: brandsGet });
 // }
 
 const updateBrandMap = async () => {
@@ -99,7 +99,7 @@ const updateBrandMap = async () => {
 
   console.log("AmazonBrandFilter: Brands count is " + brandsGet.length);
 
-  browser.storage.local.set({ brandsMap: brandsMap });
+  setStorageValue({ brandsMap: brandsMap });
 
   const keys = Object.keys(brandsMap);
   let maxWordCount = 0;
@@ -108,10 +108,10 @@ const updateBrandMap = async () => {
       maxWordCount = keys[i].split(" ").length;
     }
   }
-  browser.storage.local.set({ maxWordCount: maxWordCount });
+  setStorageValue({ maxWordCount: maxWordCount });
   console.log("AmazonBrandFilter: Max brand word count is " + maxWordCount);
   console.log("AmazonBrandFilter: Brands are " + keys);
-  browser.storage.local.set({ brandsCount: keys.length });
+  setStorageValue({ brandsCount: keys.length });
 };
 
 // const createBrandMap = (wordList, depth=0) => {
@@ -144,12 +144,12 @@ const setIcon = async () => {
   // set the default values for the extension
   if ((await getFirstRun()) != false) {
     console.log("AmazonBrandFilter: First run, setting defaults");
-    browser.storage.local.set({ enabled: true });
-    browser.storage.local.set({ brandsVersion: 0 });
-    browser.storage.local.set({ brandsCount: 0 });
-    browser.storage.local.set({ brandsMap: {} });
-    browser.storage.local.set({ refinerBypass: true });
-    browser.storage.local.set({ abfFirstRun: false });
+    setStorageValue({ enabled: true });
+    setStorageValue({ brandsVersion: 0 });
+    setStorageValue({ brandsCount: 0 });
+    setStorageValue({ brandsMap: {} });
+    setStorageValue({ refinerBypass: true });
+    setStorageValue({ abfFirstRun: false });
   } else {
     console.log("AmazonBrandFilter: Not first run");
   }
