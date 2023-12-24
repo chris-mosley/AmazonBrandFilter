@@ -1,130 +1,101 @@
+import { latestReleaseUrl } from "utils/config";
 import { getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
-const sleep = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
-
-// const getCurrentBrandsVersion = async () => {
-//   const mapStatus = await getStorageValue("brandsMap");
-//   if (mapStatus.brandsMap == undefined) {
-//     // if the map is undefined lets make sure to update regardless of version
-//     return 0;
-//   }
-//   const result = await getStorageValue("brandsVersion");
-//   console.log("AmazonBrandFilter: Current brands version is " + result.brandsVersion);
-//   return result.brandsVersion;
-// }
-
 const getFirstRun = async () => {
-  const result = await getStorageValue("abfFirstRun");
-  console.log("AmazonBrandFilter: first run status is: " + result.abfFirstRun);
-  return result.abfFirstRun;
+  const { abfFirstRun } = await getStorageValue("abfFirstRun");
+  return abfFirstRun as boolean;
 };
 
-const checkBrandsVersion = async () => {
-  console.log("AmazonBrandFilter: Checking latest brands list version");
-  // var currentVersion = await getCurrentBrandsVersion();
-  const currentVersion = 0;
-  const latestReleaseUrl = "https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest";
-  const latestRelease = await fetch(latestReleaseUrl, { mode: "cors" }).then((response) => response.json());
-  const latestVersion = parseInt(latestRelease.tag_name.slice(1));
+const checkbrandsListVersion = async () => {
+  console.log("AmazonBrandFilter: %cChecking latest brands list version!", "color: yellow");
 
-  console.log("AmazonBrandFilter: Latest brands list version is " + latestVersion);
-  console.log("AmazonBrandFilter: Current brands list version is " + currentVersion);
+  // Fetch latest brands list release
+  const latestRelease = await fetch(latestReleaseUrl, { mode: "cors" })
+    .then((response) => response.json())
+    .catch((error) =>
+      console.error(error, "AmazonBrandFilter: %cFailed fetching latest release!", "color: lightcoral")
+    );
 
+  // Current / Latest versions
+  const currentVersion: number = await getCurrentBrandsVersion();
+  const latestVersion: number = parseInt(latestRelease.tag_name.slice(1));
+
+  // Check if current version match the latest version
   if (currentVersion != latestVersion) {
-    console.log("AmazonBrandFilter: Downloading latest brands list");
-    try {
-      // updateBrandList();
-      updateBrandMap();
-    } catch (err) {
-      console.error("AmazonBrandFilter: Error downloading brands list");
-      return;
-    }
+    console.log(
+      `AmazonBrandFilter: %cCurrent version does not match latest version!`,
+      "color: lightcoral",
+      `\nAmazonBrandFilter: Current ${currentVersion} | Latest ${latestVersion}`
+    );
+
+    // Update
+    updateBrandsListMap();
     setStorageValue({ brandsVersion: latestVersion });
+  } else {
+    console.log(
+      `AmazonBrandFilter: %cCurrent version match latest version!`,
+      "color: lightgreen",
+      `\nAmazonBrandFilter: Current ${currentVersion} | Latest ${latestVersion}`
+    );
   }
 
-  console.log("AmazonBrandFilter: background.js sleeping for one day");
-  await sleep(86400000);
-  checkBrandsVersion();
+  // Sleep
+  console.log("AmazonBrandFilter: background.js is sleeping for one day!");
+  setTimeout(checkbrandsListVersion, 86_400_000);
 };
 
-// const updateBrandList = async () => {
-//   console.log("AmazonBrandFilter: Starting updateBrandList");
-//   const brandsUrl = "https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt";
-//   let brandsGet: string[] = [];
-//   try {
-//     brandsGet = await fetch(brandsUrl, { mode: "cors" })
-//       .then((response) => response.text())
-//       .then((text) => text.toUpperCase())
-//       .then((text) => text.split("\n"));
-//   } catch (err) {
-//     console.error("AmazonBrandFilter: Error downloading brands list");
-//     return;
-//   }
-//   setStorageValue({ brandsCount: brandsGet.length });
-//   console.log("AmazonBrandFilter: Brands count is " + brandsGet.length);
-//   console.log("AmazonBrandFilter: Brands are " + brandsGet);
-//   setStorageValue({ brandsList: brandsGet });
-// }
+const updateBrandsListMap = async () => {
+  console.log("AmazonBrandFilter: %cUpdating brands list!", "color: lightgreen");
 
-const updateBrandMap = async () => {
-  console.log("AmazonBrandFilter: Starting updateBrandList");
-
+  // Fetch latest brands list release
   const brandsUrl = "https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt";
+  const brandsListFetch: string[] = await fetch(brandsUrl)
+    .then((res) => res.text())
+    .then((text) => text.toUpperCase())
+    .then((text) => text.split("\n"))
+    .catch((err) => {
+      console.error(err, "AmazonBrandFilter: %cFailed downloading brands list!", "color: lightcoral");
+      return [] as string[];
+    });
 
-  let brandsGet: string[] = [];
-  try {
-    brandsGet = await fetch(brandsUrl, { mode: "cors" })
-      .then((response) => response.text())
-      .then((text) => text.toUpperCase())
-      .then((text) => text.split("\n"));
-  } catch (err) {
-    console.error("AmazonBrandFilter: Error downloading brands list");
-    return;
-  }
-  let brandsMap = {};
-  for (let i = 0; i < brandsGet.length; i++) {
-    console.debug("AmazonBrandFilter: Adding " + brandsGet[i] + " to brands list");
-    // protect against possible empty lines in the list
-    if (brandsGet[i]) {
-      brandsMap = {
-        ...brandsMap,
-        [brandsGet[i]]: true,
-      };
-    }
-  }
-
-  console.log("AmazonBrandFilter: Brands count is " + brandsGet.length);
-
-  setStorageValue({ brandsMap: brandsMap });
-
-  const keys = Object.keys(brandsMap);
   let maxWordCount = 0;
-  for (let i = 0; i < keys.length; i++) {
-    if (keys[i].split(" ").length > maxWordCount) {
-      maxWordCount = keys[i].split(" ").length;
-    }
+  const brandsMap: { [key: string]: boolean } = {},
+    brandsCount = brandsListFetch.length;
+
+  // Build the brands list map
+  for (const brandName of brandsListFetch) {
+    console.debug(`AmazonBrandFilter: Adding ${brandName} to the list!`);
+
+    // Append key-value pair to brandsMap
+    brandsMap[brandName] = true;
+
+    // Check for max word count
+    const wordCount = brandName.split(" ").length;
+    if (wordCount > maxWordCount) maxWordCount = wordCount;
   }
+
+  // Browser local storage saves
+  setStorageValue({ brandsMap: brandsMap });
+  setStorageValue({ brandsCount: brandsCount });
   setStorageValue({ maxWordCount: maxWordCount });
-  console.log("AmazonBrandFilter: Max brand word count is " + maxWordCount);
-  console.log("AmazonBrandFilter: Brands are " + keys);
-  setStorageValue({ brandsCount: keys.length });
+
+  // Console logs
+  console.log(`AmazonBrandFilter: Brands count is ${brandsCount}!`);
+  console.log(`AmazonBrandFilter: Max brand word count is ${maxWordCount}!`);
+  console.log(`AmazonBrandFilter: Showing brands list!`, brandsMap);
 };
 
-// const createBrandMap = (wordList, depth=0) => {
-//   if(depth == wordList.length - 1){
-//     return true;
-//   }
-//   var brandMap = {};
-//   brandMap[wordList[depth+1]] = createBrandMap(wordList, depth + 1);
-//   return brandMap;
-// }
+const getCurrentBrandsVersion = async () => {
+  const { brandsVersion } = await getStorageValue("brandsVersion");
+  return brandsVersion as number;
+};
 
 (async () => {
-  // set the default values for the extension
-  if ((await getFirstRun()) != false) {
-    console.log("AmazonBrandFilter: First run, setting defaults");
+  // Set the default values for the extension
+  if (await getFirstRun()) {
+    console.log("AmazonBrandFilter: %cFirst run, setting defaults!", "color: yellow");
+
+    // Defaults
     setStorageValue({ enabled: true });
     setStorageValue({ brandsVersion: 0 });
     setStorageValue({ brandsCount: 0 });
@@ -132,11 +103,9 @@ const updateBrandMap = async () => {
     setStorageValue({ refinerBypass: true });
     setStorageValue({ abfFirstRun: false });
   } else {
-    console.log("AmazonBrandFilter: Not first run");
+    console.log("AmazonBrandFilter: %cNot first run!", "color: yellow");
   }
-})();
 
-// set the icon the first time the extension is loaded
-setIcon();
-// Start checking for updates
-checkBrandsVersion();
+  setIcon(); // Set the icon the first time the extension is loaded
+  checkbrandsListVersion(); // Periodically check for updates once everyday
+})();
