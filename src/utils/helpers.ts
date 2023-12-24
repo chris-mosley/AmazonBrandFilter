@@ -5,8 +5,7 @@ import { Engine, StorageApiProps, StorageSettings } from "utils/types";
 /**
  * Retrieves the name of the browser engine based on the runtime environment.
  *
- * @returns {Engine}
- * @throws {Error}
+ * @returns
  */
 export const getEngine = (): Engine => {
   if (typeof chrome !== "undefined") {
@@ -95,8 +94,7 @@ export const setIcon = async () => {
 /**
  * Retrieves the manifest data for the current extension based on the runtime engine.
  *
- * @returns {object}
- * @throws {Error}
+ * @returns
  */
 export const getManifest = () => {
   const engine = getEngine();
@@ -112,8 +110,7 @@ export const getManifest = () => {
 /**
  * Retrieves information about the currently active tab based on the runtime engine.
  *
- * @returns {Promise<chrome.tabs.Tab | browser.tabs.Tab>}
- * @throws {Error}
+ * @returns
  */
 export const getCurrentTab = () => {
   const engine = getEngine();
