@@ -1,4 +1,4 @@
-import { browser } from "webextension-polyfill-ts";
+import { getCurrentTab, getManifest, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
 console.log("AmazonBrandFilter: Starting popup.js");
 
@@ -20,7 +20,7 @@ const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
 const setPopupBoxStates = async () => {
   console.log("AmazonBrandFilter: Setting Popup Box States");
-  const settings = await browser.storage.local.get();
+  const settings = await getStorageValue(undefined, "sync");
   console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(settings));
   if (settings.enabled) {
     console.log("AmazonBrandFilter: abfSettings.enabled is enabled");
@@ -72,32 +72,12 @@ const setPopupBoxStates = async () => {
 };
 
 const setAddonVersion = () => {
-  const manifest = browser.runtime.getManifest();
+  const manifest = getManifest();
   abfVersion.innerText = "v" + manifest.version;
 };
 
-const setIcon = async () => {
-  const result = await browser.storage.local.get("enabled");
-  console.log("AmazonBrandFilter: abfSettings.enabled bool eval: " + JSON.stringify(result.enabled));
-  if (result.enabled == true) {
-    console.log("AmazonBrandFilter: setting icon to enabled");
-    browser.action.setIcon({
-      path: {
-        48: "../icons/abf-enabled-128.png",
-      },
-    });
-  } else {
-    console.log("AmazonBrandFilter: setting icon to disabled");
-    browser.action.setIcon({
-      path: {
-        48: "../icons/abf-disabled-128.png",
-      },
-    });
-  }
-};
-
 const setTextBoxStates = async () => {
-  const syncSettings = await browser.storage.sync.get();
+  const syncSettings = await getStorageValue(undefined, "sync");
   if (syncSettings.usePersonalBlock == true) {
     console.log("AmazonBrandFilter: usePersonalBlock is true");
     abfPersonalBlockEnabled.checked = true;
@@ -108,14 +88,14 @@ const setTextBoxStates = async () => {
 
 const enableDisable = async (_event: Event) => {
   if (abfEnabled.checked) {
-    browser.storage.local.set({ enabled: true });
+    setStorageValue({ enabled: true });
   } else {
     const tab = await getCurrentTab();
     console.log(tab);
-    browser.storage.local.set({ enabled: false });
+    setStorageValue({ enabled: false });
   }
 
-  browser.storage.local.get("enabled").then((result) => {
+  getStorageValue("enabled").then((result) => {
     console.log("enabled: " + result.enabled);
   });
   setIcon();
@@ -123,133 +103,80 @@ const enableDisable = async (_event: Event) => {
 
 const setFilterRefiner = (_event: Event) => {
   if (abfFilterRefiner.checked) {
-    browser.storage.local.set({ filterRefiner: true });
+    setStorageValue({ filterRefiner: true });
   } else {
-    browser.storage.local.set({ filterRefiner: false });
+    setStorageValue({ filterRefiner: false });
   }
 
-  browser.storage.local.get("filterRefiner").then((result) => {
+  getStorageValue("filterRefiner").then((result) => {
     console.log("filterRefiner: " + result.filterRefiner);
   });
 };
 
 const setRefinerHide = (_event: Event) => {
   if (abfFilterRefinerHide.checked) {
-    browser.storage.local.set({ refinerMode: "hide" });
+    setStorageValue({ refinerMode: "hide" });
     abfFilterRefinerGrey.checked = false;
   } else {
-    browser.storage.local.set({ refinerMode: "grey" });
+    setStorageValue({ refinerMode: "grey" });
   }
 
-  browser.storage.local.get("refinerMode").then((result) => {
+  getStorageValue("refinerMode").then((result) => {
     console.log("refinerMode: " + result.refinerMode);
   });
 };
 
 const setRefinerGrey = (_event: Event) => {
   if (abfFilterRefinerGrey.checked) {
-    browser.storage.local.set({ refinerMode: "grey" });
+    setStorageValue({ refinerMode: "grey" });
     abfFilterRefinerHide.checked = false;
   } else {
-    browser.storage.local.set({ refinerMode: "hide" });
+    setStorageValue({ refinerMode: "hide" });
   }
 
-  browser.storage.local.get("refinerMode").then((result) => {
+  getStorageValue("refinerMode").then((result) => {
     console.log("refinerMode: " + result.refinerMode);
   });
 };
 
 const setRefinerBypass = (_event: Event) => {
   if (abfAllowRefineBypass.checked) {
-    browser.storage.local.set({ refinerBypass: true });
+    setStorageValue({ refinerBypass: true });
   } else {
-    browser.storage.local.set({ refinerBypass: false });
+    setStorageValue({ refinerBypass: false });
   }
 
-  browser.storage.local.get("refinerBypass").then((result) => {
+  getStorageValue("refinerBypass").then((result) => {
     console.log("refinerBypass: " + result.refinerBypass);
   });
 };
 
 const setDebugMode = (_event: Event) => {
   if (abfDebugMode.checked) {
-    browser.storage.local.set({ debugMode: true });
+    setStorageValue({ debugMode: true });
   } else {
-    browser.storage.local.set({ debugMode: false });
+    setStorageValue({ debugMode: false });
   }
 
-  browser.storage.local.get("debugMode").then((result) => {
+  getStorageValue("debugMode").then((result) => {
     console.log("debugMode: " + result.debugMode);
   });
 };
 
-// const unHideDivs = () => {
-//   const divs = getItemDivs();
-//   for (const div of divs) {
-//     div.style.display = "block";
-//   }
-// }
-
-// const logCurrentTab = async () => {
-//   const tab = await getCurrentTab();
-//   console.log(tab);
-// }
-
-const getCurrentTab = () => {
-  console.log("AmazonBrandFilter: Starting getCurrentTab");
-  const tab = browser.tabs.query({ currentWindow: true, active: true });
-  return tab;
-};
-
-// const addBorder = () => {
-//   document.border = "5px solid red";
-// }
-
-// const addBorderToTab = async () => {
-//   const tab = await getCurrentTab();
-//   const tabId = tab[0].id;
-//   if (!tabId) {
-//     return;
-//   }
-//   console.log(`tab is: ${tabId}`);
-//   browser.scripting.executeScript({
-//     func: filterBrands(),
-//     files: ["content.js"],
-//     injectImmediately: true,
-//     target: { tabId: tabId },
-//   });
-// }
-
-// const hideAll = async () => {
-//   console.log("AmazonBrandFilter: Starting hideAll");
-//   const tab = await getCurrentTab();
-//   const tabId = tab[0].id;
-//   if (!tabId) {
-//     return;
-//   }
-//   console.log(`tab is: ${tabId}`);
-//   browser.scripting.executeScript({
-//     func: hideAllResults(),
-//     files: ["../content.js"],
-//     injectImmediately: true,
-//     target: { tabId: tabId },
-//   });
-// }
-
 const savePersonalBlock = async () => {
-  const userInput = await getSanitizedUserInput();
+  const userInput = getSanitizedUserInput();
   const personalBlockMap = new Map();
   for (const brand of userInput) {
     console.log("AmazonBrandFilter: adding brand: " + brand);
     personalBlockMap.set(brand, true);
   }
   console.log("AmazonBrandFilter: personalBlockMap is: " + JSON.stringify(personalBlockMap));
-  browser.storage.sync.set({ personalBlockMap: personalBlockMap });
+  setStorageValue({ personalBlockMap }, "sync");
   abfPersonalBlockSavedConfirm.style.display = "block";
 };
 
 const setPersonalList = async () => {
-  let personalBlockMap = await browser.storage.sync.get("personalBlockMap");
+  let personalBlockMap = await getStorageValue("personalBlockMap", "sync");
   personalBlockMap = personalBlockMap.personalBlockMap;
 
   if (personalBlockMap == undefined) {
@@ -291,33 +218,19 @@ const getSanitizedUserInput = () => {
 
 const setPersonalBlockEnabled = () => {
   if (abfPersonalBlockEnabled.checked) {
-    browser.storage.sync.set({ usePersonalBlock: true });
+    setStorageValue({ usePersonalBlock: true }, "sync");
     abfPersonalBlockText.style.display = "block";
     abfPersonalBlockButton.style.display = "block";
   } else {
-    browser.storage.sync.set({ usePersonalBlock: false });
+    setStorageValue({ usePersonalBlock: false }, "sync");
     abfPersonalBlockText.style.display = "none";
     abfPersonalBlockButton.style.display = "none";
   }
 
-  browser.storage.sync.get("usePersonalBlock").then((result) => {
+  getStorageValue("usePersonalBlock", "sync").then((result) => {
     console.log("personalBlockEnabled: " + result.usePersonalBlock);
   });
 };
-
-// const getSettings = async (location: string) => {
-//   let settings;
-//   if (location == "sync") {
-//     settings = await browser.storage.sync.get().then((result) => {
-//       console.log("AmazonBrandFilter: sync settings are: " + JSON.stringify(result));
-//     });
-//   } else {
-//     settings = await browser.storage.local.get().then((result) => {
-//       console.log("AmazonBrandFilter: local settings are: " + JSON.stringify(result));
-//     });
-//   }
-//   return settings;
-// }
 
 setPopupBoxStates();
 setTextBoxStates();

@@ -1,7 +1,8 @@
-import { browser } from "webextension-polyfill-ts";
+import { latestReleaseUrl } from "utils/config";
+import { getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
 const getFirstRun = async () => {
-  const { abfFirstRun } = await browser.storage.local.get("abfFirstRun");
+  const { abfFirstRun } = await getStorageValue("abfFirstRun");
   return abfFirstRun as boolean;
 };
 
@@ -9,7 +10,6 @@ const checkbrandsListVersion = async () => {
   console.log("AmazonBrandFilter: %cChecking latest brands list version!", "color: yellow");
 
   // Fetch latest brands list release
-  const latestReleaseUrl = "https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest";
   const latestRelease = await fetch(latestReleaseUrl, { mode: "cors" })
     .then((response) => response.json())
     .catch((error) =>
@@ -30,7 +30,7 @@ const checkbrandsListVersion = async () => {
 
     // Update
     updateBrandsListMap();
-    browser.storage.local.set({ brandsVersion: latestVersion });
+    setStorageValue({ brandsVersion: latestVersion });
   } else {
     console.log(
       `AmazonBrandFilter: %cCurrent version match latest version!`,
@@ -75,9 +75,9 @@ const updateBrandsListMap = async () => {
   }
 
   // Browser local storage saves
-  browser.storage.local.set({ brandsMap: brandsMap });
-  browser.storage.local.set({ brandsCount: brandsCount });
-  browser.storage.local.set({ maxWordCount: maxWordCount });
+  setStorageValue({ brandsMap: brandsMap });
+  setStorageValue({ brandsCount: brandsCount });
+  setStorageValue({ maxWordCount: maxWordCount });
 
   // Console logs
   console.log(`AmazonBrandFilter: Brands count is ${brandsCount}!`);
@@ -86,18 +86,8 @@ const updateBrandsListMap = async () => {
 };
 
 const getCurrentBrandsVersion = async () => {
-  const { brandsVersion } = await browser.storage.local.get("brandsVersion");
+  const { brandsVersion } = await getStorageValue("brandsVersion");
   return brandsVersion as number;
-};
-
-const setIcon = async () => {
-  const { enabled } = await browser.storage.local.get("enabled");
-
-  if (enabled) {
-    browser.action.setIcon({ path: { 48: "icons/abf-enabled-128.png" } });
-  } else {
-    browser.action.setIcon({ path: { 48: "icons/abf-disabled-128.png" } });
-  }
 };
 
 (async () => {
@@ -106,12 +96,12 @@ const setIcon = async () => {
     console.log("AmazonBrandFilter: %cFirst run, setting defaults!", "color: yellow");
 
     // Defaults
-    browser.storage.local.set({ enabled: true });
-    browser.storage.local.set({ brandsVersion: 0 });
-    browser.storage.local.set({ brandsCount: 0 });
-    browser.storage.local.set({ brandsMap: {} });
-    browser.storage.local.set({ refinerBypass: true });
-    browser.storage.local.set({ abfFirstRun: false });
+    setStorageValue({ enabled: true });
+    setStorageValue({ brandsVersion: 0 });
+    setStorageValue({ brandsCount: 0 });
+    setStorageValue({ brandsMap: {} });
+    setStorageValue({ refinerBypass: true });
+    setStorageValue({ abfFirstRun: false });
   } else {
     console.log("AmazonBrandFilter: %cNot first run!", "color: yellow");
   }

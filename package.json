@@ -33,10 +33,11 @@
     ]
   },
   "scripts": {
-    "build": "rm -rf dist && webpack --mode development",
-    "watch": "rm -rf dist && webpack --mode development --watch",
     "package": "web-ext build",
     "prepare": "husky install",
-    "lint": "yarn eslint src/**/*.ts"
+    "lint": "yarn eslint src/**/*.ts",
+    "build-gecko": "rm -rf dist && webpack --mode development --config webpack.gecko.config.js",
+    "build-chromium": "rm -rf dist && webpack --mode development --config webpack.chromium.config.js",
+    "watch-gecko": "rm -rf dist && webpack --mode development --config webpack.gecko.config.js --watch"
   }
 }

@@ -1,7 +1,8 @@
 {
-  "manifest_version": 3,
   "name": "AmazonBrandFilter",
+  "description": "Filters out all unknown brands from Amazon search results.",
   "version": "0.1.1",
+  "manifest_version": 3,
   "browser_specific_settings": {
     "gecko": {
       "id": "abf@mosley.xyz",
@@ -11,7 +12,6 @@
       "strict_min_version": "113.0"
     }
   },
-  "description": "Filters out all unknown brands from Amazon search results.",
   "icons": {
     "128": "icons/abf-enabled-128.png"
   },

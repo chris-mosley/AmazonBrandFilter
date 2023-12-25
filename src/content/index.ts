@@ -1,12 +1,10 @@
-import { browser } from "webextension-polyfill-ts";
-
-import { getItemDivs, sleep, unHideDivs } from "utils/helpers";
+import { getItemDivs, getStorageValue, setStorageValue, sleep, unHideDivs } from "utils/helpers";
 
 unHideDivs();
 
 console.log("AmazonBrandFilter: Starting content.js");
 
-browser.storage.local.get().then((settings) => {
+getStorageValue().then((settings) => {
   console.log("AmazonBrandFilter: settings are: " + JSON.stringify(settings));
 
   console.log("AmazonBrandFilter: abfSettings.enabled bool eval: " + settings.enabled);
@@ -23,7 +21,7 @@ browser.storage.local.get().then((settings) => {
           //filterBrandsByList(settings);
           const timerEnd = performance.now();
           console.log(`AmazonBrandFilter: filterBrands took ${timerEnd - timerStart} milliseconds.`);
-          browser.storage.local.set({ lastMapRun: timerEnd - timerStart });
+          setStorageValue({ lastMapRun: timerEnd - timerStart });
         });
       }
     });
@@ -37,7 +35,7 @@ browser.storage.local.get().then((settings) => {
 
 // const getBrands = () => {
 //   console.log("attempting to get brands from storage");
-//   browser.storage.local.get("brandsList").then((result) => {
+//   getStorageValue("brandsList").then((result) => {
 //     console.log("AmazonBrandFilter: Brands are " + result);
 //     return result;
 //   });
@@ -67,7 +65,7 @@ const checkBrandFilter = (): boolean => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const filterBrands = async (settings: any) => {
-  const synchedSettings = await browser.storage.sync.get();
+  const synchedSettings = await getStorageValue(undefined, "sync");
   console.log("AmazonBrandFilter: synchedSettings are: " + JSON.stringify(synchedSettings));
   console.log("AmazonBrandFilter: Starting filterBrands");
   const brands = settings.brandsMap;
@@ -156,7 +154,7 @@ const filterBrands = async (settings: any) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const descriptionSearch = async (settings: any, div: HTMLDivElement) => {
-  const synchedSettings = await browser.storage.sync.get();
+  const synchedSettings = await getStorageValue(undefined, "sync");
   console.log("AmazonBrandFilter: synchedSettings are: " + JSON.stringify(synchedSettings));
   const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length == 0) {
@@ -286,8 +284,8 @@ const filterRefiner = (settings: any, syncSettings: any) => {
 
 // const getSettings = async (type: string) => {
 //   if (type == "sync") {
-//     settings = await browser.storage.sync.get();
+//     settings = await getStorageValue(undefined, "sync");
 //   } else {
-//     settings = await browser.storage.local.get();
+//     settings = await getStorageValue(undefined, "sync");
 //   }
 // }
