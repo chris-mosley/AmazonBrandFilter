@@ -1,12 +1,11 @@
 import { browser } from "webextension-polyfill-ts";
 
-import { Engine, StorageApiProps } from "utils/types";
+import { Engine, StorageApiProps, StorageSettings } from "utils/types";
 
 /**
  * Retrieves the name of the browser engine based on the runtime environment.
  *
- * @returns {Engine}
- * @throws {Error}
+ * @returns
  */
 export const getEngine = (): Engine => {
   if (typeof chrome !== "undefined") {
@@ -18,33 +17,37 @@ export const getEngine = (): Engine => {
   }
 };
 
+// use function overloading to allow for multiple return types with different params
+export async function getStorageValue(prop?: StorageApiProps): Promise<StorageSettings>;
+export async function getStorageValue<T extends keyof StorageSettings>(
+  keys: T | T[],
+  prop?: StorageApiProps
+): Promise<Record<T, StorageSettings[T]>>;
 /**
  * Retrieves a value from storage based on the current browser environment.
  * watch out for QUOTA_BYTES_PER_ITEM error when using "sync" prop
  *
- * @param {string} keys - The key/keys to look up in storage.
+ * @param keys - The key/keys to look up in storage. Use null if undefined, which will return all keys.
  * @returns
  */
-export const getStorageValue = async (
-  keys?: string | string[],
+export async function getStorageValue<T extends keyof StorageSettings>(
+  keys?: T | T[],
   prop: StorageApiProps = "local"
-): Promise<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [s: string]: any;
-}> => {
+): Promise<Record<T, StorageSettings[T]>> {
   const engine = getEngine();
   if (engine === "chromium" && chrome.storage && chrome.storage[prop]) {
     return await new Promise((resolve) => {
       chrome.storage[prop].get(keys ?? null, (result) => {
-        resolve(result);
+        resolve(result as Record<T, StorageSettings[T]>);
       });
     });
   } else if (engine === "gecko" && browser.storage && browser.storage[prop]) {
-    return await browser.storage[prop].get(keys);
+    const result = await browser.storage[prop].get(keys ?? null);
+    return result as Record<T, StorageSettings[T]>;
   } else {
     throw new Error("Storage API not found.");
   }
-};
+}
 
 /**
  * set value in storage
@@ -53,8 +56,7 @@ export const getStorageValue = async (
  * @returns
  */
 export const setStorageValue = async (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: { [key: string]: any },
+  data: Partial<StorageSettings>,
   prop: StorageApiProps = "local"
 ): Promise<void> => {
   const engine = getEngine();
@@ -73,8 +75,8 @@ export const setStorageValue = async (
 
 export const setIcon = async () => {
   const engine = getEngine();
-  const enabled = await getStorageValue("abf-enabled");
-  if (enabled) {
+  const result = await getStorageValue("enabled");
+  if (result.enabled) {
     (engine === "chromium" ? chrome : browser).action.setIcon({
       path: {
         48: "icons/abf-enabled-128.png",
@@ -92,8 +94,7 @@ export const setIcon = async () => {
 /**
  * Retrieves the manifest data for the current extension based on the runtime engine.
  *
- * @returns {object}
- * @throws {Error}
+ * @returns
  */
 export const getManifest = () => {
   const engine = getEngine();
@@ -109,8 +110,7 @@ export const getManifest = () => {
 /**
  * Retrieves information about the currently active tab based on the runtime engine.
  *
- * @returns {Promise<chrome.tabs.Tab | browser.tabs.Tab>}
- * @throws {Error}
+ * @returns
  */
 export const getCurrentTab = () => {
   const engine = getEngine();
@@ -132,13 +132,11 @@ export const sleep = (ms: number) => {
 };
 
 export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
-  console.log("AmazonBrandFilter: Starting getItemDivs");
   const divs = document.getElementsByClassName("s-result-item");
   return divs as HTMLCollectionOf<HTMLDivElement>;
 };
 
 export const unHideDivs = () => {
-  console.log("AmazonBrandFilter: Starting unHideDivs");
   const divs = getItemDivs();
   for (let i = 0; i < divs.length; i++) {
     divs[i].style.display = "block";
