@@ -3,9 +3,9 @@ export type Engine = "gecko" | "chromium";
 export type StorageApiProps = "local" | "sync";
 export interface StorageSettings {
   abfFirstRun: boolean;
-  brandsCount: number;
   brandsMap: { [key: string]: boolean };
-  brandsVersion: number;
+  brandsCount: number | null;
+  brandsVersion: number | null;
   enabled: boolean;
   filterRefiner: boolean;
   lastMapRun: number;

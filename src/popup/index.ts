@@ -18,7 +18,13 @@ const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
 const setPopupBoxStates = async () => {
   console.log("AmazonBrandFilter: Setting Popup Box States");
-  const settings = await getStorageValue("sync");
+
+  // attempt to get the sync settings first, then fall back to local
+  let settings = await getStorageValue("sync");
+  if (Object.keys(settings).length === 0) {
+    settings = await getStorageValue();
+  }
+
   console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(settings));
   if (settings.enabled) {
     abfEnabled.checked = true;
@@ -47,8 +53,8 @@ const setPopupBoxStates = async () => {
   }
 
   setIcon();
-  versionNumber.innerText = settings.brandsVersion.toString();
-  brandCount.innerText = settings.brandsCount.toString();
+  versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
+  brandCount.innerText = settings.brandsCount?.toString() ?? "";
   if (settings.lastMapRun) {
     lastRun.innerText = settings.lastMapRun + "ms";
   } else {
