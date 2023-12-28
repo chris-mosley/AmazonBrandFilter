@@ -1,0 +1,58 @@
+{
+  "popup-enabled": {
+    "message": "Activar Amazon Brand Filter",
+    "description": "Activar el filtro de marcas de Amazon"
+  },
+  "popup-filter-sidebar": {
+    "message": "Filtrar barra lateral",
+    "description": "También ocultar marcas en la barra lateral"
+  },
+  "popup-sidebar-hide": {
+    "message": "Ocultar",
+    "description": "Ocultar los elementos filtrados en la barra lateral"
+  },
+  "popup-sidebar-grey": {
+    "message": "Gris Fuera",
+    "description": "Filtrar los elementos de la barra lateral"
+  },
+  "popup-allow-refine-bypass": {
+    "message": "Permitir el desvío de la barra lateral",
+    "description": "Desactivar el filtrado al seleccionar una marca en la barra lateral"
+  },
+  "popup-debug": {
+    "message": "Modo depuración",
+    "description": "Activar o desactivar el modo de depuración"
+  },
+  "popup-personal-blocklist": {
+    "message": "Lista de bloqueo personal",
+    "description": "Activar o desactivar la lista de bloqueo personal"
+  },
+  "popup-save-button": {
+    "message": "Ahorrar",
+    "description": "botón guardar"
+  },
+  "popup-save-confirm": {
+    "message": "Salvado!",
+    "description": "Confirmación de lista personal guardada"
+  },
+  "popup-list-version": {
+    "message": "Versión de lista: ",
+    "description": "Mostrar qué versión de la lista tenemos"
+  },
+  "popup-list-count" : {
+    "message": "Marcas conocidas: ",
+    "description": "Cuántas marcas conocemos"
+  },
+  "popup-feedback-link": {
+    "message": "Comentarios (inglés)",
+    "description": "Enlace a github para informar problemas o solicitar funciones"
+  },
+  "popup-missing-brand" : {
+    "message": "¿Falta una marca?",
+    "description": "Enlace a AmazonBrandFilter para solicitar que se agregue una marca"
+  },
+  "popup-last-run": {
+     "message":"Ejecución anterior",
+    "description" : "Cuánto tiempo tomó la última carrera"
+  }
+}
