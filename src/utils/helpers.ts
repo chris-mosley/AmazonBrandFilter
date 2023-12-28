@@ -57,7 +57,7 @@ export async function getStorageValue<T extends keyof StorageSettings>(
  */
 export const setStorageValue = async (
   data: Partial<StorageSettings>,
-  prop: StorageApiProps = "local"
+  prop: StorageApiProps = "sync"
 ): Promise<void> => {
   const engine = getEngine();
   if (engine === "chromium" && chrome.storage && chrome.storage[prop]) {
@@ -73,17 +73,28 @@ export const setStorageValue = async (
   }
 };
 
+export const getMessage = async (message: string): Promise<string> => {
+  const engine= getEngine();
+  if(engine == "gecko" && browser.i18n) {
+    return browser.i18n.getMessage(message);
+  } else if(engine == "chromium" && chrome.i18n) {
+    return chrome.i18n.getMessage(message);
+  } else {
+    throw new Error("Unsupported engine.")
+  }
+}
+
 export const setIcon = async () => {
   const engine = getEngine();
   const result = await getStorageValue("enabled");
   if (result.enabled) {
-    (engine === "chromium" ? chrome : browser).action.setIcon({
+    (engine === "gecko" ? chrome : browser).action.setIcon({
       path: {
         48: "icons/abf-enabled-128.png",
       },
     });
   } else {
-    (engine === "chromium" ? chrome : browser).action.setIcon({
+    (engine === "gecko" ? chrome : browser).action.setIcon({
       path: {
         48: "icons/abf-disabled-128.png",
       },

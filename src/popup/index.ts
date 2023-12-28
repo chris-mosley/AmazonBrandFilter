@@ -1,4 +1,4 @@
-import { getManifest, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
+import { getManifest, getMessage, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
 const abfFilterRefiner = document.getElementById("abf-filter-refiner")! as HTMLInputElement;
@@ -7,7 +7,7 @@ const abfFilterRefinerGrey = document.getElementById("abf-filter-refiner-grey")!
 const abfAllowRefineBypass = document.getElementById("abf-allow-refine-bypass")! as HTMLInputElement;
 const abfDebugMode = document.getElementById("abf-debug-mode")! as HTMLInputElement;
 const abfPersonalBlockEnabled = document.getElementById("abf-personal-block-enabled")! as HTMLInputElement;
-const abfPersonalBlockText = document.getElementById("abf-personal-block-text")! as HTMLTextAreaElement;
+const abfPersonalBlockTextBox = document.getElementById("abf-personal-block-textbox")! as HTMLTextAreaElement;
 const abfPersonalBlockButton = document.getElementById("abf-personal-block-button")! as HTMLButtonElement;
 const abfVersion = document.getElementById("abf-version")! as HTMLSpanElement;
 // const abfHideAll = document.getElementById("abf-hideall")! as HTMLButtonElement;
@@ -15,6 +15,42 @@ const abfPersonalBlockSavedConfirm = document.getElementById("abf-personal-block
 const versionNumber = document.getElementById("version-number")! as HTMLSpanElement;
 const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
 const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
+
+const abfEnabledText = document.getElementById("abf-enabled-text")! as HTMLInputElement;
+const abfFilterRefinerText = document.getElementById("abf-filter-refiner-text")! as HTMLInputElement;
+const abfFilterRefinerHideText = document.getElementById("abf-filter-refiner-hide-text")! as HTMLInputElement;
+const abfFilterRefinerGreyText = document.getElementById("abf-filter-refiner-grey-text")! as HTMLInputElement;
+const abfAllowRefineBypassText = document.getElementById("abf-allow-refine-bypass-text")! as HTMLInputElement;
+const abfDebugModeText = document.getElementById("abf-debug-mode-text")! as HTMLInputElement;
+const abfPersonalBlockEnabledText = document.getElementById("abf-personal-block-enabled-text")! as HTMLInputElement;
+
+const abfPersonalBlockSavedConfirmText = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
+const brandListVersionText = document.getElementById("popup-brand-version-text")! as HTMLSpanElement;
+const brandCountText = document.getElementById("popup-brand-count-text")! as HTMLSpanElement;
+const feedbackText = document.getElementById("popup-feedback-text")! as HTMLSpanElement;
+const missingBrandText = document.getElementById("popup-missing-brand-text")! as HTMLSpanElement;
+const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
+
+
+const setText = async () => {
+  abfEnabledText.innerText = await getMessage("popup-enabled");
+  abfFilterRefinerText.innerText = await getMessage("popup-filter-sidebar");
+  abfFilterRefinerHideText.innerText = await getMessage("popup-sidebar-hide");
+  abfFilterRefinerGreyText.innerText = await getMessage("popup-sidebar-grey");
+  abfAllowRefineBypassText.innerText = await getMessage("popup-allow-refine-bypass");
+  abfDebugModeText.innerText = await getMessage("popup-debug");
+  abfPersonalBlockEnabledText.innerText = await getMessage("popup-personal-blocklist");
+  abfPersonalBlockButton.innerText = await getMessage("popup-save-button");
+  
+  abfPersonalBlockSavedConfirmText.innerText = await getMessage("popup-save-confirm");
+  brandListVersionText.innerText = await getMessage("popup-list-version");
+  brandCountText.innerText = await getMessage("popup-list-count");
+  feedbackText.innerText = await getMessage("popup-feedback-link");
+  missingBrandText.innerText = await getMessage("popup-missing-brand");
+  lastRunText.innerText = await getMessage("popup-last-run");
+
+}
+
 
 const setPopupBoxStates = async () => {
   console.log("AmazonBrandFilter: Setting Popup Box States");
@@ -69,7 +105,7 @@ const setTextBoxStates = async () => {
   const syncSettings = await getStorageValue("sync");
   if (syncSettings.usePersonalBlock == true) {
     abfPersonalBlockEnabled.checked = true;
-    abfPersonalBlockText.style.display = "block";
+    abfPersonalBlockTextBox.style.display = "block";
     abfPersonalBlockButton.style.display = "block";
   }
 };
@@ -147,16 +183,16 @@ const setPersonalList = async () => {
   let textHeight = Object.keys(personalBlockMap).length;
   if (textHeight > 10) {
     textHeight = 10;
-    abfPersonalBlockText.style.overflow = "scroll";
+    abfPersonalBlockTextBox.style.overflow = "scroll";
   }
 
-  abfPersonalBlockText.value = textValue.join("\n");
-  abfPersonalBlockText.rows = textHeight;
+  abfPersonalBlockTextBox.value = textValue.join("\n");
+  abfPersonalBlockTextBox.rows = textHeight;
 };
 
 const getSanitizedUserInput = () => {
   // god so much santization to do here
-  const userInput = abfPersonalBlockText.value.split("\n");
+  const userInput = abfPersonalBlockTextBox.value.split("\n");
   const sanitizedInput = [];
   for (const line of userInput) {
     // we'll come up with something smarter later.
@@ -171,17 +207,18 @@ const getSanitizedUserInput = () => {
 const setPersonalBlockEnabled = () => {
   if (abfPersonalBlockEnabled.checked) {
     setStorageValue({ usePersonalBlock: true }, "sync");
-    abfPersonalBlockText.style.display = "block";
+    abfPersonalBlockTextBox.style.display = "block";
     abfPersonalBlockButton.style.display = "block";
   } else {
     setStorageValue({ usePersonalBlock: false }, "sync");
-    abfPersonalBlockText.style.display = "none";
+    abfPersonalBlockTextBox.style.display = "none";
     abfPersonalBlockButton.style.display = "none";
   }
 };
 
 setPopupBoxStates();
 setTextBoxStates();
+setText();
 setAddonVersion();
 setPersonalList();
 // abfEnabled.checked = true

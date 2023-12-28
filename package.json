@@ -36,8 +36,11 @@
     "package": "web-ext build",
     "prepare": "husky install",
     "lint": "yarn eslint src/**/*.ts",
-    "build-gecko": "rm -rf dist && webpack --mode development --config webpack.gecko.config.js",
-    "build-chromium": "rm -rf dist && webpack --mode development --config webpack.chromium.config.js",
-    "watch-gecko": "rm -rf dist && webpack --mode development --config webpack.gecko.config.js --watch"
+    "win-build-gecko": "Remove-Item dist -Recurse -Force; webpack --mode development --config webpack.gecko.config.js",
+    "win-build-chromium": "Remove-Item dist -Recurse -Force; webpack --mode development --config webpack.chromium.config.js",
+    "win-watch-gecko": "Remove-Item dist -Recurse -Force; webpack --mode development --config webpack.gecko.config.js --watch",
+    "nix-build-gecko": "rm -rf dist && webpack --mode development --config webpack.gecko.config.js",
+    "nix-build-chromium": "rm -rf dist && webpack --mode development --config webpack.chromium.config.js",
+    "nix-watch-gecko": "rm -rf dist && webpack --mode development --config webpack.gecko.config.js --watch"
   }
 }
