@@ -57,7 +57,7 @@ export async function getStorageValue<T extends keyof StorageSettings>(
  */
 export const setStorageValue = async (
   data: Partial<StorageSettings>,
-  prop: StorageApiProps = "sync"
+  prop: StorageApiProps = "local"
 ): Promise<void> => {
   const engine = getEngine();
   if (engine === "chromium" && chrome.storage && chrome.storage[prop]) {

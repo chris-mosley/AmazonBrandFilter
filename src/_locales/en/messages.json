@@ -1,57 +1,57 @@
 {
-  "popup-enabled": {
+  "popup_enabled": {
     "message": "Enable Amazon Brand Filter",
     "description": "Enable Amazon Brand Filter"
   },
-  "popup-filter-sidebar": {
+  "popup_filter_sidebar": {
     "message": "Filter Sidebar",
     "description": "Also hide brands in the sidebar"
   },
-  "popup-sidebar-hide": {
+  "popup_sidebar_hide": {
     "message": "Hide",
     "description": "Hide filtered items in the sidebar"
   },
-  "popup-sidebar-grey": {
+  "popup_sidebar_grey": {
     "message": "Grey Out",
     "description": "Grey out filtered items in the sidebar"
   },
-  "popup-allow-refine-bypass": {
+  "popup_allow_refine_bypass": {
     "message": "Allow Sidebar Bypass",
     "description": "Disable filtering when you select a brand in the sidebar"
   },
-  "popup-debug": {
+  "popup_debug": {
     "message": "Debug Mode",
     "description": "Enable or disable debug mode"
   },
-  "popup-personal-blocklist": {
+  "popup_personal_blocklist": {
     "message": "Personal Blocklist",
     "description": "Enable or disable personal blocklist"
   },
-  "popup-save-button": {
+  "popup_save_button": {
     "message": "Save",
     "description": "Save button"
   },
-  "popup-save-confirm": {
+  "popup_save_confirm": {
     "message": "Saved!",
     "description": "Personal list saved confirmation"
   },
-  "popup-list-version": {
+  "popup_list_version": {
     "message": "List Version: ",
     "description": "Show what version of the list we have"
   },
-  "popup-list-count" : {
+  "popup_list_count" : {
     "message": "Known Brands: ",
     "description": "How many brands we know about"
   },
-  "popup-feedback-link": {
+  "popup_feedback_link": {
     "message": "Feedback",
     "description": "Link to github to report issues or request features"
   },
-  "popup-missing-brand" : {
+  "popup_missing_brand" : {
     "message": "Missing a brand?",
     "description": "Link to AmazonBrandFilter to request a brand be added"
   },
-  "popup-last-run": {
+  "popup_last_run": {
      "message":"Last Run",
     "description" : "How long the last run took"
   }

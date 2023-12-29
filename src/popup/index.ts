@@ -33,28 +33,29 @@ const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
 
 
 const setText = async () => {
-  abfEnabledText.innerText = await getMessage("popup-enabled");
-  abfFilterRefinerText.innerText = await getMessage("popup-filter-sidebar");
-  abfFilterRefinerHideText.innerText = await getMessage("popup-sidebar-hide");
-  abfFilterRefinerGreyText.innerText = await getMessage("popup-sidebar-grey");
-  abfAllowRefineBypassText.innerText = await getMessage("popup-allow-refine-bypass");
-  abfDebugModeText.innerText = await getMessage("popup-debug");
-  abfPersonalBlockEnabledText.innerText = await getMessage("popup-personal-blocklist");
-  abfPersonalBlockButton.innerText = await getMessage("popup-save-button");
+  // these have to be snake_case because chrome doesnt support hyphens in i18n
+  abfEnabledText.innerText = await getMessage("popup_enabled");
+  abfFilterRefinerText.innerText = await getMessage("popup_filter_sidebar");
+  abfFilterRefinerHideText.innerText = await getMessage("popup_sidebar_hide");
+  abfFilterRefinerGreyText.innerText = await getMessage("popup_sidebar_grey");
+  abfAllowRefineBypassText.innerText = await getMessage("popup_allow_refine_bypass");
+  abfDebugModeText.innerText = await getMessage("popup_debug");
+  abfPersonalBlockEnabledText.innerText = await getMessage("popup_personal_blocklist");
+  abfPersonalBlockButton.innerText = await getMessage("popup_save_button");
   
-  abfPersonalBlockSavedConfirmText.innerText = await getMessage("popup-save-confirm");
-  brandListVersionText.innerText = await getMessage("popup-list-version");
-  brandCountText.innerText = await getMessage("popup-list-count");
-  feedbackText.innerText = await getMessage("popup-feedback-link");
-  missingBrandText.innerText = await getMessage("popup-missing-brand");
-  lastRunText.innerText = await getMessage("popup-last-run");
+  abfPersonalBlockSavedConfirmText.innerText = await getMessage("popup_save_confirm");
+  brandListVersionText.innerText = await getMessage("popup_list_version");
+  brandCountText.innerText = await getMessage("popup_list_count");
+  feedbackText.innerText = await getMessage("popup_feedback_link");
+  missingBrandText.innerText = await getMessage("popup_missing_brand");
+  lastRunText.innerText = await getMessage("popup_last_run");
 
 }
 
 
 const setPopupBoxStates = async () => {
   console.log("AmazonBrandFilter: Setting Popup Box States");
-  const settings = await getStorageValue("sync");
+  const settings = await getStorageValue("local");
   console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(settings));
   if (settings.enabled) {
     abfEnabled.checked = true;
