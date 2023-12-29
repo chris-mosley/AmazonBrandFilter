@@ -18,7 +18,13 @@ const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
 const setPopupBoxStates = async () => {
   console.log("AmazonBrandFilter: Setting Popup Box States");
-  const settings = await getStorageValue("sync");
+
+  // attempt to get the sync settings first, then fall back to local
+  let settings = await getStorageValue("sync");
+  if (Object.keys(settings).length === 0) {
+    settings = await getStorageValue();
+  }
+
   console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(settings));
   if (settings.enabled) {
     abfEnabled.checked = true;
@@ -38,7 +44,7 @@ const setPopupBoxStates = async () => {
     abfAllowRefineBypass.checked = false;
   }
 
-  if (settings.refinerMode == "grey") {
+  if (settings.refinerMode === "grey") {
     abfFilterRefinerGrey.checked = true;
     abfFilterRefinerHide.checked = false;
   } else {
@@ -47,9 +53,9 @@ const setPopupBoxStates = async () => {
   }
 
   setIcon();
-  versionNumber.innerText = settings.brandsVersion.toString();
-  brandCount.innerText = settings.brandsCount.toString();
-  if (settings.lastMapRun != null) {
+  versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
+  brandCount.innerText = settings.brandsCount?.toString() ?? "";
+  if (settings.lastMapRun) {
     lastRun.innerText = settings.lastMapRun + "ms";
   } else {
     lastRun.innerText = "N/A";
@@ -67,7 +73,7 @@ const setAddonVersion = () => {
 
 const setTextBoxStates = async () => {
   const syncSettings = await getStorageValue("sync");
-  if (syncSettings.usePersonalBlock == true) {
+  if (syncSettings.usePersonalBlock === true) {
     abfPersonalBlockEnabled.checked = true;
     abfPersonalBlockText.style.display = "block";
     abfPersonalBlockButton.style.display = "block";
@@ -160,7 +166,7 @@ const getSanitizedUserInput = () => {
   const sanitizedInput = [];
   for (const line of userInput) {
     // we'll come up with something smarter later.
-    if (line == "" || line == " " || line == "\n" || line == "\r\n" || line == "\r") {
+    if (line === "" || line === " " || line === "\n" || line === "\r\n" || line === "\r") {
       continue;
     }
     sanitizedInput.push(line.toUpperCase());
