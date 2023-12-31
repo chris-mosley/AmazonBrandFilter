@@ -1,26 +1,5 @@
-import { getItemDivs, getStorageValue, setStorageValue, sleep, unHideDivs } from "utils/helpers";
-
-unHideDivs();
-
-getStorageValue().then((settings) => {
-  if (settings.enabled) {
-    let previousUrl = "";
-    const observer = new MutationObserver((_mutations) => {
-      if (location.href !== previousUrl) {
-        previousUrl = location.href;
-        sleep(1000).then(() => {
-          const timerStart = performance.now();
-          filterBrands(settings);
-          const timerEnd = performance.now();
-          setStorageValue({ lastMapRun: timerEnd - timerStart });
-        });
-      }
-    });
-
-    const config = { attributes: true, childList: true, subtree: true };
-    observer.observe(document, config);
-  }
-});
+import { PopupMessage, StorageSettings } from "utils";
+import { getEngineApi, getItemDivs, getStorageValue, setStorageValue, sleep, unHideDivs } from "utils/helpers";
 
 const checkBrandFilter = (): boolean => {
   const boxesdiv = document.getElementById("brandsRefinements")!.children;
@@ -44,19 +23,17 @@ const checkBrandFilter = (): boolean => {
   return false;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const filterBrands = async (settings: any) => {
+const filterBrands = async (settings: StorageSettings) => {
   const synchedSettings = await getStorageValue("sync");
   console.log("AmazonBrandFilter: synchedSettings are: " + JSON.stringify(synchedSettings));
   console.log("AmazonBrandFilter: Starting filterBrands");
   const brands = settings.brandsMap;
   console.log("AmazonBrandFilter: Brands are " + JSON.stringify(brands));
-  if (brands.length !== 0) {
-    console.log("AmazonBrandFilter: Brands found");
-  } else {
+  if (Object.keys(brands).length === 0) {
     console.log("AmazonBrandFilter: No brands found");
     return;
   }
+  console.log("AmazonBrandFilter: Brands found");
 
   if (settings.refinerBypass) {
     if (checkBrandFilter()) {
@@ -122,8 +99,7 @@ const filterBrands = async (settings: any) => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const descriptionSearch = async (settings: any, div: HTMLDivElement) => {
+const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
   const synchedSettings = await getStorageValue("sync");
   console.log("AmazonBrandFilter: synchedSettings are: " + JSON.stringify(synchedSettings));
   const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
@@ -176,14 +152,13 @@ const descriptionSearch = async (settings: any, div: HTMLDivElement) => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const filterRefiner = (settings: any, syncSettings: any) => {
+const filterRefiner = (settings: StorageSettings, syncSettings: StorageSettings) => {
   const refiner = document.getElementById("brandsRefinements");
   if (!refiner) {
     return;
   }
-  const divs = refiner.getElementsByClassName("a-spacing-micro") as HTMLCollectionOf<HTMLDivElement>;
 
+  const divs = refiner.getElementsByClassName("a-spacing-micro") as HTMLCollectionOf<HTMLDivElement>;
   for (const div of divs) {
     const brand =
       (
@@ -198,18 +173,25 @@ const filterRefiner = (settings: any, syncSettings: any) => {
         div.style.backgroundColor = "red";
       } else {
         if (settings.refinerMode === "grey") {
-          div.getElementsByClassName("a-size-base a-color-base")[0]?.setAttribute("style", "color:grey !important");
+          div.style.display = "block";
+          div
+            .getElementsByClassName("a-size-base a-color-base")[0]
+            ?.setAttribute("style", "display: block; color: grey !important;");
         } else {
           div.style.display = "none";
         }
       }
     }
+
     if (syncSettings.usePersonalBlock && syncSettings.personalBlockMap[brand]) {
       if (settings.useDebugMode) {
         div.style.backgroundColor = "yellow";
       } else {
         if (settings.refinerMode === "grey") {
-          div.getElementsByClassName("a-size-base a-color-base")[0]?.setAttribute("style", "color:grey !important");
+          div.style.display = "block";
+          div
+            .getElementsByClassName("a-size-base a-color-base")[0]
+            ?.setAttribute("style", "display: block; color: grey !important;");
         } else {
           div.style.display = "none";
         }
@@ -217,3 +199,53 @@ const filterRefiner = (settings: any, syncSettings: any) => {
     }
   }
 };
+
+const listenForMessages = () => {
+  getEngineApi().runtime.onMessage.addListener(async (message: PopupMessage) => {
+    console.log({ type: message.type, isChecked: message.isChecked });
+    const settings = await getStorageValue();
+    const synchedSettings = await getStorageValue("sync");
+    switch (message.type) {
+      case "enabled":
+        if (message.isChecked) {
+          filterBrands(settings);
+        } else {
+          unHideDivs();
+        }
+        break;
+      case "filterRefiner":
+      case "refinerMode":
+        filterRefiner(settings, synchedSettings);
+        break;
+      default:
+        break;
+    }
+  });
+};
+
+(async () => {
+  listenForMessages();
+
+  unHideDivs();
+
+  const settings = await getStorageValue();
+  if (!settings.enabled) {
+    return;
+  }
+
+  let previousUrl = "";
+  const observer = new MutationObserver((_mutations) => {
+    if (location.href !== previousUrl) {
+      previousUrl = location.href;
+      sleep(1000).then(() => {
+        const timerStart = performance.now();
+        filterBrands(settings);
+        const timerEnd = performance.now();
+        setStorageValue({ lastMapRun: timerEnd - timerStart });
+      });
+    }
+  });
+
+  const config = { attributes: true, childList: true, subtree: true };
+  observer.observe(document, config);
+})();

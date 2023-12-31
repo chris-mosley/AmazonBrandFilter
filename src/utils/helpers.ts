@@ -3,7 +3,7 @@ import { browser } from "webextension-polyfill-ts";
 import { Engine, StorageApiProps, StorageSettings } from "utils/types";
 
 /**
- * Retrieves the name of the browser engine based on the runtime environment.
+ * retrieves the name of the browser engine based on the runtime environment.
  *
  * @returns
  */
@@ -12,6 +12,22 @@ export const getEngine = (): Engine => {
     return "chromium";
   } else if (typeof browser !== "undefined") {
     return "gecko";
+  } else {
+    throw new Error("Unsupported engine.");
+  }
+};
+
+/**
+ * retrieves the API object for the current browser environment.
+ *
+ * @returns
+ */
+export const getEngineApi = () => {
+  const engine = getEngine();
+  if (engine === "chromium") {
+    return chrome;
+  } else if (engine === "gecko") {
+    return browser;
   } else {
     throw new Error("Unsupported engine.");
   }
@@ -74,27 +90,26 @@ export const setStorageValue = async (
 };
 
 export const getMessage = async (message: string): Promise<string> => {
-  const engine= getEngine();
-  if(engine == "gecko" && browser.i18n) {
+  const engine = getEngine();
+  if (engine == "gecko" && browser.i18n) {
     return browser.i18n.getMessage(message);
-  } else if(engine == "chromium" && chrome.i18n) {
+  } else if (engine == "chromium" && chrome.i18n) {
     return chrome.i18n.getMessage(message);
   } else {
-    throw new Error("Unsupported engine.")
+    throw new Error("Unsupported engine.");
   }
-}
+};
 
 export const setIcon = async () => {
-  const engine = getEngine();
   const result = await getStorageValue("enabled");
   if (result.enabled) {
-    (engine === "gecko" ? chrome : browser).action.setIcon({
+    getEngineApi().action.setIcon({
       path: {
         48: "icons/abf-enabled-128.png",
       },
     });
   } else {
-    (engine === "gecko" ? chrome : browser).action.setIcon({
+    getEngineApi().action.setIcon({
       path: {
         48: "icons/abf-disabled-128.png",
       },
