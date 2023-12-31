@@ -13,7 +13,7 @@ module.exports = (env, argv) => {
           { from: "src/assets/css", to: "./" },
           { from: "src/assets/html", to: "./" },
           { from: "src/assets/icons", to: "icons" },
-          { from: "src/_locales", to: "_locales" },
+          { from: "src/assets/_locales", to: "_locales" },
         ],
       }),
     ],

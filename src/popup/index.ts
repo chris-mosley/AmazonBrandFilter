@@ -80,7 +80,6 @@ const setPopupBoxStates = async () => {
     abfAllowRefineBypass.checked = false;
   }
 
-  if (settings.refinerMode == "grey") {
   if (settings.refinerMode === "grey") {
     abfFilterRefinerGrey.checked = true;
     abfFilterRefinerHide.checked = false;
@@ -90,19 +89,19 @@ const setPopupBoxStates = async () => {
   }
 
   setIcon();
-  versionNumber.innerText = settings.brandsVersion.toString();
-  brandCount.innerText = settings.brandsCount.toString();
-  if (settings.lastMapRun != null) {
-  versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
-  brandCount.innerText = settings.brandsCount?.toString() ?? "";
-  if (settings.lastMapRun) {
-    lastRun.innerText = settings.lastMapRun + "ms";
-  } else {
-    lastRun.innerText = "N/A";
-  }
 
-  if (settings.useDebugMode) {
-    abfDebugMode.checked = true;
+  if (settings.lastMapRun != null) {
+    versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
+    brandCount.innerText = settings.brandsCount?.toString() ?? "";
+    if (settings.lastMapRun) {
+      lastRun.innerText = settings.lastMapRun + "ms";
+    } else {
+      lastRun.innerText = "N/A";
+    }
+
+    if (settings.useDebugMode) {
+      abfDebugMode.checked = true;
+    }
   }
 };
 
@@ -113,7 +112,6 @@ const setAddonVersion = () => {
 
 const setTextBoxStates = async () => {
   const syncSettings = await getStorageValue("sync");
-  if (syncSettings.usePersonalBlock == true) {
   if (syncSettings.usePersonalBlock === true) {
     abfPersonalBlockEnabled.checked = true;
     abfPersonalBlockTextBox.style.display = "block";
@@ -143,6 +141,7 @@ const setRefinerHide = (_event: Event) => {
     setStorageValue({ refinerMode: "hide" });
     abfFilterRefinerGrey.checked = false;
   } else {
+    abfFilterRefinerGrey.checked = true;
     setStorageValue({ refinerMode: "grey" });
   }
 };
@@ -152,6 +151,7 @@ const setRefinerGrey = (_event: Event) => {
     setStorageValue({ refinerMode: "grey" });
     abfFilterRefinerHide.checked = false;
   } else {
+    abfFilterRefinerHide.checked = true;
     setStorageValue({ refinerMode: "hide" });
   }
 };
@@ -207,7 +207,6 @@ const getSanitizedUserInput = () => {
   const sanitizedInput = [];
   for (const line of userInput) {
     // we'll come up with something smarter later.
-    if (line == "" || line == " " || line == "\n" || line == "\r\n" || line == "\r") {
     if (line === "" || line === " " || line === "\n" || line === "\r\n" || line === "\r") {
       continue;
     }
