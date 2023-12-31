@@ -1,8 +1,9 @@
 {
   "name": "amazon-brand-filter",
   "description": "amazon-brand-filter",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "manifest_version": 3,
+  "default_locale": "en",
   "icons": {
     "128": "icons/abf-disabled-128.png"
   },

@@ -95,7 +95,7 @@ section.clear-options > select,
   float: right;
 }
 
-#abf-personal-block-text {
+#abf-personal-block-textbox {
   resize: vertical;
   width: 100%;
   display: none;

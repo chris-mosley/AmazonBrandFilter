@@ -1,4 +1,4 @@
-import { getManifest, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
+import { getManifest, getMessage, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
 const abfFilterRefiner = document.getElementById("abf-filter-refiner")! as HTMLInputElement;
@@ -7,7 +7,7 @@ const abfFilterRefinerGrey = document.getElementById("abf-filter-refiner-grey")!
 const abfAllowRefineBypass = document.getElementById("abf-allow-refine-bypass")! as HTMLInputElement;
 const abfDebugMode = document.getElementById("abf-debug-mode")! as HTMLInputElement;
 const abfPersonalBlockEnabled = document.getElementById("abf-personal-block-enabled")! as HTMLInputElement;
-const abfPersonalBlockText = document.getElementById("abf-personal-block-text")! as HTMLTextAreaElement;
+const abfPersonalBlockTextBox = document.getElementById("abf-personal-block-textbox")! as HTMLTextAreaElement;
 const abfPersonalBlockButton = document.getElementById("abf-personal-block-button")! as HTMLButtonElement;
 const abfVersion = document.getElementById("abf-version")! as HTMLSpanElement;
 // const abfHideAll = document.getElementById("abf-hideall")! as HTMLButtonElement;
@@ -16,10 +16,47 @@ const versionNumber = document.getElementById("version-number")! as HTMLSpanElem
 const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
 const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
+const abfEnabledText = document.getElementById("abf-enabled-text")! as HTMLInputElement;
+const abfFilterRefinerText = document.getElementById("abf-filter-refiner-text")! as HTMLInputElement;
+const abfFilterRefinerHideText = document.getElementById("abf-filter-refiner-hide-text")! as HTMLInputElement;
+const abfFilterRefinerGreyText = document.getElementById("abf-filter-refiner-grey-text")! as HTMLInputElement;
+const abfAllowRefineBypassText = document.getElementById("abf-allow-refine-bypass-text")! as HTMLInputElement;
+const abfDebugModeText = document.getElementById("abf-debug-mode-text")! as HTMLInputElement;
+const abfPersonalBlockEnabledText = document.getElementById("abf-personal-block-enabled-text")! as HTMLInputElement;
+
+const abfPersonalBlockSavedConfirmText = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
+const brandListVersionText = document.getElementById("popup-brand-version-text")! as HTMLSpanElement;
+const brandCountText = document.getElementById("popup-brand-count-text")! as HTMLSpanElement;
+const feedbackText = document.getElementById("popup-feedback-text")! as HTMLSpanElement;
+const missingBrandText = document.getElementById("popup-missing-brand-text")! as HTMLSpanElement;
+const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
+const helptranslate = document.getElementById("popup-help-translate")! as HTMLSpanElement;
+
+
+const setText = async () => {
+  // these have to be snake_case because chrome doesnt support hyphens in i18n
+  abfEnabledText.innerText = await getMessage("popup_enabled");
+  abfFilterRefinerText.innerText = await getMessage("popup_filter_sidebar");
+  abfFilterRefinerHideText.innerText = await getMessage("popup_sidebar_hide");
+  abfFilterRefinerGreyText.innerText = await getMessage("popup_sidebar_grey");
+  abfAllowRefineBypassText.innerText = await getMessage("popup_allow_refine_bypass");
+  abfDebugModeText.innerText = await getMessage("popup_debug");
+  abfPersonalBlockEnabledText.innerText = await getMessage("popup_personal_blocklist");
+  abfPersonalBlockButton.innerText = await getMessage("popup_save_button");
+  
+  abfPersonalBlockSavedConfirmText.innerText = await getMessage("popup_save_confirm");
+  brandListVersionText.innerText = await getMessage("popup_list_version");
+  brandCountText.innerText = await getMessage("popup_list_count");
+  feedbackText.innerText = await getMessage("popup_feedback_link");
+  missingBrandText.innerText = await getMessage("popup_missing_brand");
+  lastRunText.innerText = await getMessage("popup_last_run");
+  helptranslate.innerText = await getMessage("popup_help_translate");
+}
+
+
 const setPopupBoxStates = async () => {
   console.log("AmazonBrandFilter: Setting Popup Box States");
-
-  // attempt to get the sync settings first, then fall back to local
+// attempt to get the sync settings first, then fall back to local
   let settings = await getStorageValue("sync");
   if (Object.keys(settings).length === 0) {
     settings = await getStorageValue();
@@ -53,16 +90,19 @@ const setPopupBoxStates = async () => {
   }
 
   setIcon();
-  versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
-  brandCount.innerText = settings.brandsCount?.toString() ?? "";
-  if (settings.lastMapRun) {
-    lastRun.innerText = settings.lastMapRun + "ms";
-  } else {
-    lastRun.innerText = "N/A";
-  }
 
-  if (settings.useDebugMode) {
-    abfDebugMode.checked = true;
+  if (settings.lastMapRun != null) {
+    versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
+    brandCount.innerText = settings.brandsCount?.toString() ?? "";
+    if (settings.lastMapRun) {
+      lastRun.innerText = settings.lastMapRun + "ms";
+    } else {
+      lastRun.innerText = "N/A";
+    }
+
+    if (settings.useDebugMode) {
+      abfDebugMode.checked = true;
+    }
   }
 };
 
@@ -75,7 +115,7 @@ const setTextBoxStates = async () => {
   const syncSettings = await getStorageValue("sync");
   if (syncSettings.usePersonalBlock === true) {
     abfPersonalBlockEnabled.checked = true;
-    abfPersonalBlockText.style.display = "block";
+    abfPersonalBlockTextBox.style.display = "block";
     abfPersonalBlockButton.style.display = "block";
   }
 };
@@ -102,6 +142,7 @@ const setRefinerHide = (_event: Event) => {
     setStorageValue({ refinerMode: "hide" });
     abfFilterRefinerGrey.checked = false;
   } else {
+    abfFilterRefinerGrey.checked = true;
     setStorageValue({ refinerMode: "grey" });
   }
 };
@@ -111,6 +152,7 @@ const setRefinerGrey = (_event: Event) => {
     setStorageValue({ refinerMode: "grey" });
     abfFilterRefinerHide.checked = false;
   } else {
+    abfFilterRefinerHide.checked = true;
     setStorageValue({ refinerMode: "hide" });
   }
 };
@@ -153,16 +195,16 @@ const setPersonalList = async () => {
   let textHeight = Object.keys(personalBlockMap).length;
   if (textHeight > 10) {
     textHeight = 10;
-    abfPersonalBlockText.style.overflow = "scroll";
+    abfPersonalBlockTextBox.style.overflow = "scroll";
   }
 
-  abfPersonalBlockText.value = textValue.join("\n");
-  abfPersonalBlockText.rows = textHeight;
+  abfPersonalBlockTextBox.value = textValue.join("\n");
+  abfPersonalBlockTextBox.rows = textHeight;
 };
 
 const getSanitizedUserInput = () => {
   // god so much santization to do here
-  const userInput = abfPersonalBlockText.value.split("\n");
+  const userInput = abfPersonalBlockTextBox.value.split("\n");
   const sanitizedInput = [];
   for (const line of userInput) {
     // we'll come up with something smarter later.
@@ -177,17 +219,18 @@ const getSanitizedUserInput = () => {
 const setPersonalBlockEnabled = () => {
   if (abfPersonalBlockEnabled.checked) {
     setStorageValue({ usePersonalBlock: true }, "sync");
-    abfPersonalBlockText.style.display = "block";
+    abfPersonalBlockTextBox.style.display = "block";
     abfPersonalBlockButton.style.display = "block";
   } else {
     setStorageValue({ usePersonalBlock: false }, "sync");
-    abfPersonalBlockText.style.display = "none";
+    abfPersonalBlockTextBox.style.display = "none";
     abfPersonalBlockButton.style.display = "none";
   }
 };
 
 setPopupBoxStates();
 setTextBoxStates();
+setText();
 setAddonVersion();
 setPersonalList();
 // abfEnabled.checked = true

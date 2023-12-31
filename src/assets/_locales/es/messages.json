@@ -1,0 +1,62 @@
+{
+  "popup_enabled": {
+    "message": "Activar Amazon Brand Filter",
+    "description": "Activar el filtro de marcas de Amazon"
+  },
+  "popup_filter_sidebar": {
+    "message": "Filtrar barra lateral",
+    "description": "También ocultar marcas en la barra lateral"
+  },
+  "popup_sidebar_hide": {
+    "message": "Ocultar",
+    "description": "Ocultar los elementos filtrados en la barra lateral"
+  },
+  "popup_sidebar_grey": {
+    "message": "Gris Fuera",
+    "description": "Filtrar los elementos de la barra lateral"
+  },
+  "popup_allow_refine_bypass": {
+    "message": "Permitir el desvío de la barra lateral",
+    "description": "Desactivar el filtrado al seleccionar una marca en la barra lateral"
+  },
+  "popup_debug": {
+    "message": "Modo depuración",
+    "description": "Activar o desactivar el modo de depuración"
+  },
+  "popup_personal_blocklist": {
+    "message": "Lista de bloqueo personal",
+    "description": "Activar o desactivar la lista de bloqueo personal"
+  },
+  "popup_save_button": {
+    "message": "Ahorrar",
+    "description": "botón guardar"
+  },
+  "popup_save_confirm": {
+    "message": "Salvado!",
+    "description": "Confirmación de lista personal guardada"
+  },
+  "popup_list_version": {
+    "message": "Versión de lista: ",
+    "description": "Mostrar qué versión de la lista tenemos"
+  },
+  "popup_list_count" : {
+    "message": "Marcas conocidas: ",
+    "description": "Cuántas marcas conocemos"
+  },
+  "popup_feedback_link": {
+    "message": "Comentarios (inglés)",
+    "description": "Enlace a github para informar problemas o solicitar funciones"
+  },
+  "popup_missing_brand" : {
+    "message": "¿Falta una marca?",
+    "description": "Enlace a AmazonBrandFilter para solicitar que se agregue una marca"
+  },
+  "popup_last_run": {
+     "message":"Ejecución anterior",
+    "description" : "Cuánto tiempo tomó la última carrera"
+  },
+  "popup_help_translate": {
+    "message": "Help translate",
+    "description": "Link to help translate the extension"
+  }
+}

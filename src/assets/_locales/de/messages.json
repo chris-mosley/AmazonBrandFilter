@@ -1,0 +1,62 @@
+{
+  "popup_enabled": {
+    "message": "Aktivieren Sie Amazon Brand Filter",
+    "description": "Aktivieren Sie Amazon Brand Filter"
+  },
+  "popup_filter_sidebar": {
+    "message": "Seitenleiste filtern",
+    "description": "Auch Marken in der Seitenleiste ausblenden"
+  },
+  "popup_sidebar_hide": {
+    "message": "Ausblenden",
+    "description": "Gefilterte Elemente in der Seitenleiste ausblenden"
+  },
+  "popup_sidebar_grey": {
+    "message": "Grey Out",
+    "description": "Gefilterte Elemente in der Seitenleiste ausgrauen"
+  },
+  "popup_allow_refine_bypass": {
+    "message": "Umgehung der Seitenleiste zulassen",
+    "description": "Filterung bei Auswahl einer Marke in der Seitenleiste deaktivieren"
+  },
+  "popup_debug": {
+    "message": "Debug_Modus",
+    "description": "Aktivieren oder Deaktivieren des Debug_Modus"
+  },
+  "popup_personal_blocklist": {
+    "message": "Persönliche Sperrliste",
+    "description": "Aktivieren oder Deaktivieren der persönlichen Blockliste"
+  },
+  "popup_save_button": {
+    "message": "Speichern Sie",
+    "description": "Schaltfläche Speichern"
+  },
+  "popup_save_confirm": {
+    "message": "Gerettet!",
+    "description": "Persönliche Liste gespeicherte Bestätigung"
+  },
+  "popup_list_version": {
+    "message": "Liste Version: ",
+    "description": "Zeigen, welche Version der Liste wir haben"
+  },
+  "popup_list_count" : {
+    "message": "Bekannte Marken: ",
+    "description": "Wie viele Marken wir kennen"
+  },
+  "popup_feedback_link": {
+    "message": "Feedback (Englisch)",
+    "description": "Link zu Github, um Probleme zu melden oder Funktionen anzufordern"
+  },
+  "popup_missing_brand" : {
+    "message": "Fehlt eine Marke?",
+    "description": "Link zu AmazonBrandFilter, um das Hinzufügen einer Marke zu beantragen"
+  },
+  "popup_last_run": {
+     "message":"Letzter Lauf",
+    "description" : "Wie lange der letzte Lauf gedauert hat"
+  },
+  "popup_help_translate": {
+    "message": "Help translate",
+    "description": "Link to help translate the extension"
+  }
+}
