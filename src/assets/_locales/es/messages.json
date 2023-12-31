@@ -54,5 +54,9 @@
   "popup_last_run": {
      "message":"Ejecución anterior",
     "description" : "Cuánto tiempo tomó la última carrera"
+  },
+  "popup_help_translate": {
+    "message": "Help translate",
+    "description": "Link to help translate the extension"
   }
 }
