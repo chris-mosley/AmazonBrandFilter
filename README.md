@@ -39,6 +39,14 @@ If they have existed for more than a few years they likely belong on this list.
 
 A good (but not foolproof) rule of thumb is that if a brand has a dedicated website, it probably belongs on this list.
 
+### Help translate!
+
+I didn't expect this to make it outside my home country of the USA but I'm thrilled that others are interested!  To that ends I'm hoping to accomadate as many as possible.
+Unfortunately I'm monolingual and the best I could do would be to use internet translation to give crappy translations for an unknown number of languages.  
+
+So if you would like to see your language represented.  Please translate all of the terms found in this document:
+
+
 ### Roadmap
 
 In no particular order these are the things I would like to add eventually

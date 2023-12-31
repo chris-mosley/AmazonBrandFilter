@@ -54,5 +54,9 @@
   "popup_last_run": {
      "message":"Last Run",
     "description" : "How long the last run took"
+  },
+  "popup_help_translate": {
+    "message": "Help translate",
+    "description": "Link to help translate the extension"
   }
 }

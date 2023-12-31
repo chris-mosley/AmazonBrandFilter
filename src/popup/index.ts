@@ -30,6 +30,7 @@ const brandCountText = document.getElementById("popup-brand-count-text")! as HTM
 const feedbackText = document.getElementById("popup-feedback-text")! as HTMLSpanElement;
 const missingBrandText = document.getElementById("popup-missing-brand-text")! as HTMLSpanElement;
 const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
+const helptranslate = document.getElementById("popup-help-translate")! as HTMLSpanElement;
 
 
 const setText = async () => {
@@ -49,7 +50,7 @@ const setText = async () => {
   feedbackText.innerText = await getMessage("popup_feedback_link");
   missingBrandText.innerText = await getMessage("popup_missing_brand");
   lastRunText.innerText = await getMessage("popup_last_run");
-
+  helptranslate.innerText = await getMessage("popup_help_translate");
 }
 
 
