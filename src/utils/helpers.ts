@@ -149,7 +149,7 @@ export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
 
 export const unHideDivs = () => {
   const divs = getItemDivs();
-  for (let i = 0; i < divs.length; i++) {
-    divs[i].style.display = "block";
+  for (const div of divs) {
+    div.style.display = "block";
   }
 };

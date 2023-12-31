@@ -21,7 +21,7 @@ const checkbrandsListVersion = async () => {
   const latestVersion: number = parseInt(latestRelease.tag_name.slice(1));
 
   // Check if current version match the latest version
-  if (currentVersion != latestVersion) {
+  if (currentVersion !== latestVersion) {
     console.log(
       `AmazonBrandFilter: %cCurrent version does not match latest version!`,
       "color: lightcoral",
