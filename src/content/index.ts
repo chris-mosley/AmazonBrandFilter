@@ -25,10 +25,7 @@ const checkBrandFilter = (): boolean => {
 
 const filterBrands = async (settings: StorageSettings) => {
   const synchedSettings = await getStorageValue("sync");
-  console.log("AmazonBrandFilter: synchedSettings are: " + JSON.stringify(synchedSettings));
-  console.log("AmazonBrandFilter: Starting filterBrands");
   const brands = settings.brandsMap;
-  console.log("AmazonBrandFilter: Brands are " + JSON.stringify(brands));
   if (Object.keys(brands).length === 0) {
     console.log("AmazonBrandFilter: No brands found");
     return;
@@ -52,6 +49,7 @@ const filterBrands = async (settings: StorageSettings) => {
             if (settings.useDebugMode) {
               // to make it easier to tell when something is hidden because
               // it isnt found vs when it is hidden because it is blocked
+              div.style.display = "block";
               div.style.backgroundColor = "yellow";
               div.innerHTML =
                 "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
@@ -65,6 +63,7 @@ const filterBrands = async (settings: StorageSettings) => {
           }
         } else {
           if (settings.useDebugMode) {
+            div.style.display = "block";
             div.style.backgroundColor = "green";
             div.innerHTML =
               "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
@@ -76,6 +75,7 @@ const filterBrands = async (settings: StorageSettings) => {
         }
       } else {
         if (settings.useDebugMode) {
+          div.style.display = "block";
           div.style.backgroundColor = "red";
         } else {
           div.style.display = "none";
@@ -101,7 +101,6 @@ const filterBrands = async (settings: StorageSettings) => {
 
 const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
   const synchedSettings = await getStorageValue("sync");
-  console.log("AmazonBrandFilter: synchedSettings are: " + JSON.stringify(synchedSettings));
   const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length === 0) {
     return;
@@ -121,6 +120,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
             if (settings.useDebugMode) {
               // to make it easier to tell when something is hidden because
               // it isnt found vs when it is hidden because it is blocked
+              div.style.display = "block";
               div.style.backgroundColor = "yellow";
               div.innerHTML =
                 "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
@@ -134,6 +134,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
           }
         }
         if (settings.useDebugMode) {
+          div.style.display = "block";
           div.style.backgroundColor = "green";
           div.innerHTML =
             "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
@@ -146,6 +147,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
     }
   }
   if (settings.useDebugMode) {
+    div.style.display = "block";
     div.style.backgroundColor = "red";
   } else {
     div.style.display = "none";
@@ -170,6 +172,7 @@ const filterRefiner = (settings: StorageSettings, syncSettings: StorageSettings)
 
     if (!settings.brandsMap[brand]) {
       if (settings.useDebugMode) {
+        div.style.display = "block";
         div.style.backgroundColor = "red";
       } else {
         if (settings.refinerMode === "grey") {
@@ -185,6 +188,7 @@ const filterRefiner = (settings: StorageSettings, syncSettings: StorageSettings)
 
     if (syncSettings.usePersonalBlock && syncSettings.personalBlockMap[brand]) {
       if (settings.useDebugMode) {
+        div.style.display = "block";
         div.style.backgroundColor = "yellow";
       } else {
         if (settings.refinerMode === "grey") {
@@ -212,6 +216,16 @@ const listenForMessages = () => {
         } else {
           unHideDivs();
         }
+        break;
+      case "refinerBypass":
+        if (message.isChecked) {
+          if (checkBrandFilter()) {
+            return;
+          }
+        }
+        break;
+      case "useDebugMode":
+        filterBrands(settings);
         break;
       case "filterRefiner":
       case "refinerMode":

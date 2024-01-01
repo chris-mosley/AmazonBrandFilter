@@ -169,12 +169,13 @@ const setRefinerBypass = async (_event: Event) => {
   sendMessageToContentScriptPostClick({ type: "refinerBypass", isChecked: abfAllowRefineBypass.checked });
 };
 
-const setDebugMode = (_event: Event) => {
+const setDebugMode = async (_event: Event) => {
   if (abfDebugMode.checked) {
-    setStorageValue({ useDebugMode: true });
+    await setStorageValue({ useDebugMode: true });
   } else {
-    setStorageValue({ useDebugMode: false });
+    await setStorageValue({ useDebugMode: false });
   }
+  sendMessageToContentScriptPostClick({ type: "useDebugMode", isChecked: abfDebugMode.checked });
 };
 
 const savePersonalBlock = async () => {
