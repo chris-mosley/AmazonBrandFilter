@@ -97,7 +97,7 @@ const filterRefiner = (settings: StorageSettings, syncSettings: StorageSettings)
       continue;
     }
 
-    if (!settings.brandsMap[brand]) {
+    if (!settings.brandsMap[brand] || (syncSettings.usePersonalBlock && syncSettings.personalBlockMap[brand])) {
       if (settings.refinerMode === "grey") {
         div.style.display = "block";
         div
@@ -105,29 +105,14 @@ const filterRefiner = (settings: StorageSettings, syncSettings: StorageSettings)
           ?.setAttribute("style", "display: block; color: grey !important;");
       } else {
         div.style.display = "none";
+        div
+          .getElementsByClassName("a-size-base a-color-base")[0]
+          ?.setAttribute("style", "display: block; color: black !important;");
       }
 
       if (settings.useDebugMode) {
         div.style.display = "block";
         div.style.backgroundColor = "red";
-      } else {
-        div.style.backgroundColor = "white";
-      }
-    }
-
-    if (syncSettings.usePersonalBlock && syncSettings.personalBlockMap[brand]) {
-      if (settings.refinerMode === "grey") {
-        div.style.display = "block";
-        div
-          .getElementsByClassName("a-size-base a-color-base")[0]
-          ?.setAttribute("style", "display: block; color: grey !important;");
-      } else {
-        div.style.display = "none";
-      }
-
-      if (settings.useDebugMode) {
-        div.style.display = "block";
-        div.style.backgroundColor = "yellow";
       } else {
         div.style.backgroundColor = "white";
       }
