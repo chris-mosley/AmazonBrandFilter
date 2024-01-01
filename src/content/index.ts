@@ -82,6 +82,11 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
 };
 
 const filterRefiner = (settings: StorageSettings, syncSettings: StorageSettings) => {
+  // do nothing if not disabled
+  if (!settings.enabled || !settings.filterRefiner) {
+    return;
+  }
+
   const refiner = document.getElementById("brandsRefinements");
   if (!refiner) {
     return;
@@ -121,7 +126,7 @@ const filterRefiner = (settings: StorageSettings, syncSettings: StorageSettings)
 };
 
 const filterBrands = async (settings: StorageSettings) => {
-  // do nothing if the extension is disabled
+  // do nothing if not disabled
   if (!settings.enabled) {
     return;
   }
@@ -201,13 +206,8 @@ const filterBrands = async (settings: StorageSettings) => {
   }
 };
 
-/**
- * resets the brands filter to the default Amazon settings (colors and display)
- */
-const resetBrands = () => {
-  // reset sidebar
-  let divs = [];
-  divs = [
+const resetBrandsRefiner = () => {
+  const divs = [
     ...(document.getElementById("brandsRefinements")?.getElementsByClassName("a-spacing-micro") ?? []),
   ] as HTMLDivElement[];
   divs.forEach((div) => {
@@ -217,12 +217,24 @@ const resetBrands = () => {
       ?.setAttribute("style", "display: block; color: black !important;");
     div.style.display = "block";
   });
-  // reset search results
-  divs = [...getItemDivs()] as HTMLDivElement[];
+};
+
+const resetBrandsSearchResults = () => {
+  const divs = [...getItemDivs()] as HTMLDivElement[];
   divs.forEach((div) => {
     div.style.backgroundColor = "white";
     div.style.display = "block";
   });
+};
+
+/**
+ * resets the brands filter to the default Amazon settings (colors and display)
+ */
+const resetBrands = () => {
+  // reset refiner
+  resetBrandsRefiner();
+  // reset search results
+  resetBrandsSearchResults();
 };
 
 const listenForMessages = () => {
@@ -251,6 +263,9 @@ const listenForMessages = () => {
         filterBrands(settings);
         break;
       case "filterRefiner":
+        resetBrandsRefiner();
+        filterRefiner(settings, synchedSettings);
+        break;
       case "refinerMode":
         filterRefiner(settings, synchedSettings);
         break;
