@@ -65,6 +65,8 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
             searchTerm +
             "</span><br>" +
             div.innerHTML;
+        } else {
+          div.style.backgroundColor = "white";
         }
         return;
       }
@@ -75,6 +77,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
     div.style.backgroundColor = "red";
   } else {
     div.style.display = "none";
+    div.style.backgroundColor = "white";
   }
 };
 
@@ -95,34 +98,38 @@ const filterRefiner = (settings: StorageSettings, syncSettings: StorageSettings)
     }
 
     if (!settings.brandsMap[brand]) {
+      if (settings.refinerMode === "grey") {
+        div.style.display = "block";
+        div
+          .getElementsByClassName("a-size-base a-color-base")[0]
+          ?.setAttribute("style", "display: block; color: grey !important;");
+      } else {
+        div.style.display = "none";
+      }
+
       if (settings.useDebugMode) {
         div.style.display = "block";
         div.style.backgroundColor = "red";
       } else {
-        if (settings.refinerMode === "grey") {
-          div.style.display = "block";
-          div
-            .getElementsByClassName("a-size-base a-color-base")[0]
-            ?.setAttribute("style", "display: block; color: grey !important;");
-        } else {
-          div.style.display = "none";
-        }
+        div.style.backgroundColor = "white";
       }
     }
 
     if (syncSettings.usePersonalBlock && syncSettings.personalBlockMap[brand]) {
+      if (settings.refinerMode === "grey") {
+        div.style.display = "block";
+        div
+          .getElementsByClassName("a-size-base a-color-base")[0]
+          ?.setAttribute("style", "display: block; color: grey !important;");
+      } else {
+        div.style.display = "none";
+      }
+
       if (settings.useDebugMode) {
         div.style.display = "block";
         div.style.backgroundColor = "yellow";
       } else {
-        if (settings.refinerMode === "grey") {
-          div.style.display = "block";
-          div
-            .getElementsByClassName("a-size-base a-color-base")[0]
-            ?.setAttribute("style", "display: block; color: grey !important;");
-        } else {
-          div.style.display = "none";
-        }
+        div.style.backgroundColor = "white";
       }
     }
   }
@@ -180,6 +187,8 @@ const filterBrands = async (settings: StorageSettings) => {
               searchTerm +
               "</span><br>" +
               div.innerHTML;
+          } else {
+            div.style.backgroundColor = "white";
           }
           continue;
         }
@@ -189,6 +198,7 @@ const filterBrands = async (settings: StorageSettings) => {
           div.style.backgroundColor = "red";
         } else {
           div.style.display = "none";
+          div.style.backgroundColor = "white";
         }
         continue;
       }
@@ -198,15 +208,36 @@ const filterBrands = async (settings: StorageSettings) => {
     if (shortText.length === 0) {
       continue;
     }
-    if (shortText.length === 0) {
-      continue;
-    }
     await descriptionSearch(settings, div);
   }
 
   if (settings.filterRefiner) {
     filterRefiner(settings, synchedSettings);
   }
+};
+
+/**
+ * resets the brands filter to the default Amazon settings (colors and display)
+ */
+const resetBrands = () => {
+  // reset sidebar
+  let divs = [];
+  divs = [
+    ...(document.getElementById("brandsRefinements")?.getElementsByClassName("a-spacing-micro") ?? []),
+  ] as HTMLDivElement[];
+  divs.forEach((div) => {
+    div.style.backgroundColor = "white";
+    div
+      .getElementsByClassName("a-size-base a-color-base")[0]
+      ?.setAttribute("style", "display: block; color: black !important;");
+    div.style.display = "block";
+  });
+  // reset search results
+  divs = [...getItemDivs()] as HTMLDivElement[];
+  divs.forEach((div) => {
+    div.style.backgroundColor = "white";
+    div.style.display = "block";
+  });
 };
 
 const listenForMessages = () => {
@@ -219,6 +250,8 @@ const listenForMessages = () => {
         if (message.isChecked) {
           filterBrands(settings);
         } else {
+          resetBrands();
+          // previously hidden elements should be shown
           unHideDivs();
         }
         break;
