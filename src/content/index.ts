@@ -23,82 +23,6 @@ const checkBrandFilter = (): boolean => {
   return false;
 };
 
-const filterBrands = async (settings: StorageSettings) => {
-  const synchedSettings = await getStorageValue("sync");
-  const brands = settings.brandsMap;
-  if (Object.keys(brands).length === 0) {
-    console.log("AmazonBrandFilter: No brands found");
-    return;
-  }
-  console.log("AmazonBrandFilter: Brands found");
-
-  if (settings.refinerBypass) {
-    if (checkBrandFilter()) {
-      return;
-    }
-  }
-
-  const divs = getItemDivs();
-  for (const div of divs) {
-    const itemHeader = div.getElementsByClassName("s-line-clamp-1") as HTMLCollectionOf<HTMLDivElement>;
-    if (itemHeader.length !== 0) {
-      const searchTerm = itemHeader[0]?.innerText.toUpperCase();
-      if (searchTerm && settings.brandsMap[searchTerm]) {
-        if (synchedSettings.usePersonalBlock) {
-          if (synchedSettings.personalBlockMap[searchTerm]) {
-            if (settings.useDebugMode) {
-              // to make it easier to tell when something is hidden because
-              // it isnt found vs when it is hidden because it is blocked
-              div.style.display = "block";
-              div.style.backgroundColor = "yellow";
-              div.innerHTML =
-                "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
-                searchTerm +
-                "</span><br>" +
-                div.innerHTML;
-              continue;
-            } else {
-              div.style.display = "none";
-            }
-          }
-        } else {
-          if (settings.useDebugMode) {
-            div.style.display = "block";
-            div.style.backgroundColor = "green";
-            div.innerHTML =
-              "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
-              searchTerm +
-              "</span><br>" +
-              div.innerHTML;
-          }
-          continue;
-        }
-      } else {
-        if (settings.useDebugMode) {
-          div.style.display = "block";
-          div.style.backgroundColor = "red";
-        } else {
-          div.style.display = "none";
-        }
-        continue;
-      }
-    }
-
-    const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
-    if (shortText.length === 0) {
-      continue;
-    }
-    if (shortText.length === 0) {
-      continue;
-    }
-    await descriptionSearch(settings, div);
-  }
-
-  if (settings.filterRefiner) {
-    filterRefiner(settings, synchedSettings);
-  }
-};
-
 const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
   const synchedSettings = await getStorageValue("sync");
   const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
@@ -204,6 +128,87 @@ const filterRefiner = (settings: StorageSettings, syncSettings: StorageSettings)
   }
 };
 
+const filterBrands = async (settings: StorageSettings) => {
+  // do nothing if the extension is disabled
+  if (!settings.enabled) {
+    return;
+  }
+
+  const synchedSettings = await getStorageValue("sync");
+  const brands = settings.brandsMap;
+  if (Object.keys(brands).length === 0) {
+    console.log("AmazonBrandFilter: No brands found");
+    return;
+  }
+  console.log("AmazonBrandFilter: Brands found");
+
+  if (settings.refinerBypass) {
+    if (checkBrandFilter()) {
+      return;
+    }
+  }
+
+  const divs = getItemDivs();
+  for (const div of divs) {
+    const itemHeader = div.getElementsByClassName("s-line-clamp-1") as HTMLCollectionOf<HTMLDivElement>;
+    if (itemHeader.length !== 0) {
+      const searchTerm = itemHeader[0]?.innerText.toUpperCase();
+      if (searchTerm && settings.brandsMap[searchTerm]) {
+        if (synchedSettings.usePersonalBlock) {
+          if (synchedSettings.personalBlockMap[searchTerm]) {
+            if (settings.useDebugMode) {
+              // to make it easier to tell when something is hidden because
+              // it isnt found vs when it is hidden because it is blocked
+              div.style.display = "block";
+              div.style.backgroundColor = "yellow";
+              div.innerHTML =
+                "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
+                searchTerm +
+                "</span><br>" +
+                div.innerHTML;
+              continue;
+            } else {
+              div.style.display = "none";
+            }
+          }
+        } else {
+          if (settings.useDebugMode) {
+            div.style.display = "block";
+            div.style.backgroundColor = "green";
+            div.innerHTML =
+              "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
+              searchTerm +
+              "</span><br>" +
+              div.innerHTML;
+          }
+          continue;
+        }
+      } else {
+        if (settings.useDebugMode) {
+          div.style.display = "block";
+          div.style.backgroundColor = "red";
+        } else {
+          div.style.display = "none";
+        }
+        continue;
+      }
+    }
+
+    const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
+    if (shortText.length === 0) {
+      continue;
+    }
+    if (shortText.length === 0) {
+      continue;
+    }
+    await descriptionSearch(settings, div);
+  }
+
+  if (settings.filterRefiner) {
+    filterRefiner(settings, synchedSettings);
+  }
+};
+
 const listenForMessages = () => {
   getEngineApi().runtime.onMessage.addListener(async (message: PopupMessage) => {
     console.log({ type: message.type, isChecked: message.isChecked });
@@ -238,26 +243,28 @@ const listenForMessages = () => {
 };
 
 (async () => {
+  // listen for messages from the popup
   listenForMessages();
 
   unHideDivs();
 
-  const settings = await getStorageValue();
-  if (!settings.enabled) {
-    return;
-  }
-
   let previousUrl = "";
-  const observer = new MutationObserver((_mutations) => {
-    if (location.href !== previousUrl) {
-      previousUrl = location.href;
-      sleep(1000).then(() => {
-        const timerStart = performance.now();
-        filterBrands(settings);
-        const timerEnd = performance.now();
-        setStorageValue({ lastMapRun: timerEnd - timerStart });
-      });
+  const observer = new MutationObserver(async (_mutations) => {
+    if (location.href === previousUrl) {
+      return;
     }
+    previousUrl = location.href;
+
+    const settings = await getStorageValue();
+    if (!settings.enabled) {
+      return;
+    }
+
+    await sleep(1000);
+    const timerStart = performance.now();
+    filterBrands(settings);
+    const timerEnd = performance.now();
+    setStorageValue({ lastMapRun: timerEnd - timerStart });
   });
 
   const config = { attributes: true, childList: true, subtree: true };
