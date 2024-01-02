@@ -24,11 +24,17 @@ const checkBrandFilter = (): boolean => {
 };
 
 const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
-  const synchedSettings = await getStorageValue("sync");
+  // attempt to get the sync settings first, then fall back to local
+  let syncSettings = await getStorageValue("sync");
+  if (Object.keys(syncSettings).length === 0) {
+    syncSettings = await getStorageValue();
+  }
+
   const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length === 0) {
     return;
   }
+
   const fullText = shortText[0]?.innerText.toUpperCase() ?? "";
   const wordList = fullText.replace(", ", " ").split(" ").slice(0, 8);
   for (let w = 0; w < settings.maxWordCount + 3; w++) {
@@ -37,10 +43,11 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
       if (searchTerm.length === 0) {
         continue;
       }
+
       if (settings.brandsMap[searchTerm]) {
-        // check to see if each word is in the map.  if we dont stop then we hide it.
-        if (synchedSettings.usePersonalBlock) {
-          if (synchedSettings.personalBlockMap[searchTerm]) {
+        // check to see if each word is in the map. if we dont stop then we hide it.
+        if (syncSettings.usePersonalBlock) {
+          if (syncSettings.personalBlockMap && syncSettings.personalBlockMap[searchTerm]) {
             if (settings.useDebugMode) {
               // to make it easier to tell when something is hidden because
               // it isnt found vs when it is hidden because it is blocked
@@ -55,8 +62,15 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
               div.style.display = "none";
             }
             return;
+          } else {
+            // if personal block is not enabled then we want to show the item again
+            div.style.display = "block";
           }
+        } else {
+          // if personal block is not enabled then we want to show the item again
+          div.style.display = "block";
         }
+
         if (settings.useDebugMode) {
           div.style.display = "block";
           div.style.backgroundColor = "green";
@@ -72,6 +86,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
       }
     }
   }
+
   if (settings.useDebugMode) {
     div.style.display = "block";
     div.style.backgroundColor = "red";
@@ -81,10 +96,16 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
   }
 };
 
-const filterRefiner = (settings: StorageSettings, syncSettings: StorageSettings) => {
+const runFilterRefiner = async (settings: StorageSettings) => {
   // do nothing if not disabled
   if (!settings.enabled || !settings.filterRefiner) {
     return;
+  }
+
+  // attempt to get the sync settings first, then fall back to local
+  let syncSettings = await getStorageValue("sync");
+  if (Object.keys(syncSettings).length === 0) {
+    syncSettings = await getStorageValue();
   }
 
   const refiner = document.getElementById("brandsRefinements");
@@ -131,7 +152,12 @@ const filterBrands = async (settings: StorageSettings) => {
     return;
   }
 
-  const synchedSettings = await getStorageValue("sync");
+  // attempt to get the sync settings first, then fall back to local
+  let syncSettings = await getStorageValue("sync");
+  if (Object.keys(syncSettings).length === 0) {
+    syncSettings = await getStorageValue();
+  }
+
   const brands = settings.brandsMap;
   if (Object.keys(brands).length === 0) {
     console.log("AmazonBrandFilter: No brands found");
@@ -151,8 +177,8 @@ const filterBrands = async (settings: StorageSettings) => {
     if (itemHeader.length !== 0) {
       const searchTerm = itemHeader[0]?.innerText.toUpperCase();
       if (searchTerm && settings.brandsMap[searchTerm]) {
-        if (synchedSettings.usePersonalBlock) {
-          if (synchedSettings.personalBlockMap[searchTerm]) {
+        if (syncSettings.usePersonalBlock) {
+          if (syncSettings.personalBlockMap && syncSettings.personalBlockMap[searchTerm]) {
             if (settings.useDebugMode) {
               // to make it easier to tell when something is hidden because
               // it isnt found vs when it is hidden because it is blocked
@@ -202,7 +228,7 @@ const filterBrands = async (settings: StorageSettings) => {
   }
 
   if (settings.filterRefiner) {
-    filterRefiner(settings, synchedSettings);
+    runFilterRefiner(settings);
   }
 };
 
@@ -241,7 +267,6 @@ const listenForMessages = () => {
   getEngineApi().runtime.onMessage.addListener(async (message: PopupMessage) => {
     console.log({ type: message.type, isChecked: message.isChecked });
     const settings = await getStorageValue();
-    const synchedSettings = await getStorageValue("sync");
     switch (message.type) {
       case "enabled":
         if (message.isChecked) {
@@ -264,10 +289,14 @@ const listenForMessages = () => {
         break;
       case "filterRefiner":
         resetBrandsRefiner();
-        filterRefiner(settings, synchedSettings);
+        runFilterRefiner(settings);
         break;
       case "refinerMode":
-        filterRefiner(settings, synchedSettings);
+        runFilterRefiner(settings);
+        break;
+      case "usePersonalBlock":
+      case "personalBlockMap":
+        filterBrands(settings);
         break;
       default:
         break;

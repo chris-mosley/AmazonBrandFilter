@@ -3,7 +3,12 @@ import { getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
 const getFirstRun = async () => {
   const { abfFirstRun } = await getStorageValue("abfFirstRun");
-  return abfFirstRun as boolean;
+  return abfFirstRun;
+};
+
+const getCurrentBrandsVersion = async () => {
+  const { brandsVersion } = await getStorageValue("brandsVersion");
+  return brandsVersion;
 };
 
 const checkbrandsListVersion = async () => {
@@ -17,11 +22,11 @@ const checkbrandsListVersion = async () => {
     );
 
   // Current / Latest versions
-  const currentVersion: number = await getCurrentBrandsVersion();
-  const latestVersion: number = parseInt(latestRelease.tag_name.slice(1));
+  const currentVersion = await getCurrentBrandsVersion();
+  const latestVersion = parseInt(latestRelease.tag_name.slice(1));
 
   // Check if current version match the latest version
-  if (currentVersion !== latestVersion) {
+  if (!currentVersion || currentVersion !== latestVersion) {
     console.log(
       `AmazonBrandFilter: %cCurrent version does not match latest version!`,
       "color: lightcoral",
@@ -55,7 +60,7 @@ const updateBrandsListMap = async () => {
     .then((text) => text.split("\n"))
     .catch((err) => {
       console.error(err, "AmazonBrandFilter: %cFailed downloading brands list!", "color: lightcoral");
-      return [] as string[];
+      return [];
     });
 
   let maxWordCount = 0;
@@ -75,19 +80,15 @@ const updateBrandsListMap = async () => {
   }
 
   // Browser local storage saves
-  setStorageValue({ brandsMap: brandsMap });
-  setStorageValue({ brandsCount: brandsCount });
-  setStorageValue({ maxWordCount: maxWordCount });
+  setStorageValue({
+    brandsMap,
+    brandsCount,
+    maxWordCount,
+  });
 
-  // Console logs
   console.log(`AmazonBrandFilter: Brands count is ${brandsCount}!`);
   console.log(`AmazonBrandFilter: Max brand word count is ${maxWordCount}!`);
   console.log(`AmazonBrandFilter: Showing brands list!`, brandsMap);
-};
-
-const getCurrentBrandsVersion = async () => {
-  const { brandsVersion } = await getStorageValue("brandsVersion");
-  return brandsVersion as number;
 };
 
 (async () => {
@@ -96,12 +97,15 @@ const getCurrentBrandsVersion = async () => {
     console.log("AmazonBrandFilter: %cFirst run, setting defaults!", "color: yellow");
 
     // Defaults
-    setStorageValue({ enabled: true });
-    setStorageValue({ brandsVersion: 0 });
-    setStorageValue({ brandsCount: 0 });
-    setStorageValue({ brandsMap: {} });
-    setStorageValue({ refinerBypass: true });
-    setStorageValue({ abfFirstRun: false });
+    setStorageValue({
+      enabled: true,
+      brandsVersion: 0,
+      brandsCount: 0,
+      brandsMap: {},
+      refinerBypass: true,
+      abfFirstRun: false,
+      personalBlockMap: {},
+    });
   } else {
     console.log("AmazonBrandFilter: %cNot first run!", "color: yellow");
   }

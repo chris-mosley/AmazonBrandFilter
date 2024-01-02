@@ -1,7 +1,7 @@
 {
   "name": "amazon-brand-filter",
   "description": "amazon-brand-filter",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "keywords": [],
   "author": "",
   "license": "MIT",
@@ -16,6 +16,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
     "prettier": "2.8.8",
+    "run-script-os": "^1.1.6",
     "ts-loader": "^9.4.3",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.1.3",
