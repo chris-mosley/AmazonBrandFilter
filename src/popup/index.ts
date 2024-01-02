@@ -1,4 +1,5 @@
-import { getManifest, getMessage, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
+import { getEngineApi, getManifest, getMessage, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
+import { PopupMessage } from "utils/types";
 
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
 const abfFilterRefiner = document.getElementById("abf-filter-refiner")! as HTMLInputElement;
@@ -24,14 +25,13 @@ const abfAllowRefineBypassText = document.getElementById("abf-allow-refine-bypas
 const abfDebugModeText = document.getElementById("abf-debug-mode-text")! as HTMLInputElement;
 const abfPersonalBlockEnabledText = document.getElementById("abf-personal-block-enabled-text")! as HTMLInputElement;
 
-const abfPersonalBlockSavedConfirmText = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
+const abfPersonalBlockText = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
 const brandListVersionText = document.getElementById("popup-brand-version-text")! as HTMLSpanElement;
 const brandCountText = document.getElementById("popup-brand-count-text")! as HTMLSpanElement;
 const feedbackText = document.getElementById("popup-feedback-text")! as HTMLSpanElement;
 const missingBrandText = document.getElementById("popup-missing-brand-text")! as HTMLSpanElement;
 const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
 const helptranslate = document.getElementById("popup-help-translate")! as HTMLSpanElement;
-
 
 const setText = async () => {
   // these have to be snake_case because chrome doesnt support hyphens in i18n
@@ -43,20 +43,19 @@ const setText = async () => {
   abfDebugModeText.innerText = await getMessage("popup_debug");
   abfPersonalBlockEnabledText.innerText = await getMessage("popup_personal_blocklist");
   abfPersonalBlockButton.innerText = await getMessage("popup_save_button");
-  
-  abfPersonalBlockSavedConfirmText.innerText = await getMessage("popup_save_confirm");
+
+  abfPersonalBlockText.innerText = await getMessage("popup_save_confirm");
   brandListVersionText.innerText = await getMessage("popup_list_version");
   brandCountText.innerText = await getMessage("popup_list_count");
   feedbackText.innerText = await getMessage("popup_feedback_link");
   missingBrandText.innerText = await getMessage("popup_missing_brand");
   lastRunText.innerText = await getMessage("popup_last_run");
   helptranslate.innerText = await getMessage("popup_help_translate");
-}
-
+};
 
 const setPopupBoxStates = async () => {
   console.log("AmazonBrandFilter: Setting Popup Box States");
-// attempt to get the sync settings first, then fall back to local
+  // attempt to get the sync settings first, then fall back to local
   let settings = await getStorageValue("sync");
   if (Object.keys(settings).length === 0) {
     settings = await getStorageValue();
@@ -122,55 +121,61 @@ const setTextBoxStates = async () => {
 
 const enableDisable = async (_event: Event) => {
   if (abfEnabled.checked) {
-    setStorageValue({ enabled: true });
+    await setStorageValue({ enabled: true });
   } else {
-    setStorageValue({ enabled: false });
+    await setStorageValue({ enabled: false });
   }
-  setIcon();
+  await setIcon();
+  sendMessageToContentScriptPostClick({ type: "enabled", isChecked: abfEnabled.checked });
 };
 
-const setFilterRefiner = (_event: Event) => {
+const setFilterRefiner = async (_event: Event) => {
   if (abfFilterRefiner.checked) {
-    setStorageValue({ filterRefiner: true });
+    await setStorageValue({ filterRefiner: true });
   } else {
-    setStorageValue({ filterRefiner: false });
+    await setStorageValue({ filterRefiner: false });
   }
+  sendMessageToContentScriptPostClick({ type: "filterRefiner", isChecked: abfFilterRefiner.checked });
 };
 
-const setRefinerHide = (_event: Event) => {
+const setRefinerHide = async (_event: Event) => {
   if (abfFilterRefinerHide.checked) {
-    setStorageValue({ refinerMode: "hide" });
     abfFilterRefinerGrey.checked = false;
+    await setStorageValue({ refinerMode: "hide" });
   } else {
     abfFilterRefinerGrey.checked = true;
-    setStorageValue({ refinerMode: "grey" });
+    await setStorageValue({ refinerMode: "grey" });
   }
+  sendMessageToContentScriptPostClick({ type: "refinerMode", isChecked: abfFilterRefinerHide.checked });
 };
 
-const setRefinerGrey = (_event: Event) => {
+const setRefinerGrey = async (_event: Event) => {
   if (abfFilterRefinerGrey.checked) {
-    setStorageValue({ refinerMode: "grey" });
     abfFilterRefinerHide.checked = false;
+    await setStorageValue({ refinerMode: "grey" });
   } else {
     abfFilterRefinerHide.checked = true;
-    setStorageValue({ refinerMode: "hide" });
+    await setStorageValue({ refinerMode: "hide" });
   }
+  sendMessageToContentScriptPostClick({ type: "refinerMode", isChecked: abfFilterRefinerGrey.checked });
 };
 
-const setRefinerBypass = (_event: Event) => {
+const setRefinerBypass = async (_event: Event) => {
   if (abfAllowRefineBypass.checked) {
-    setStorageValue({ refinerBypass: true });
+    await setStorageValue({ refinerBypass: true });
   } else {
-    setStorageValue({ refinerBypass: false });
+    await setStorageValue({ refinerBypass: false });
   }
+  sendMessageToContentScriptPostClick({ type: "refinerBypass", isChecked: abfAllowRefineBypass.checked });
 };
 
-const setDebugMode = (_event: Event) => {
+const setDebugMode = async (_event: Event) => {
   if (abfDebugMode.checked) {
-    setStorageValue({ useDebugMode: true });
+    await setStorageValue({ useDebugMode: true });
   } else {
-    setStorageValue({ useDebugMode: false });
+    await setStorageValue({ useDebugMode: false });
   }
+  sendMessageToContentScriptPostClick({ type: "useDebugMode", isChecked: abfDebugMode.checked });
 };
 
 const savePersonalBlock = async () => {
@@ -226,6 +231,16 @@ const setPersonalBlockEnabled = () => {
     abfPersonalBlockTextBox.style.display = "none";
     abfPersonalBlockButton.style.display = "none";
   }
+};
+
+const sendMessageToContentScriptPostClick = (message: PopupMessage) => {
+  getEngineApi().tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const activeTab = tabs[0];
+    if (!activeTab || !activeTab.id) {
+      return;
+    }
+    getEngineApi().tabs.sendMessage(activeTab.id, message);
+  });
 };
 
 setPopupBoxStates();
