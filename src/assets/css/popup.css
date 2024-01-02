@@ -110,6 +110,7 @@ section.clear-options > select,
 .abf-personal-block-saved-confirm {
   display: none;
   float: right;
+  margin-right: .5em;
 }
 
 .resizable-textarea {
