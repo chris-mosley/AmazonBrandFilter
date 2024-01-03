@@ -168,3 +168,18 @@ export const unHideDivs = () => {
     div.style.display = "block";
   }
 };
+
+/**
+ * use regular expression to split the input string based on the delimiters
+ * delimiterPattern matches one or more commas, spaces, new lines, or return characters
+ *
+ * @returns
+ */
+export const getSanitizedUserInput = (userInput: string) => {
+  const delimiterPattern = /[,\s\n\r]+/;
+  const wordsArray = userInput.split(delimiterPattern);
+  const upperCaseWordsArray = wordsArray.map((word) => word.toUpperCase());
+  // remove empty strings from the array (e.g., if there are multiple consecutive delimiters)
+  const filteredArray = upperCaseWordsArray.filter((word) => word.trim() !== "");
+  return filteredArray;
+};

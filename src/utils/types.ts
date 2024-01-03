@@ -11,12 +11,11 @@ export interface StorageSettings {
   filterRefiner: boolean;
   refinerMode: "grey" | "hide";
   refinerBypass: boolean;
+  usePersonalBlock: boolean;
+  personalBlockMap: Record<string, boolean>;
+  useDebugMode: boolean;
   lastMapRun: number;
   maxWordCount: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  personalBlockMap: any; // TODO: should not be any
-  usePersonalBlock: boolean;
-  useDebugMode: boolean;
 }
 
 export type PopupMessageType = keyof StorageSettings;

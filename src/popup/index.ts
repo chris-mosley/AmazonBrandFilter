@@ -1,4 +1,12 @@
-import { getEngineApi, getManifest, getMessage, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
+import {
+  getEngineApi,
+  getManifest,
+  getMessage,
+  getSanitizedUserInput,
+  getStorageValue,
+  setIcon,
+  setStorageValue,
+} from "utils/helpers";
 import { PopupMessage } from "utils/types";
 
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
@@ -56,31 +64,30 @@ const setText = async () => {
 const setPopupBoxStates = async () => {
   console.log("AmazonBrandFilter: Setting Popup Box States");
   // attempt to get the sync settings first, then fall back to local
-  let settings = await getStorageValue("sync");
-  if (Object.keys(settings).length === 0) {
-    settings = await getStorageValue();
+  let syncSettings = await getStorageValue("sync");
+  if (Object.keys(syncSettings).length === 0) {
+    syncSettings = await getStorageValue();
   }
 
-  console.log("AmazonBrandFilter: abfSettings is " + JSON.stringify(settings));
-  if (settings.enabled) {
+  if (syncSettings.enabled) {
     abfEnabled.checked = true;
   } else {
     abfEnabled.checked = false;
   }
 
-  if (settings.filterRefiner) {
+  if (syncSettings.filterRefiner) {
     abfFilterRefiner.checked = true;
   } else {
     abfFilterRefiner.checked = false;
   }
 
-  if (settings.refinerBypass) {
+  if (syncSettings.refinerBypass) {
     abfAllowRefineBypass.checked = true;
   } else {
     abfAllowRefineBypass.checked = false;
   }
 
-  if (settings.refinerMode === "grey") {
+  if (syncSettings.refinerMode === "grey") {
     abfFilterRefinerGrey.checked = true;
     abfFilterRefinerHide.checked = false;
   } else {
@@ -90,16 +97,17 @@ const setPopupBoxStates = async () => {
 
   setIcon();
 
-  if (settings.lastMapRun != null) {
-    versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
-    brandCount.innerText = settings.brandsCount?.toString() ?? "";
-    if (settings.lastMapRun) {
-      lastRun.innerText = settings.lastMapRun + "ms";
+  if (syncSettings.lastMapRun != null) {
+    versionNumber.innerText = syncSettings.brandsVersion?.toString() ?? "";
+    brandCount.innerText = syncSettings.brandsCount?.toString() ?? "";
+
+    if (syncSettings.lastMapRun) {
+      lastRun.innerText = syncSettings.lastMapRun + "ms";
     } else {
       lastRun.innerText = "N/A";
     }
 
-    if (settings.useDebugMode) {
+    if (syncSettings.useDebugMode) {
       abfDebugMode.checked = true;
     }
   }
@@ -111,7 +119,12 @@ const setAddonVersion = () => {
 };
 
 const setTextBoxStates = async () => {
-  const syncSettings = await getStorageValue("sync");
+  // attempt to get the sync settings first, then fall back to local
+  let syncSettings = await getStorageValue("sync");
+  if (Object.keys(syncSettings).length === 0) {
+    syncSettings = await getStorageValue();
+  }
+
   if (syncSettings.usePersonalBlock === true) {
     abfPersonalBlockEnabled.checked = true;
     abfPersonalBlockTextBox.style.display = "block";
@@ -178,20 +191,47 @@ const setDebugMode = async (_event: Event) => {
   sendMessageToContentScriptPostClick({ type: "useDebugMode", isChecked: abfDebugMode.checked });
 };
 
-const savePersonalBlock = async () => {
-  const userInput = getSanitizedUserInput();
-  const personalBlockMap = new Map();
-  for (const brand of userInput) {
-    personalBlockMap.set(brand, true);
+const setPersonalBlockEnabled = async (_event: Event) => {
+  if (abfPersonalBlockEnabled.checked) {
+    // set the usePersonalBlock in both local and sync storage
+    await setStorageValue({ usePersonalBlock: true }, "sync");
+    await setStorageValue({ usePersonalBlock: true });
+    abfPersonalBlockTextBox.style.display = "block";
+    abfPersonalBlockButton.style.display = "block";
+  } else {
+    // set the usePersonalBlock in both local and sync storage
+    await setStorageValue({ usePersonalBlock: false }, "sync");
+    await setStorageValue({ usePersonalBlock: false });
+    abfPersonalBlockTextBox.style.display = "none";
+    abfPersonalBlockButton.style.display = "none";
   }
+  sendMessageToContentScriptPostClick({ type: "usePersonalBlock", isChecked: abfPersonalBlockEnabled.checked });
+};
+
+const savePersonalBlock = async () => {
+  const userInput = getSanitizedUserInput(abfPersonalBlockTextBox.value);
+  console.log({ userInput });
+  const personalBlockMap: Record<string, boolean> = {};
+  for (const brand of userInput) {
+    personalBlockMap[brand] = true;
+  }
+  console.log({ personalBlockMap });
   console.log("AmazonBrandFilter: personalBlockMap is: " + JSON.stringify(personalBlockMap));
-  setStorageValue({ personalBlockMap }, "sync");
+  // set the personalBlockMap in both local and sync storage
+  await setStorageValue({ personalBlockMap }, "sync");
+  await setStorageValue({ personalBlockMap });
   abfPersonalBlockSavedConfirm.style.display = "block";
+  // use the same isChecked value as the personalBlockEnabled checkbox
+  sendMessageToContentScriptPostClick({ type: "personalBlockMap", isChecked: abfPersonalBlockEnabled.checked });
 };
 
 const setPersonalList = async () => {
-  let personalBlockMap = await getStorageValue("personalBlockMap", "sync");
-  personalBlockMap = personalBlockMap.personalBlockMap;
+  let result = await getStorageValue("personalBlockMap", "sync");
+  if (Object.keys(result).length === 0) {
+    result = await getStorageValue("personalBlockMap");
+  }
+  console.log({ result });
+  const personalBlockMap = result.personalBlockMap;
   if (!personalBlockMap) {
     return;
   }
@@ -205,32 +245,6 @@ const setPersonalList = async () => {
 
   abfPersonalBlockTextBox.value = textValue.join("\n");
   abfPersonalBlockTextBox.rows = textHeight;
-};
-
-const getSanitizedUserInput = () => {
-  // god so much santization to do here
-  const userInput = abfPersonalBlockTextBox.value.split("\n");
-  const sanitizedInput = [];
-  for (const line of userInput) {
-    // we'll come up with something smarter later.
-    if (line === "" || line === " " || line === "\n" || line === "\r\n" || line === "\r") {
-      continue;
-    }
-    sanitizedInput.push(line.toUpperCase());
-  }
-  return sanitizedInput;
-};
-
-const setPersonalBlockEnabled = () => {
-  if (abfPersonalBlockEnabled.checked) {
-    setStorageValue({ usePersonalBlock: true }, "sync");
-    abfPersonalBlockTextBox.style.display = "block";
-    abfPersonalBlockButton.style.display = "block";
-  } else {
-    setStorageValue({ usePersonalBlock: false }, "sync");
-    abfPersonalBlockTextBox.style.display = "none";
-    abfPersonalBlockButton.style.display = "none";
-  }
 };
 
 const sendMessageToContentScriptPostClick = (message: PopupMessage) => {
