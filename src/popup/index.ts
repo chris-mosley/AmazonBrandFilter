@@ -95,22 +95,20 @@ const setPopupBoxStates = async () => {
     abfFilterRefinerGrey.checked = false;
   }
 
-  setIcon();
+  versionNumber.innerText = syncSettings.brandsVersion?.toString() ?? "";
+  brandCount.innerText = syncSettings.brandsCount?.toString() ?? "";
 
-  if (syncSettings.lastMapRun != null) {
-    versionNumber.innerText = syncSettings.brandsVersion?.toString() ?? "";
-    brandCount.innerText = syncSettings.brandsCount?.toString() ?? "";
-
-    if (syncSettings.lastMapRun) {
-      lastRun.innerText = syncSettings.lastMapRun + "ms";
-    } else {
-      lastRun.innerText = "N/A";
-    }
-
-    if (syncSettings.useDebugMode) {
-      abfDebugMode.checked = true;
-    }
+  if (syncSettings.lastMapRun) {
+    lastRun.innerText = `${syncSettings.lastMapRun}ms`;
+  } else {
+    lastRun.innerText = "N/A";
   }
+
+  if (syncSettings.useDebugMode) {
+    abfDebugMode.checked = true;
+  }
+
+  setIcon();
 };
 
 const setAddonVersion = () => {

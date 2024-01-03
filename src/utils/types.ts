@@ -3,10 +3,10 @@ export type Engine = "gecko" | "chromium";
 export type StorageApiProps = "local" | "sync";
 
 export interface StorageSettings {
-  abfFirstRun: boolean;
-  brandsMap: { [key: string]: boolean };
-  brandsCount: number | null;
+  isFirstRun: boolean;
   brandsVersion: number | null;
+  brandsCount: number | null;
+  brandsMap: Record<string, boolean>;
   enabled: boolean;
   filterRefiner: boolean;
   refinerMode: "grey" | "hide";
@@ -14,8 +14,8 @@ export interface StorageSettings {
   usePersonalBlock: boolean;
   personalBlockMap: Record<string, boolean>;
   useDebugMode: boolean;
-  lastMapRun: number;
   maxWordCount: number;
+  lastMapRun: number | null;
 }
 
 export type PopupMessageType = keyof StorageSettings;
