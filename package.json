@@ -1,6 +1,6 @@
 {
-  "name": "amazon-brand-filter",
-  "description": "amazon-brand-filter",
+  "name": "AmazonBrandFilter",
+  "description": "Filters out all unknown brands from Amazon search results.",
   "version": "0.3.0",
   "keywords": [],
   "author": "",

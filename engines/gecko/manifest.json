@@ -1,6 +1,4 @@
 {
-  "name": "AmazonBrandFilter",
-  "description": "Filters out all unknown brands from Amazon search results.",
   "manifest_version": 3,
   "browser_specific_settings": {
     "gecko": {
