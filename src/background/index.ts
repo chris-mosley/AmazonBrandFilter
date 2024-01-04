@@ -1,9 +1,9 @@
-import { latestReleaseUrl } from "utils/config";
+import { defaultLocalStorageValue, defaultSyncStorageValue, latestReleaseUrl } from "utils/config";
 import { getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
-const getFirstRun = async () => {
-  const { abfFirstRun } = await getStorageValue("abfFirstRun");
-  return abfFirstRun;
+const getIsFirstRun = async () => {
+  const { isFirstRun } = await getStorageValue("isFirstRun");
+  return isFirstRun;
 };
 
 const getCurrentBrandsVersion = async () => {
@@ -92,22 +92,33 @@ const updateBrandsListMap = async () => {
 };
 
 (async () => {
-  // Set the default values for the extension
-  if (await getFirstRun()) {
+  if (await getIsFirstRun()) {
     console.log("AmazonBrandFilter: %cFirst run, setting defaults!", "color: yellow");
-
-    // Defaults
-    setStorageValue({
-      enabled: true,
-      brandsVersion: 0,
-      brandsCount: 0,
-      brandsMap: {},
-      refinerBypass: true,
-      abfFirstRun: false,
-      personalBlockMap: {},
-    });
+    setStorageValue(defaultSyncStorageValue, "sync");
+    setStorageValue(defaultLocalStorageValue);
   } else {
-    console.log("AmazonBrandFilter: %cNot first run!", "color: yellow");
+    // handle case where no default values exist when !isFirstRun
+    // attempt to get sync settings first
+    let syncSettings = await getStorageValue("sync");
+    if (Object.keys(syncSettings).length === 0) {
+      syncSettings = await getStorageValue();
+    }
+
+    // set for both sync and local
+    // defaults destructured first to ensure that settings that have been set are not overwritten
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { brandsMap, ...filteredSyncSettings } = syncSettings; // don't copy brandsMap for sync
+    setStorageValue(
+      {
+        ...defaultSyncStorageValue,
+        ...filteredSyncSettings,
+      },
+      "sync"
+    );
+    setStorageValue({
+      ...defaultLocalStorageValue,
+      ...syncSettings,
+    });
   }
 
   setIcon(); // Set the icon the first time the extension is loaded
