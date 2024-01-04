@@ -2,7 +2,11 @@ import { PopupMessage, StorageSettings } from "utils";
 import { getEngineApi, getItemDivs, getStorageValue, setStorageValue, sleep, unHideDivs } from "utils/helpers";
 
 const checkBrandFilter = (): boolean => {
-  const boxesdiv = document.getElementById("brandsRefinements")!.children;
+  const boxesdiv = document.getElementById("brandsRefinements")?.children;
+  if (!boxesdiv) {
+    return false;
+  }
+
   let boxes: HTMLCollectionOf<HTMLInputElement> | undefined;
   for (const div of boxesdiv) {
     boxes = div.getElementsByTagName("input");
@@ -35,6 +39,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
     return;
   }
 
+  // check to see if each word is in the map. if we dont stop then we hide it.
   const fullText = shortText[0]?.innerText.toUpperCase() ?? "";
   const wordList = fullText.replace(", ", " ").split(" ").slice(0, 8);
   for (let w = 0; w < settings.maxWordCount + 3; w++) {
@@ -45,40 +50,38 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
       }
 
       if (settings.brandsMap[searchTerm]) {
-        // check to see if each word is in the map. if we dont stop then we hide it.
         if (syncSettings.usePersonalBlock) {
           if (syncSettings.personalBlockMap && syncSettings.personalBlockMap[searchTerm]) {
             if (settings.useDebugMode) {
-              // to make it easier to tell when something is hidden because
-              // it isnt found vs when it is hidden because it is blocked
               div.style.display = "block";
               div.style.backgroundColor = "yellow";
-              div.innerHTML =
-                "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
-                searchTerm +
-                "</span><br>" +
-                div.innerHTML;
             } else {
               div.style.display = "none";
+              div.style.backgroundColor = "white";
             }
             return;
           } else {
             // if personal block is not enabled then we want to show the item again
             div.style.display = "block";
+            if (settings.useDebugMode) {
+              div.style.backgroundColor = "green";
+            } else {
+              div.style.backgroundColor = "white";
+            }
           }
         } else {
           // if personal block is not enabled then we want to show the item again
           div.style.display = "block";
+          if (settings.useDebugMode) {
+            div.style.backgroundColor = "green";
+          } else {
+            div.style.backgroundColor = "white";
+          }
         }
 
         if (settings.useDebugMode) {
           div.style.display = "block";
           div.style.backgroundColor = "green";
-          div.innerHTML =
-            "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
-            searchTerm +
-            "</span><br>" +
-            div.innerHTML;
         } else {
           div.style.backgroundColor = "white";
         }
@@ -87,13 +90,13 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
     }
   }
 
-  if (settings.useDebugMode) {
-    div.style.display = "block";
-    div.style.backgroundColor = "red";
-  } else {
-    div.style.display = "none";
-    div.style.backgroundColor = "white";
-  }
+  // if (settings.useDebugMode) {
+  //   div.style.display = "block";
+  //   div.style.backgroundColor = "red";
+  // } else {
+  //   div.style.display = "none";
+  //   div.style.backgroundColor = "white";
+  // }
 };
 
 const runFilterRefiner = async (settings: StorageSettings) => {
@@ -180,29 +183,25 @@ const filterBrands = async (settings: StorageSettings) => {
         if (syncSettings.usePersonalBlock) {
           if (syncSettings.personalBlockMap && syncSettings.personalBlockMap[searchTerm]) {
             if (settings.useDebugMode) {
-              // to make it easier to tell when something is hidden because
-              // it isnt found vs when it is hidden because it is blocked
               div.style.display = "block";
               div.style.backgroundColor = "yellow";
-              div.innerHTML =
-                "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
-                searchTerm +
-                "</span><br>" +
-                div.innerHTML;
-              continue;
             } else {
               div.style.display = "none";
             }
+            continue;
+          } else {
+            div.style.display = "block";
+            if (settings.useDebugMode) {
+              div.style.backgroundColor = "green";
+            } else {
+              div.style.backgroundColor = "white";
+            }
+            continue;
           }
         } else {
+          div.style.display = "block";
           if (settings.useDebugMode) {
-            div.style.display = "block";
             div.style.backgroundColor = "green";
-            div.innerHTML =
-              "<span style='color: black; background-color: white;font-size: large;'>ABF DEBUG: " +
-              searchTerm +
-              "</span><br>" +
-              div.innerHTML;
           } else {
             div.style.backgroundColor = "white";
           }

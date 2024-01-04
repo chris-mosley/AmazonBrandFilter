@@ -94,8 +94,8 @@ const updateBrandsListMap = async () => {
 (async () => {
   if (await getIsFirstRun()) {
     console.log("AmazonBrandFilter: %cFirst run, setting defaults!", "color: yellow");
-    setStorageValue(defaultSyncStorageValue, "sync");
-    setStorageValue(defaultLocalStorageValue);
+    await setStorageValue(defaultSyncStorageValue, "sync");
+    await setStorageValue(defaultLocalStorageValue);
   } else {
     // handle case where no default values exist when !isFirstRun
     // attempt to get sync settings first
@@ -108,19 +108,19 @@ const updateBrandsListMap = async () => {
     // defaults destructured first to ensure that settings that have been set are not overwritten
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { brandsMap, ...filteredSyncSettings } = syncSettings; // don't copy brandsMap for sync
-    setStorageValue(
+    await setStorageValue(
       {
         ...defaultSyncStorageValue,
         ...filteredSyncSettings,
       },
       "sync"
     );
-    setStorageValue({
+    await setStorageValue({
       ...defaultLocalStorageValue,
       ...syncSettings,
     });
   }
 
-  setIcon(); // Set the icon the first time the extension is loaded
+  setIcon();
   checkbrandsListVersion(); // Periodically check for updates once everyday
 })();
