@@ -68,6 +68,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
             } else {
               div.style.backgroundColor = "white";
             }
+            return;
           }
         } else {
           // if personal block is not enabled then we want to show the item again
@@ -77,6 +78,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
           } else {
             div.style.backgroundColor = "white";
           }
+          return;
         }
 
         if (settings.useDebugMode) {
