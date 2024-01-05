@@ -12,7 +12,7 @@ export const defaultSyncStorageValue: Omit<StorageSettings, "brandsMap"> = {
   enabled: true,
   filterRefiner: false,
   refinerMode: "grey",
-  refinerBypass: true,
+  refinerBypass: false,
   usePersonalBlock: false,
   useDebugMode: false,
   personalBlockMap: {},
