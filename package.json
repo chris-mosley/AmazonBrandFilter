@@ -29,6 +29,15 @@
     "src/**/*.ts": [
       "prettier --write \"src/**/*.ts\""
     ],
+    "src/**/*.json": [
+      "prettier --write \"src/**/*.json\""
+    ],
+    "engines/**/*.json": [
+      "prettier --write \"engines/**/*.json\""
+    ],
+    "scripts/**/*.js": [
+      "prettier --write \"scripts/**/*.js\""
+    ],
     "tests/**/*.ts": [
       "prettier --write \"tests/**/*.ts\""
     ]

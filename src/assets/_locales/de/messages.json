@@ -39,7 +39,7 @@
     "message": "Liste Version: ",
     "description": "Zeigen, welche Version der Liste wir haben"
   },
-  "popup_list_count" : {
+  "popup_list_count": {
     "message": "Bekannte Marken: ",
     "description": "Wie viele Marken wir kennen"
   },
@@ -47,13 +47,13 @@
     "message": "Feedback (Englisch)",
     "description": "Link zu Github, um Probleme zu melden oder Funktionen anzufordern"
   },
-  "popup_missing_brand" : {
+  "popup_missing_brand": {
     "message": "Fehlt eine Marke?",
     "description": "Link zu AmazonBrandFilter, um das Hinzufügen einer Marke zu beantragen"
   },
   "popup_last_run": {
-     "message":"Letzter Lauf",
-    "description" : "Wie lange der letzte Lauf gedauert hat"
+    "message": "Letzter Lauf",
+    "description": "Wie lange der letzte Lauf gedauert hat"
   },
   "popup_help_translate": {
     "message": "Help translate",
