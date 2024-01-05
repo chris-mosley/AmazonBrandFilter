@@ -1,0 +1,6 @@
+[
+  { "from": "src/assets/css", "to": "./" },
+  { "from": "src/assets/html", "to": "./" },
+  { "from": "src/assets/icons", "to": "icons" },
+  { "from": "src/assets/_locales", "to": "_locales" }
+]

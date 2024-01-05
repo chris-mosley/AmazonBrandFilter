@@ -1,6 +1,10 @@
-const baseConfig = require('./webpack.config.js');
+const path = require('path');
 const CopyPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
+const rootPath = path.resolve('./');
+const baseConfig = require(`${rootPath}/webpack.config.js`);
+const defaultCopyPluginPatterns = require(`${rootPath}/engines/default-copy-plugin-patterns.json`);
 
 module.exports = (env, argv) => {
   return {
@@ -9,11 +13,8 @@ module.exports = (env, argv) => {
       new CleanWebpackPlugin(),
       new CopyPlugin({
         patterns: [
+          ...defaultCopyPluginPatterns,
           { from: "engines/gecko/manifest.json", to: "./" },
-          { from: "src/assets/css", to: "./" },
-          { from: "src/assets/html", to: "./" },
-          { from: "src/assets/icons", to: "icons" },
-          { from: "src/assets/_locales", to: "_locales" },
         ],
       }),
     ],
