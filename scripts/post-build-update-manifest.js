@@ -1,10 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 
-// read the version from package.json
-const packageJson = require("../package.json");
-const manifestFilePath = path.join(__dirname, `../dist/manifest.json`);
-const contentScriptsJson = require("../engines/common/content-scripts.json");
+const rootPath = path.resolve("./");
+const packageJson = require(`${rootPath}/package.json`);
+const contentScriptsJson = require(`${rootPath}/engines/common/manifest/content-scripts.json`);
+const manifestFilePath = path.resolve(__dirname, `${rootPath}/dist/manifest.json`);
 
 try {
   // read the manifest file
