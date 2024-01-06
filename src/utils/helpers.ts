@@ -1,6 +1,7 @@
+import _ from "lodash";
 import { browser } from "webextension-polyfill-ts";
 
-import { Engine, StorageApiProps, StorageSettings } from "utils/types";
+import { Engine, StorageApiProps, StorageSettings, SyncStorageSettings } from "utils/types";
 
 /**
  * retrieves the name of the browser engine based on the runtime environment.
@@ -37,11 +38,15 @@ export const getEngineApi = () => {
 export async function getStorageValue(prop?: StorageApiProps): Promise<StorageSettings>;
 export async function getStorageValue<T extends keyof StorageSettings>(
   keys: T | T[],
-  prop?: StorageApiProps
+  prop?: Exclude<StorageApiProps, "sync">
 ): Promise<Record<T, StorageSettings[T]>>;
+export async function getStorageValue<T extends keyof SyncStorageSettings>(
+  keys: T | T[],
+  prop: "sync"
+): Promise<Record<T, SyncStorageSettings[T]>>;
 /**
  * Retrieves a value from storage based on the current browser environment.
- * watch out for QUOTA_BYTES_PER_ITEM error when using "sync" prop
+ * watch out for QUOTA_BYTES_PER_ITEM error when using "sync" prop (chrome)
  *
  * @param keys - The key/keys to look up in storage. Use null if undefined, which will return all keys.
  * @returns
@@ -65,16 +70,18 @@ export async function getStorageValue<T extends keyof StorageSettings>(
   }
 }
 
+export async function setStorageValue(
+  data: Partial<StorageSettings>,
+  prop?: Exclude<StorageApiProps, "sync">
+): Promise<void>;
+export async function setStorageValue(data: Partial<SyncStorageSettings>, prop: "sync"): Promise<void>;
 /**
  * set value in storage
  *
  * @param data
  * @returns
  */
-export const setStorageValue = async (
-  data: Partial<StorageSettings>,
-  prop: StorageApiProps = "local"
-): Promise<void> => {
+export async function setStorageValue(data: Partial<StorageSettings>, prop: StorageApiProps = "local"): Promise<void> {
   const engine = getEngine();
   if (engine === "chromium" && chrome.storage && chrome.storage[prop]) {
     return new Promise((resolve) => {
@@ -87,7 +94,7 @@ export const setStorageValue = async (
   } else {
     throw new Error("Storage API not found.");
   }
-};
+}
 
 export const getMessage = async (message: string): Promise<string> => {
   const engine = getEngine();
@@ -182,4 +189,27 @@ export const getSanitizedUserInput = (userInput: string) => {
   // remove empty strings from the array (e.g., if there are multiple consecutive delimiters)
   const filteredArray = upperCaseWordsArray.filter((word) => word.trim() !== "");
   return filteredArray;
+};
+
+export const ensureSettingsExist = async (): Promise<boolean> => {
+  const settings = await getStorageValue("sync");
+  console.log(settings);
+
+  // if there are no settings, wait for a period and try again
+  if (Object.keys(settings).length === 0) {
+    console.log("no settings found, waiting 3 seconds and trying again");
+    await sleep(3000);
+    return ensureSettingsExist();
+  }
+  return true;
+};
+
+/**
+ * extracts a subset of settings suitable for sync storage
+ *
+ * @param settings
+ * @returns
+ */
+export const extractSyncStorageSettingsObject = (settings: StorageSettings): SyncStorageSettings => {
+  return _.omit(settings, ["brandsMap", "brandsCount", "brandsVersion"]);
 };

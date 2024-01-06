@@ -18,6 +18,8 @@ export interface StorageSettings {
   lastMapRun: number | null;
 }
 
+export type SyncStorageSettings = Omit<StorageSettings, "brandsMap" | "brandsCount" | "brandsVersion">;
+
 export type PopupMessageType = keyof StorageSettings;
 
 export interface PopupMessage {

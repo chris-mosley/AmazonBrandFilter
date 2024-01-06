@@ -1,5 +1,13 @@
 import { PopupMessage, StorageSettings } from "utils";
-import { getEngineApi, getItemDivs, getStorageValue, setStorageValue, sleep, unHideDivs } from "utils/helpers";
+import {
+  ensureSettingsExist,
+  getEngineApi,
+  getItemDivs,
+  getStorageValue,
+  setStorageValue,
+  sleep,
+  unHideDivs,
+} from "utils/helpers";
 
 const checkBrandFilter = (): boolean => {
   const boxesdiv = document.getElementById("brandsRefinements")?.children;
@@ -305,31 +313,41 @@ const listenForMessages = () => {
   });
 };
 
-(async () => {
-  // listen for messages from the popup
-  listenForMessages();
+const runFilter = async () => {
+  const settings = await getStorageValue();
+  if (!settings.enabled) {
+    return;
+  }
 
-  unHideDivs();
+  const timerStart = performance.now();
+  filterBrands(settings);
+  const timerEnd = performance.now();
+  setStorageValue({ lastMapRun: timerEnd - timerStart });
+};
 
+const startObserver = async () => {
+  console.log("AmazonBrandFilter: Starting observer!");
   let previousUrl = "";
   const observer = new MutationObserver(async (_mutations) => {
+    console.log("AmazonBrandFilter: Mutation detected!");
     if (location.href === previousUrl) {
       return;
     }
     previousUrl = location.href;
-
-    const settings = await getStorageValue();
-    if (!settings.enabled) {
-      return;
-    }
-
     await sleep(1000);
-    const timerStart = performance.now();
-    filterBrands(settings);
-    const timerEnd = performance.now();
-    setStorageValue({ lastMapRun: timerEnd - timerStart });
+    runFilter();
   });
 
   const config = { attributes: true, childList: true, subtree: true };
   observer.observe(document, config);
+};
+
+(async () => {
+  unHideDivs();
+  console.log("AmazonBrandFilter: Content script loaded!");
+  await ensureSettingsExist();
+  console.log("AmazonBrandFilter: %cSettings exist!", "color: lightgreen");
+  runFilter();
+  listenForMessages();
+  startObserver();
 })();
