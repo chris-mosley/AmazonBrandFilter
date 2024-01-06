@@ -22,26 +22,6 @@
     "scripts": ["background.js"],
     "type": "module"
   },
-  "content_scripts": [
-    {
-      "matches": ["*://*.amazon.com/*",
-      "*://*.amazon.ca/*",
-      "*://*.amazon.cn/*",
-      "*://*.amazon.co.jp/*",
-      "*://*.amazon.com/*",
-      "*://*.amazon.com.au/*",
-      "*://*.amazon.com.mx/*",
-      "*://*.amazon.co.uk/*",
-      "*://*.amazon.de/*",
-      "*://*.amazon.es/*",
-      "*://*.amazon.fr/*",
-      "*://*.amazon.in/*",
-      "*://*.amazon.it/*",
-      "*://*.amazon.nl/*"],
-      "include_globs": ["*://*.amazon.*/*"],
-      "js": ["content.js"]
-    }
-  ],
   "content_security_policy": {
     "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; connect-src https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest;"
   },
