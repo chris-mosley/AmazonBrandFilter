@@ -15,7 +15,6 @@ export const defaultSyncStorageValue: SyncStorageSettings = {
   useDebugMode: false,
   personalBlockMap: {},
   lastMapRun: null,
-  maxWordCount: 0,
 };
 
 export const defaultLocalStorageValue: StorageSettings = {
@@ -23,4 +22,5 @@ export const defaultLocalStorageValue: StorageSettings = {
   brandsMap: {},
   brandsVersion: 0,
   brandsCount: 0,
+  maxWordCount: 0,
 };

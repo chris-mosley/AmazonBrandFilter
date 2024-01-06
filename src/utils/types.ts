@@ -7,6 +7,7 @@ export interface StorageSettings {
   brandsVersion: number | null;
   brandsCount: number | null;
   brandsMap: Record<string, boolean>;
+  maxWordCount: number;
   enabled: boolean;
   filterRefiner: boolean;
   refinerMode: "grey" | "hide";
@@ -14,11 +15,10 @@ export interface StorageSettings {
   usePersonalBlock: boolean;
   personalBlockMap: Record<string, boolean>;
   useDebugMode: boolean;
-  maxWordCount: number;
   lastMapRun: number | null;
 }
 
-export type SyncStorageSettings = Omit<StorageSettings, "brandsMap" | "brandsCount" | "brandsVersion">;
+export type SyncStorageSettings = Omit<StorageSettings, "brandsMap" | "brandsCount" | "brandsVersion" | "maxWordCount">;
 
 export type PopupMessageType = keyof StorageSettings;
 

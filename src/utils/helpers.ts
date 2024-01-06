@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { browser } from "webextension-polyfill-ts";
 
+import { defaultLocalStorageValue, defaultSyncStorageValue } from "utils/config";
 import { Engine, StorageApiProps, StorageSettings, SyncStorageSettings } from "utils/types";
 
 /**
@@ -218,5 +219,8 @@ export const ensureSettingsExist = async (): Promise<boolean> => {
  * @returns
  */
 export const extractSyncStorageSettingsObject = (settings: StorageSettings): SyncStorageSettings => {
-  return _.omit(settings, ["brandsMap", "brandsCount", "brandsVersion"]);
+  const keysDefaultSettings = _.keys(defaultLocalStorageValue);
+  const keysSyncSettings = _.keys(defaultSyncStorageValue);
+  const exclusiveKeys = _.difference(keysDefaultSettings, keysSyncSettings);
+  return _.omit(settings, exclusiveKeys) as SyncStorageSettings;
 };
