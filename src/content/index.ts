@@ -5,7 +5,6 @@ import {
   getItemDivs,
   getStorageValue,
   setStorageValue,
-  sleep,
   unHideDivs,
 } from "utils/helpers";
 
@@ -266,9 +265,7 @@ const resetBrandsSearchResults = () => {
  * resets the brands filter to the default Amazon settings (colors and display)
  */
 const resetBrands = () => {
-  // reset refiner
   resetBrandsRefiner();
-  // reset search results
   resetBrandsSearchResults();
 };
 
@@ -327,27 +324,21 @@ const runFilter = async () => {
 
 const startObserver = async () => {
   console.log("AmazonBrandFilter: Starting observer!");
-  let previousUrl = "";
   const observer = new MutationObserver(async (_mutations) => {
     console.log("AmazonBrandFilter: Mutation detected!");
-    if (location.href === previousUrl) {
-      return;
-    }
-    previousUrl = location.href;
-    await sleep(1000);
     runFilter();
   });
-
-  const config = { attributes: true, childList: true, subtree: true };
-  observer.observe(document, config);
+  observer.observe(document, {
+    subtree: true,
+    childList: true,
+  });
 };
 
 (async () => {
   unHideDivs();
-  console.log("AmazonBrandFilter: Content script loaded!");
   await ensureSettingsExist();
-  console.log("AmazonBrandFilter: %cSettings exist!", "color: lightgreen");
   runFilter();
   listenForMessages();
   startObserver();
+  console.log("AmazonBrandFilter: %cContent script loaded!", "color: lightgreen");
 })();

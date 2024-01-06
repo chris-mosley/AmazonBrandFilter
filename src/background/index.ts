@@ -1,7 +1,7 @@
 import { brandsUrl, defaultLocalStorageValue, defaultSyncStorageValue, latestReleaseUrl } from "utils/config";
 import { extractSyncStorageSettingsObject, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
 
-const getbrandsListVersion = async () => {
+const getBrandsListVersion = async () => {
   console.log("AmazonBrandFilter: %cChecking latest brands list version!", "color: yellow");
   const latestRelease = await fetch(latestReleaseUrl, { mode: "cors" })
     .then((response) => response.json())
@@ -43,13 +43,18 @@ const getBrandsListMap = async () => {
   return { brandsCount, maxWordCount, brandsMap };
 };
 
-// TODO
-// setTimeout(getbrandsListVersion, 86_400_000); // periodically check for updates once everyday
+const checkForBrandListUpdates = async () => {
+  console.log("AmazonBrandFilter: %cChecking for updates!", "color: yellow");
+  const { brandsVersion: currentVersion } = await getStorageValue("brandsVersion");
+  const latestVersion = await getBrandsListVersion();
+  if (currentVersion !== latestVersion) {
+    const { brandsCount, maxWordCount, brandsMap } = await getBrandsListMap();
+    // set local storage values only
+    await setStorageValue({ brandsVersion: latestVersion, brandsCount, maxWordCount, brandsMap });
+  }
+};
 
 const setStorageSettings = async () => {
-  // getEngineApi().storage.sync?.clear();
-  // getEngineApi().storage.local?.clear();
-  // return;
   let syncValue: typeof defaultSyncStorageValue;
   let localValue: typeof defaultLocalStorageValue;
 
@@ -67,15 +72,14 @@ const setStorageSettings = async () => {
     }
 
     // defaults destructured first to ensure that settings that have been set are not overwritten
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const filteredSyncSettings = extractSyncStorageSettingsObject(syncSettings);
     syncValue = { ...defaultSyncStorageValue, ...filteredSyncSettings };
     localValue = { ...defaultLocalStorageValue, ...syncSettings };
   }
 
   const { brandsVersion: currentVersion } = await getStorageValue("brandsVersion");
-  const latestVersion = await getbrandsListVersion();
-  if (!currentVersion || currentVersion !== latestVersion) {
+  const latestVersion = await getBrandsListVersion();
+  if (currentVersion !== latestVersion) {
     const { brandsCount, maxWordCount, brandsMap } = await getBrandsListMap();
     // set local storage values only
     localValue = { ...localValue, brandsVersion: latestVersion, brandsCount, maxWordCount, brandsMap };
@@ -88,4 +92,5 @@ const setStorageSettings = async () => {
 (async () => {
   await setStorageSettings();
   setIcon();
+  setInterval(checkForBrandListUpdates, 86_400_000); // check for updates once everyday
 })();

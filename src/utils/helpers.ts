@@ -191,16 +191,23 @@ export const getSanitizedUserInput = (userInput: string) => {
   return filteredArray;
 };
 
+/**
+ * waits for settings to be set in storage from the background script
+ * required as the background script may not be ready before the popup/content scripts are loaded
+ * always check local storage, never sync storage as sync storage is not always available
+ *
+ * @returns
+ */
 export const ensureSettingsExist = async (): Promise<boolean> => {
-  const settings = await getStorageValue("sync");
-  console.log(settings);
+  const settings = await getStorageValue();
 
   // if there are no settings, wait for a period and try again
   if (Object.keys(settings).length === 0) {
-    console.log("no settings found, waiting 3 seconds and trying again");
-    await sleep(3000);
+    console.log("no settings found, waiting briefly and trying again");
+    await sleep(1500);
     return ensureSettingsExist();
   }
+  console.log("AmazonBrandFilter: %cSettings exist!", "color: lightgreen");
   return true;
 };
 
