@@ -1,12 +1,6 @@
-import { PopupMessage, StorageSettings } from "utils";
-import {
-  ensureSettingsExist,
-  getEngineApi,
-  getItemDivs,
-  getStorageValue,
-  setStorageValue,
-  unHideDivs,
-} from "utils/helpers";
+import { ensureSettingsExist, getEngineApi, getStorageValue, setStorageValue } from "utils/browser-helpers";
+import { getItemDivs, unHideDivs } from "utils/helpers";
+import { PopupMessage, StorageSettings } from "utils/types";
 
 const checkBrandFilter = (): boolean => {
   const boxesdiv = document.getElementById("brandsRefinements")?.children;

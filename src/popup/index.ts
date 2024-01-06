@@ -3,11 +3,11 @@ import {
   getEngineApi,
   getManifest,
   getMessage,
-  getSanitizedUserInput,
   getStorageValue,
   setIcon,
   setStorageValue,
-} from "utils/helpers";
+} from "utils/browser-helpers";
+import { getSanitizedUserInput } from "utils/helpers";
 import { PopupMessage } from "utils/types";
 
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;

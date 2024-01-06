@@ -1,5 +1,6 @@
 import { brandsUrl, defaultLocalStorageValue, defaultSyncStorageValue, latestReleaseUrl } from "utils/config";
-import { extractSyncStorageSettingsObject, getStorageValue, setIcon, setStorageValue } from "utils/helpers";
+import { getStorageValue, setIcon, setStorageValue } from "utils/browser-helpers";
+import { extractSyncStorageSettingsObject } from "utils/helpers";
 
 const getBrandsListVersion = async () => {
   console.log("AmazonBrandFilter: %cChecking latest brands list version!", "color: yellow");
