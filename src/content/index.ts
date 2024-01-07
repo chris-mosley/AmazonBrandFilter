@@ -105,7 +105,6 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
 };
 
 const runFilterRefiner = async (settings: StorageSettings) => {
-  // do nothing if not disabled
   if (!settings.enabled || !settings.filterRefiner) {
     return;
   }
@@ -151,7 +150,6 @@ const runFilterRefiner = async (settings: StorageSettings) => {
 };
 
 const filterBrands = async (settings: StorageSettings) => {
-  // do nothing if not disabled
   if (!settings.enabled) {
     return;
   }
