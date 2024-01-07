@@ -1,14 +1,12 @@
-import { StorageSettings } from "utils/types";
+import { StorageSettings, SyncStorageSettings } from "utils/types";
 
-// eslint-disable-next-line max-len
 export const latestReleaseUrl: string =
   "https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest";
+export const brandsUrl: string = "https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt";
 
 // don't copy brandsMap for sync storage
-export const defaultSyncStorageValue: Omit<StorageSettings, "brandsMap"> = {
+export const defaultSyncStorageValue: SyncStorageSettings = {
   isFirstRun: false,
-  brandsVersion: 0,
-  brandsCount: 0,
   enabled: true,
   filterRefiner: false,
   refinerMode: "grey",
@@ -17,10 +15,12 @@ export const defaultSyncStorageValue: Omit<StorageSettings, "brandsMap"> = {
   useDebugMode: false,
   personalBlockMap: {},
   lastMapRun: null,
-  maxWordCount: 0,
 };
 
 export const defaultLocalStorageValue: StorageSettings = {
   ...defaultSyncStorageValue,
   brandsMap: {},
+  brandsVersion: 0,
+  brandsCount: 0,
+  maxWordCount: 0,
 };

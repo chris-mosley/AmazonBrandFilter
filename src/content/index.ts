@@ -1,5 +1,12 @@
-import { PopupMessage, StorageSettings } from "utils";
-import { getEngineApi, getItemDivs, getStorageValue, setStorageValue, sleep, unHideDivs } from "utils/helpers";
+import {
+  ensureSettingsExist,
+  getEngineApi,
+  getSettings,
+  getStorageValue,
+  setStorageValue,
+} from "utils/browser-helpers";
+import { getItemDivs, unHideDivs } from "utils/helpers";
+import { PopupMessage, StorageSettings } from "utils/types";
 
 const checkBrandFilter = (): boolean => {
   const boxesdiv = document.getElementById("brandsRefinements")?.children;
@@ -28,11 +35,7 @@ const checkBrandFilter = (): boolean => {
 };
 
 const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
-  // attempt to get the sync settings first, then fall back to local
-  let syncSettings = await getStorageValue("sync");
-  if (Object.keys(syncSettings).length === 0) {
-    syncSettings = await getStorageValue();
-  }
+  const { syncSettings } = await getSettings();
 
   const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length === 0) {
@@ -102,16 +105,11 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
 };
 
 const runFilterRefiner = async (settings: StorageSettings) => {
-  // do nothing if not disabled
   if (!settings.enabled || !settings.filterRefiner) {
     return;
   }
 
-  // attempt to get the sync settings first, then fall back to local
-  let syncSettings = await getStorageValue("sync");
-  if (Object.keys(syncSettings).length === 0) {
-    syncSettings = await getStorageValue();
-  }
+  const { syncSettings } = await getSettings();
 
   const refiner = document.getElementById("brandsRefinements");
   if (!refiner) {
@@ -152,16 +150,11 @@ const runFilterRefiner = async (settings: StorageSettings) => {
 };
 
 const filterBrands = async (settings: StorageSettings) => {
-  // do nothing if not disabled
   if (!settings.enabled) {
     return;
   }
 
-  // attempt to get the sync settings first, then fall back to local
-  let syncSettings = await getStorageValue("sync");
-  if (Object.keys(syncSettings).length === 0) {
-    syncSettings = await getStorageValue();
-  }
+  const { syncSettings } = await getSettings();
 
   const brands = settings.brandsMap;
   if (Object.keys(brands).length === 0) {
@@ -258,9 +251,7 @@ const resetBrandsSearchResults = () => {
  * resets the brands filter to the default Amazon settings (colors and display)
  */
 const resetBrands = () => {
-  // reset refiner
   resetBrandsRefiner();
-  // reset search results
   resetBrandsSearchResults();
 };
 
@@ -305,31 +296,35 @@ const listenForMessages = () => {
   });
 };
 
-(async () => {
-  // listen for messages from the popup
-  listenForMessages();
+const runFilter = async () => {
+  const settings = await getStorageValue();
+  if (!settings.enabled) {
+    return;
+  }
 
-  unHideDivs();
+  const timerStart = performance.now();
+  filterBrands(settings);
+  const timerEnd = performance.now();
+  setStorageValue({ lastMapRun: timerEnd - timerStart });
+};
 
-  let previousUrl = "";
+const startObserver = async () => {
+  console.log("AmazonBrandFilter: Starting observer!");
   const observer = new MutationObserver(async (_mutations) => {
-    if (location.href === previousUrl) {
-      return;
-    }
-    previousUrl = location.href;
-
-    const settings = await getStorageValue();
-    if (!settings.enabled) {
-      return;
-    }
-
-    await sleep(1000);
-    const timerStart = performance.now();
-    filterBrands(settings);
-    const timerEnd = performance.now();
-    setStorageValue({ lastMapRun: timerEnd - timerStart });
+    console.log("AmazonBrandFilter: Mutation detected!");
+    runFilter();
   });
+  observer.observe(document, {
+    subtree: true,
+    childList: true,
+  });
+};
 
-  const config = { attributes: true, childList: true, subtree: true };
-  observer.observe(document, config);
+(async () => {
+  unHideDivs();
+  await ensureSettingsExist();
+  runFilter();
+  listenForMessages();
+  startObserver();
+  console.log("AmazonBrandFilter: %cContent script loaded!", "color: lightgreen");
 })();

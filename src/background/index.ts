@@ -1,59 +1,21 @@
-import { defaultLocalStorageValue, defaultSyncStorageValue, latestReleaseUrl } from "utils/config";
-import { getStorageValue, setIcon, setStorageValue } from "utils/helpers";
+import { brandsUrl, defaultLocalStorageValue, defaultSyncStorageValue, latestReleaseUrl } from "utils/config";
+import { getSettings, getStorageValue, setIcon, setStorageValue } from "utils/browser-helpers";
 
-const getIsFirstRun = async () => {
-  const { isFirstRun } = await getStorageValue("isFirstRun");
-  return isFirstRun;
-};
-
-const getCurrentBrandsVersion = async () => {
-  const { brandsVersion } = await getStorageValue("brandsVersion");
-  return brandsVersion;
-};
-
-const checkbrandsListVersion = async () => {
+const getBrandsListVersion = async () => {
   console.log("AmazonBrandFilter: %cChecking latest brands list version!", "color: yellow");
-
-  // Fetch latest brands list release
   const latestRelease = await fetch(latestReleaseUrl, { mode: "cors" })
     .then((response) => response.json())
-    .catch((error) =>
-      console.error(error, "AmazonBrandFilter: %cFailed fetching latest release!", "color: lightcoral")
-    );
+    .catch((error) => {
+      console.error(error, "AmazonBrandFilter: %cFailed fetching latest release!", "color: lightcoral");
+      return defaultLocalStorageValue.brandsVersion;
+    });
 
-  // Current / Latest versions
-  const currentVersion = await getCurrentBrandsVersion();
   const latestVersion = parseInt(latestRelease.tag_name.slice(1));
-
-  // Check if current version match the latest version
-  if (!currentVersion || currentVersion !== latestVersion) {
-    console.log(
-      `AmazonBrandFilter: %cCurrent version does not match latest version!`,
-      "color: lightcoral",
-      `\nAmazonBrandFilter: Current ${currentVersion} | Latest ${latestVersion}`
-    );
-
-    // Update
-    updateBrandsListMap();
-    setStorageValue({ brandsVersion: latestVersion });
-  } else {
-    console.log(
-      `AmazonBrandFilter: %cCurrent version match latest version!`,
-      "color: lightgreen",
-      `\nAmazonBrandFilter: Current ${currentVersion} | Latest ${latestVersion}`
-    );
-  }
-
-  // Sleep
-  console.log("AmazonBrandFilter: background.js is sleeping for one day!");
-  setTimeout(checkbrandsListVersion, 86_400_000);
+  return latestVersion;
 };
 
-const updateBrandsListMap = async () => {
-  console.log("AmazonBrandFilter: %cUpdating brands list!", "color: lightgreen");
-
-  // Fetch latest brands list release
-  const brandsUrl = "https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt";
+const getBrandsListMap = async () => {
+  console.log("AmazonBrandFilter: %cChecking brands list!", "color: lightgreen");
   const brandsListFetch: string[] = await fetch(brandsUrl)
     .then((res) => res.text())
     .then((text) => text.toUpperCase())
@@ -64,63 +26,66 @@ const updateBrandsListMap = async () => {
     });
 
   let maxWordCount = 0;
-  const brandsMap: { [key: string]: boolean } = {},
-    brandsCount = brandsListFetch.length;
+  const brandsMap: Record<string, boolean> = {};
+  const brandsCount = brandsListFetch.length;
 
-  // Build the brands list map
   for (const brandName of brandsListFetch) {
-    console.debug(`AmazonBrandFilter: Adding ${brandName} to the list!`);
-
-    // Append key-value pair to brandsMap
     brandsMap[brandName] = true;
-
-    // Check for max word count
     const wordCount = brandName.split(" ").length;
-    if (wordCount > maxWordCount) maxWordCount = wordCount;
+    if (wordCount > maxWordCount) {
+      maxWordCount = wordCount;
+    }
   }
-
-  // Browser local storage saves
-  setStorageValue({
-    brandsMap,
-    brandsCount,
-    maxWordCount,
-  });
 
   console.log(`AmazonBrandFilter: Brands count is ${brandsCount}!`);
   console.log(`AmazonBrandFilter: Max brand word count is ${maxWordCount}!`);
   console.log(`AmazonBrandFilter: Showing brands list!`, brandsMap);
+  return { brandsCount, maxWordCount, brandsMap };
+};
+
+const checkForBrandListUpdates = async () => {
+  console.log("AmazonBrandFilter: %cChecking for updates!", "color: yellow");
+  const { brandsVersion: currentVersion } = await getStorageValue("brandsVersion");
+  const latestVersion = await getBrandsListVersion();
+  if (currentVersion !== latestVersion) {
+    const { brandsCount, maxWordCount, brandsMap } = await getBrandsListMap();
+    // set local storage values only
+    await setStorageValue({ brandsVersion: latestVersion, brandsCount, maxWordCount, brandsMap });
+  }
+};
+
+const setStorageSettings = async () => {
+  let syncValue: typeof defaultSyncStorageValue;
+  let localValue: typeof defaultLocalStorageValue;
+
+  const { isFirstRun } = await getStorageValue("isFirstRun");
+  if (isFirstRun) {
+    console.log("AmazonBrandFilter: %cFirst run, setting defaults!", "color: yellow");
+    syncValue = defaultSyncStorageValue;
+    localValue = defaultLocalStorageValue;
+  } else {
+    // handle case where no default values exist when !isFirstRun
+    const { settings, syncSettings } = await getSettings();
+
+    // defaults destructured first to ensure that settings that have been set are not overwritten
+    syncValue = { ...defaultSyncStorageValue, ...syncSettings };
+    localValue = { ...defaultLocalStorageValue, ...settings };
+  }
+
+  const { brandsVersion: currentVersion } = await getStorageValue("brandsVersion");
+  const latestVersion = await getBrandsListVersion();
+  if (currentVersion !== latestVersion) {
+    const { brandsCount, maxWordCount, brandsMap } = await getBrandsListMap();
+    // set local storage values only
+    localValue = { ...localValue, brandsVersion: latestVersion, brandsCount, maxWordCount, brandsMap };
+  }
+
+  await setStorageValue(syncValue, "sync", "overwrite");
+  await setStorageValue(localValue, "local", "overwrite");
 };
 
 (async () => {
-  if (await getIsFirstRun()) {
-    console.log("AmazonBrandFilter: %cFirst run, setting defaults!", "color: yellow");
-    await setStorageValue(defaultSyncStorageValue, "sync");
-    await setStorageValue(defaultLocalStorageValue);
-  } else {
-    // handle case where no default values exist when !isFirstRun
-    // attempt to get sync settings first
-    let syncSettings = await getStorageValue("sync");
-    if (Object.keys(syncSettings).length === 0) {
-      syncSettings = await getStorageValue();
-    }
-
-    // set for both sync and local
-    // defaults destructured first to ensure that settings that have been set are not overwritten
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { brandsMap, ...filteredSyncSettings } = syncSettings; // don't copy brandsMap for sync
-    await setStorageValue(
-      {
-        ...defaultSyncStorageValue,
-        ...filteredSyncSettings,
-      },
-      "sync"
-    );
-    await setStorageValue({
-      ...defaultLocalStorageValue,
-      ...syncSettings,
-    });
-  }
-
+  await setStorageSettings();
   setIcon();
-  checkbrandsListVersion(); // Periodically check for updates once everyday
+  setInterval(checkForBrandListUpdates, 86_400_000); // check for updates once everyday
 })();
