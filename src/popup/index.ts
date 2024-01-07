@@ -3,6 +3,7 @@ import {
   getEngineApi,
   getManifest,
   getMessage,
+  getSettings,
   getStorageValue,
   setIcon,
   setStorageValue,
@@ -52,7 +53,6 @@ const setText = async () => {
   abfDebugModeText.innerText = await getMessage("popup_debug");
   abfPersonalBlockEnabledText.innerText = await getMessage("popup_personal_blocklist");
   abfPersonalBlockButton.innerText = await getMessage("popup_save_button");
-
   abfPersonalBlockText.innerText = await getMessage("popup_save_confirm");
   brandListVersionText.innerText = await getMessage("popup_list_version");
   brandCountText.innerText = await getMessage("popup_list_count");
@@ -63,11 +63,7 @@ const setText = async () => {
 };
 
 const setPopupBoxStates = async () => {
-  // attempt to get the sync settings first, then fall back to local
-  let syncSettings = await getStorageValue("sync");
-  if (Object.keys(syncSettings).length === 0) {
-    syncSettings = await getStorageValue();
-  }
+  const { settings, syncSettings } = await getSettings();
 
   if (syncSettings.enabled) {
     abfEnabled.checked = true;
@@ -95,8 +91,8 @@ const setPopupBoxStates = async () => {
     abfFilterRefinerGrey.checked = false;
   }
 
-  versionNumber.innerText = syncSettings.brandsVersion?.toString() ?? "";
-  brandCount.innerText = syncSettings.brandsCount?.toString() ?? "";
+  versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
+  brandCount.innerText = settings.brandsCount?.toString() ?? "";
 
   if (syncSettings.lastMapRun) {
     lastRun.innerText = `${syncSettings.lastMapRun}ms`;
@@ -117,11 +113,7 @@ const setAddonVersion = () => {
 };
 
 const setTextBoxStates = async () => {
-  // attempt to get the sync settings first, then fall back to local
-  let syncSettings = await getStorageValue("sync");
-  if (Object.keys(syncSettings).length === 0) {
-    syncSettings = await getStorageValue();
-  }
+  const { syncSettings } = await getSettings();
 
   if (syncSettings.usePersonalBlock === true) {
     abfPersonalBlockEnabled.checked = true;

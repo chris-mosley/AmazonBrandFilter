@@ -1,6 +1,7 @@
 export type Engine = "gecko" | "chromium";
 
 export type StorageApiProps = "local" | "sync";
+export type StorageApiMode = "normal" | "overwrite";
 
 export interface StorageSettings {
   isFirstRun: boolean;

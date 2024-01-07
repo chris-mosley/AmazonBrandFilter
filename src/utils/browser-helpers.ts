@@ -1,7 +1,7 @@
 import { browser } from "webextension-polyfill-ts";
 
-import { sleep } from "utils/helpers";
-import { Engine, StorageApiProps, StorageSettings, SyncStorageSettings } from "utils/types";
+import { extractSyncStorageSettingsObject, sleep } from "utils/helpers";
+import { Engine, StorageApiMode, StorageApiProps, StorageSettings, SyncStorageSettings } from "utils/types";
 
 /**
  * retrieves the name of the browser engine based on the runtime environment.
@@ -34,8 +34,16 @@ export const getEngineApi = () => {
   }
 };
 
-// use function overloading to allow for multiple return types with different params
-export async function getStorageValue(prop?: StorageApiProps): Promise<StorageSettings>;
+/**
+ * Retrieves a value from storage based on the current browser environment.
+ * watch out for QUOTA_BYTES_PER_ITEM error when using "sync" prop (chrome)
+ *
+ * @param keys - The key/keys to look up in storage. Use null if undefined, which will return all keys.
+ * @param prop - The storage area to use. Defaults to "local".
+ * @returns
+ */
+export async function getStorageValue(prop?: Exclude<StorageApiProps, "sync">): Promise<StorageSettings>;
+export async function getStorageValue(prop: "sync"): Promise<SyncStorageSettings>;
 export async function getStorageValue<T extends keyof StorageSettings>(
   keys: T | T[],
   prop?: Exclude<StorageApiProps, "sync">
@@ -44,13 +52,6 @@ export async function getStorageValue<T extends keyof SyncStorageSettings>(
   keys: T | T[],
   prop: "sync"
 ): Promise<Record<T, SyncStorageSettings[T]>>;
-/**
- * Retrieves a value from storage based on the current browser environment.
- * watch out for QUOTA_BYTES_PER_ITEM error when using "sync" prop (chrome)
- *
- * @param keys - The key/keys to look up in storage. Use null if undefined, which will return all keys.
- * @returns
- */
 export async function getStorageValue<T extends keyof StorageSettings>(
   keys?: T | T[],
   prop: StorageApiProps = "local"
@@ -70,31 +71,72 @@ export async function getStorageValue<T extends keyof StorageSettings>(
   }
 }
 
+/**
+ * set value in storage
+ *
+ * @param data - The data to store.
+ * @param prop - The storage area to use. Defaults to "local".
+ * @param mode - Determines whether to overwrite the existing data or merge it with the new data. Defaults to "normal".
+ * @returns
+ */
 export async function setStorageValue(
   data: Partial<StorageSettings>,
   prop?: Exclude<StorageApiProps, "sync">
 ): Promise<void>;
 export async function setStorageValue(data: Partial<SyncStorageSettings>, prop: "sync"): Promise<void>;
-/**
- * set value in storage
- *
- * @param data
- * @returns
- */
-export async function setStorageValue(data: Partial<StorageSettings>, prop: StorageApiProps = "local"): Promise<void> {
+export async function setStorageValue(
+  data: Partial<StorageSettings>,
+  prop?: Exclude<StorageApiProps, "sync">,
+  mode?: StorageApiMode
+): Promise<void>;
+export async function setStorageValue(
+  data: Partial<SyncStorageSettings>,
+  prop: "sync",
+  mode?: StorageApiMode
+): Promise<void>;
+export async function setStorageValue(
+  data: Partial<StorageSettings>,
+  prop: StorageApiProps = "local",
+  mode: StorageApiMode = "normal"
+): Promise<void> {
   const engine = getEngine();
   if (engine === "chromium" && chrome.storage && chrome.storage[prop]) {
+    if (mode === "overwrite") {
+      await new Promise<void>((resolve) => {
+        chrome.storage[prop].clear(() => {
+          resolve();
+        });
+      });
+    }
     return new Promise((resolve) => {
       chrome.storage[prop].set(data, () => {
         resolve();
       });
     });
   } else if (engine === "gecko" && browser.storage && browser.storage[prop]) {
+    if (mode === "overwrite") {
+      await browser.storage[prop].clear();
+    }
     return browser.storage[prop].set(data);
   } else {
     throw new Error("Storage API not found.");
   }
 }
+
+/**
+ * attempt to get the sync settings first, then fall back to local
+ * sync settings may not exist in some cases, so we just return the local settings instead
+ *
+ * @returns
+ */
+export const getSettings = async () => {
+  let syncSettings = await getStorageValue("sync");
+  const settings = await getStorageValue();
+  if (Object.keys(syncSettings).length === 0) {
+    syncSettings = { ...extractSyncStorageSettingsObject(settings) };
+  }
+  return { settings, syncSettings };
+};
 
 export const getMessage = async (message: string): Promise<string> => {
   const engine = getEngine();

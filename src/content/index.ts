@@ -1,4 +1,10 @@
-import { ensureSettingsExist, getEngineApi, getStorageValue, setStorageValue } from "utils/browser-helpers";
+import {
+  ensureSettingsExist,
+  getEngineApi,
+  getSettings,
+  getStorageValue,
+  setStorageValue,
+} from "utils/browser-helpers";
 import { getItemDivs, unHideDivs } from "utils/helpers";
 import { PopupMessage, StorageSettings } from "utils/types";
 
@@ -29,11 +35,7 @@ const checkBrandFilter = (): boolean => {
 };
 
 const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
-  // attempt to get the sync settings first, then fall back to local
-  let syncSettings = await getStorageValue("sync");
-  if (Object.keys(syncSettings).length === 0) {
-    syncSettings = await getStorageValue();
-  }
+  const { syncSettings } = await getSettings();
 
   const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length === 0) {
@@ -108,11 +110,7 @@ const runFilterRefiner = async (settings: StorageSettings) => {
     return;
   }
 
-  // attempt to get the sync settings first, then fall back to local
-  let syncSettings = await getStorageValue("sync");
-  if (Object.keys(syncSettings).length === 0) {
-    syncSettings = await getStorageValue();
-  }
+  const { syncSettings } = await getSettings();
 
   const refiner = document.getElementById("brandsRefinements");
   if (!refiner) {
@@ -158,11 +156,7 @@ const filterBrands = async (settings: StorageSettings) => {
     return;
   }
 
-  // attempt to get the sync settings first, then fall back to local
-  let syncSettings = await getStorageValue("sync");
-  if (Object.keys(syncSettings).length === 0) {
-    syncSettings = await getStorageValue();
-  }
+  const { syncSettings } = await getSettings();
 
   const brands = settings.brandsMap;
   if (Object.keys(brands).length === 0) {

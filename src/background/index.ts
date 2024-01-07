@@ -1,6 +1,5 @@
 import { brandsUrl, defaultLocalStorageValue, defaultSyncStorageValue, latestReleaseUrl } from "utils/config";
-import { getStorageValue, setIcon, setStorageValue } from "utils/browser-helpers";
-import { extractSyncStorageSettingsObject } from "utils/helpers";
+import { getSettings, getStorageValue, setIcon, setStorageValue } from "utils/browser-helpers";
 
 const getBrandsListVersion = async () => {
   console.log("AmazonBrandFilter: %cChecking latest brands list version!", "color: yellow");
@@ -66,16 +65,11 @@ const setStorageSettings = async () => {
     localValue = defaultLocalStorageValue;
   } else {
     // handle case where no default values exist when !isFirstRun
-    // attempt to get sync settings first
-    let syncSettings = await getStorageValue("sync");
-    if (Object.keys(syncSettings).length === 0) {
-      syncSettings = await getStorageValue();
-    }
+    const { settings, syncSettings } = await getSettings();
 
     // defaults destructured first to ensure that settings that have been set are not overwritten
-    const filteredSyncSettings = extractSyncStorageSettingsObject(syncSettings);
-    syncValue = { ...defaultSyncStorageValue, ...filteredSyncSettings };
-    localValue = { ...defaultLocalStorageValue, ...syncSettings };
+    syncValue = { ...defaultSyncStorageValue, ...syncSettings };
+    localValue = { ...defaultLocalStorageValue, ...settings };
   }
 
   const { brandsVersion: currentVersion } = await getStorageValue("brandsVersion");
@@ -86,8 +80,8 @@ const setStorageSettings = async () => {
     localValue = { ...localValue, brandsVersion: latestVersion, brandsCount, maxWordCount, brandsMap };
   }
 
-  await setStorageValue(syncValue, "sync");
-  await setStorageValue(localValue);
+  await setStorageValue(syncValue, "sync", "overwrite");
+  await setStorageValue(localValue, "local", "overwrite");
 };
 
 (async () => {
