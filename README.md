@@ -54,6 +54,4 @@ In no particular order these are the things I would like to add eventually
 - Per department disabling of the filter
 - Caret or something on the page to indicate that things have been hidden
 - A way for users to report a missing brand from within the add-on popup
-- A personal list of brands to filter (say you hate a "real" brand for ethical reasons or otherwise) and to allow to bypass (this is probably for a brand that just hasn't been added yet)
-- Localization: A big one I wasn't expecting to need. Sorry to all you guys outside the US that are trying the addon and finding it does not work. I am adding permissions for different Amazon top-level domains based on where I see people downloading the addon from.
 - Along with localiztion I'm considering having different lists based on locale. I'm not sure it will be necessary yet.
