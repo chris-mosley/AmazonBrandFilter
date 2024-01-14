@@ -38,5 +38,5 @@
       "matches": ["*://*/*"]
     }
   ],
-  "permissions": ["storage"]
+  "permissions": ["storage", "activeTab"]
 }

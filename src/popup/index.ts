@@ -237,7 +237,7 @@ const setPersonalList = async () => {
 const sendMessageToContentScriptPostClick = (message: PopupMessage) => {
   getEngineApi().tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs[0];
-    if (!activeTab || !activeTab.id) {
+    if (!activeTab || !activeTab.id || !activeTab.url?.includes(".amazon.")) {
       return;
     }
     getEngineApi().tabs.sendMessage(activeTab.id, message);
