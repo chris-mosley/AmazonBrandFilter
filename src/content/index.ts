@@ -131,16 +131,16 @@ const runFilterRefiner = async (settings: StorageSettings) => {
         div.style.display = "block";
         div
           .getElementsByClassName("a-size-base a-color-base")[0]
-          ?.setAttribute("style", "display: block; color: grey !important;");
+          ?.setAttribute("style", "display: inlne-block; color: grey !important;");
       } else {
         div.style.display = "none";
         div
           .getElementsByClassName("a-size-base a-color-base")[0]
-          ?.setAttribute("style", "display: block; color: black !important;");
+          ?.setAttribute("style", "display: inline-block; color: black !important;");
       }
 
       if (settings.useDebugMode) {
-        div.style.display = "block";
+        div.style.display = "inline-block";
         div.style.backgroundColor = "red";
       } else {
         div.style.backgroundColor = "white";
