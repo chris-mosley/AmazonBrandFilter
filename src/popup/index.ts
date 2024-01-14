@@ -1,12 +1,14 @@
 import {
+  ensureSettingsExist,
   getEngineApi,
   getManifest,
   getMessage,
-  getSanitizedUserInput,
+  getSettings,
   getStorageValue,
   setIcon,
   setStorageValue,
-} from "utils/helpers";
+} from "utils/browser-helpers";
+import { getSanitizedUserInput } from "utils/helpers";
 import { PopupMessage } from "utils/types";
 
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
@@ -51,7 +53,6 @@ const setText = async () => {
   abfDebugModeText.innerText = await getMessage("popup_debug");
   abfPersonalBlockEnabledText.innerText = await getMessage("popup_personal_blocklist");
   abfPersonalBlockButton.innerText = await getMessage("popup_save_button");
-
   abfPersonalBlockText.innerText = await getMessage("popup_save_confirm");
   brandListVersionText.innerText = await getMessage("popup_list_version");
   brandCountText.innerText = await getMessage("popup_list_count");
@@ -62,12 +63,7 @@ const setText = async () => {
 };
 
 const setPopupBoxStates = async () => {
-  console.log("AmazonBrandFilter: Setting Popup Box States");
-  // attempt to get the sync settings first, then fall back to local
-  let syncSettings = await getStorageValue("sync");
-  if (Object.keys(syncSettings).length === 0) {
-    syncSettings = await getStorageValue();
-  }
+  const { settings, syncSettings } = await getSettings();
 
   if (syncSettings.enabled) {
     abfEnabled.checked = true;
@@ -95,8 +91,8 @@ const setPopupBoxStates = async () => {
     abfFilterRefinerGrey.checked = false;
   }
 
-  versionNumber.innerText = syncSettings.brandsVersion?.toString() ?? "";
-  brandCount.innerText = syncSettings.brandsCount?.toString() ?? "";
+  versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
+  brandCount.innerText = settings.brandsCount?.toString() ?? "";
 
   if (syncSettings.lastMapRun) {
     lastRun.innerText = `${syncSettings.lastMapRun}ms`;
@@ -113,15 +109,11 @@ const setPopupBoxStates = async () => {
 
 const setAddonVersion = () => {
   const manifest = getManifest();
-  abfVersion.innerText = "v" + manifest.version;
+  abfVersion.innerText = `v${manifest.version}`;
 };
 
 const setTextBoxStates = async () => {
-  // attempt to get the sync settings first, then fall back to local
-  let syncSettings = await getStorageValue("sync");
-  if (Object.keys(syncSettings).length === 0) {
-    syncSettings = await getStorageValue();
-  }
+  const { syncSettings } = await getSettings();
 
   if (syncSettings.usePersonalBlock === true) {
     abfPersonalBlockEnabled.checked = true;
@@ -208,13 +200,10 @@ const setPersonalBlockEnabled = async (_event: Event) => {
 
 const savePersonalBlock = async () => {
   const userInput = getSanitizedUserInput(abfPersonalBlockTextBox.value);
-  console.log({ userInput });
   const personalBlockMap: Record<string, boolean> = {};
   for (const brand of userInput) {
     personalBlockMap[brand] = true;
   }
-  console.log({ personalBlockMap });
-  console.log("AmazonBrandFilter: personalBlockMap is: " + JSON.stringify(personalBlockMap));
   // set the personalBlockMap in both local and sync storage
   await setStorageValue({ personalBlockMap }, "sync");
   await setStorageValue({ personalBlockMap });
@@ -228,7 +217,7 @@ const setPersonalList = async () => {
   if (Object.keys(result).length === 0) {
     result = await getStorageValue("personalBlockMap");
   }
-  console.log({ result });
+
   const personalBlockMap = result.personalBlockMap;
   if (!personalBlockMap) {
     return;
@@ -255,13 +244,6 @@ const sendMessageToContentScriptPostClick = (message: PopupMessage) => {
   });
 };
 
-setPopupBoxStates();
-setTextBoxStates();
-setText();
-setAddonVersion();
-setPersonalList();
-// abfEnabled.checked = true
-
 abfEnabled.addEventListener("click", enableDisable);
 abfFilterRefiner.addEventListener("click", setFilterRefiner);
 abfFilterRefinerHide.addEventListener("click", setRefinerHide);
@@ -271,3 +253,13 @@ abfDebugMode.addEventListener("click", setDebugMode);
 abfPersonalBlockEnabled.addEventListener("click", setPersonalBlockEnabled);
 abfPersonalBlockButton.addEventListener("click", savePersonalBlock);
 // abfHideAll.addEventListener("click", hideAll)
+
+(async () => {
+  setText();
+  setAddonVersion();
+  await ensureSettingsExist();
+  setPopupBoxStates();
+  setTextBoxStates();
+  setPersonalList();
+  console.log("AmazonBrandFilter: %cPopup script loaded!", "color: lightgreen");
+})();
