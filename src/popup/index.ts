@@ -123,78 +123,49 @@ const setTextBoxStates = async () => {
 };
 
 const enableDisable = async (_event: Event) => {
-  if (abfEnabled.checked) {
-    await setStorageValue({ enabled: true });
-  } else {
-    await setStorageValue({ enabled: false });
-  }
+  await setStorageValue({ enabled: abfEnabled.checked }, "sync");
+  await setStorageValue({ enabled: abfEnabled.checked });
   await setIcon();
   sendMessageToContentScriptPostClick({ type: "enabled", isChecked: abfEnabled.checked });
 };
 
 const setFilterRefiner = async (_event: Event) => {
-  if (abfFilterRefiner.checked) {
-    await setStorageValue({ filterRefiner: true });
-  } else {
-    await setStorageValue({ filterRefiner: false });
-  }
+  await setStorageValue({ filterRefiner: abfFilterRefiner.checked }, "sync");
+  await setStorageValue({ filterRefiner: abfFilterRefiner.checked });
   sendMessageToContentScriptPostClick({ type: "filterRefiner", isChecked: abfFilterRefiner.checked });
 };
 
 const setRefinerHide = async (_event: Event) => {
-  if (abfFilterRefinerHide.checked) {
-    abfFilterRefinerGrey.checked = false;
-    await setStorageValue({ refinerMode: "hide" });
-  } else {
-    abfFilterRefinerGrey.checked = true;
-    await setStorageValue({ refinerMode: "grey" });
-  }
+  abfFilterRefinerGrey.checked = !abfFilterRefinerHide.checked;
+  await setStorageValue({ refinerMode: abfFilterRefinerHide.checked ? "hide" : "grey" }, "sync");
+  await setStorageValue({ refinerMode: abfFilterRefinerHide.checked ? "hide" : "grey" });
   sendMessageToContentScriptPostClick({ type: "refinerMode", isChecked: abfFilterRefinerHide.checked });
 };
 
 const setRefinerGrey = async (_event: Event) => {
-  if (abfFilterRefinerGrey.checked) {
-    abfFilterRefinerHide.checked = false;
-    await setStorageValue({ refinerMode: "grey" });
-  } else {
-    abfFilterRefinerHide.checked = true;
-    await setStorageValue({ refinerMode: "hide" });
-  }
+  abfFilterRefinerHide.checked = !abfFilterRefinerGrey.checked;
+  await setStorageValue({ refinerMode: abfFilterRefinerGrey.checked ? "grey" : "hide" }, "sync");
+  await setStorageValue({ refinerMode: abfFilterRefinerGrey.checked ? "grey" : "hide" });
   sendMessageToContentScriptPostClick({ type: "refinerMode", isChecked: abfFilterRefinerGrey.checked });
 };
 
 const setRefinerBypass = async (_event: Event) => {
-  if (abfAllowRefineBypass.checked) {
-    await setStorageValue({ refinerBypass: true });
-  } else {
-    await setStorageValue({ refinerBypass: false });
-  }
+  await setStorageValue({ refinerBypass: abfAllowRefineBypass.checked }, "sync");
+  await setStorageValue({ refinerBypass: abfAllowRefineBypass.checked });
   sendMessageToContentScriptPostClick({ type: "refinerBypass", isChecked: abfAllowRefineBypass.checked });
 };
 
 const setDebugMode = async (_event: Event) => {
-  if (abfDebugMode.checked) {
-    await setStorageValue({ useDebugMode: true });
-  } else {
-    await setStorageValue({ useDebugMode: false });
-  }
+  await setStorageValue({ useDebugMode: abfDebugMode.checked }, "sync");
+  await setStorageValue({ useDebugMode: abfDebugMode.checked });
   sendMessageToContentScriptPostClick({ type: "useDebugMode", isChecked: abfDebugMode.checked });
 };
 
 const setPersonalBlockEnabled = async (_event: Event) => {
-  if (abfPersonalBlockEnabled.checked) {
-    // set the usePersonalBlock in both local and sync storage
-    await setStorageValue({ usePersonalBlock: true }, "sync");
-    await setStorageValue({ usePersonalBlock: true });
-    abfPersonalBlockTextBox.style.display = "block";
-    abfPersonalBlockButton.style.display = "block";
-  } else {
-    // set the usePersonalBlock in both local and sync storage
-    await setStorageValue({ usePersonalBlock: false }, "sync");
-    await setStorageValue({ usePersonalBlock: false });
-    abfPersonalBlockTextBox.style.display = "none";
-    abfPersonalBlockButton.style.display = "none";
-  }
+  abfPersonalBlockTextBox.style.display = abfPersonalBlockEnabled.checked ? "block" : "none";
+  abfPersonalBlockButton.style.display = abfPersonalBlockEnabled.checked ? "block" : "none";
+  await setStorageValue({ usePersonalBlock: abfPersonalBlockEnabled.checked }, "sync");
+  await setStorageValue({ usePersonalBlock: abfPersonalBlockEnabled.checked });
   sendMessageToContentScriptPostClick({ type: "usePersonalBlock", isChecked: abfPersonalBlockEnabled.checked });
 };
 
@@ -204,7 +175,6 @@ const savePersonalBlock = async () => {
   for (const brand of userInput) {
     personalBlockMap[brand] = true;
   }
-  // set the personalBlockMap in both local and sync storage
   await setStorageValue({ personalBlockMap }, "sync");
   await setStorageValue({ personalBlockMap });
   abfPersonalBlockSavedConfirm.style.display = "block";
