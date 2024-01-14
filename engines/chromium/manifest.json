@@ -1,17 +1,6 @@
 {
-  "manifest_version": 3,
-  "default_locale": "en",
-  "icons": {
-    "128": "icons/abf-disabled-128.png"
-  },
-  "action": {
-    "default_title": "amazon-brand-filter",
-    "default_area": "navbar",
-    "default_popup": "popup.html"
-  },
   "background": {
     "service_worker": "background.js",
     "type": "module"
-  },
-  "permissions": ["storage", "activeTab"]
+  }
 }
