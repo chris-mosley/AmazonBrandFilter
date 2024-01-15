@@ -1,5 +1,4 @@
 {
-  "manifest_version": 3,
   "browser_specific_settings": {
     "gecko": {
       "id": "abf@mosley.xyz",
@@ -8,15 +7,6 @@
     "gecko_android": {
       "strict_min_version": "113.0"
     }
-  },
-  "default_locale": "en",
-  "icons": {
-    "128": "icons/abf-enabled-128.png"
-  },
-  "action": {
-    "default_title": "Amazon Brand Filter",
-    "default_area": "navbar",
-    "default_popup": "popup.html"
   },
   "background": {
     "scripts": ["background.js"],
@@ -37,6 +27,5 @@
       "resources": ["brands.txt"],
       "matches": ["*://*/*"]
     }
-  ],
-  "permissions": ["storage", "activeTab"]
+  ]
 }
