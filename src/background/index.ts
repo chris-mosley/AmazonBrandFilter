@@ -1,5 +1,13 @@
 import { brandsUrl, defaultLocalStorageValue, defaultSyncStorageValue, latestReleaseUrl } from "utils/config";
-import { getSettings, getStorageValue, setIcon, setStorageValue } from "utils/browser-helpers";
+import {
+  getEngineApi,
+  getSettings,
+  getStorageValue,
+  sendMessageToPopup,
+  setIcon,
+  setStorageValue,
+} from "utils/browser-helpers";
+import { StorageArea } from "utils/types";
 
 const getBrandsListVersion = async () => {
   console.log("AmazonBrandFilter: %cChecking latest brands list version!", "color: yellow");
@@ -89,3 +97,8 @@ const setStorageSettings = async () => {
   setIcon();
   setInterval(checkForBrandListUpdates, 86_400_000); // check for updates once everyday
 })();
+
+getEngineApi().storage.onChanged.addListener(async (_changes, area) => {
+  console.log({ area });
+  sendMessageToPopup({ type: "storageChanged", area: area as StorageArea });
+});

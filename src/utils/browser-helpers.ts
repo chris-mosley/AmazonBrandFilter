@@ -1,7 +1,15 @@
 import { browser } from "webextension-polyfill-ts";
 
 import { extractSyncStorageSettingsObject, sleep } from "utils/helpers";
-import { Engine, StorageMode, StorageArea, StorageSettings, SyncStorageSettings } from "utils/types";
+import {
+  Engine,
+  StorageMode,
+  StorageArea,
+  StorageSettings,
+  SyncStorageSettings,
+  PopupMessage,
+  BackgroundMessage,
+} from "utils/types";
 
 /**
  * retrieves the name of the browser engine based on the runtime environment.
@@ -140,9 +148,9 @@ export const getSettings = async () => {
 
 export const getMessage = async (message: string): Promise<string> => {
   const engine = getEngine();
-  if (engine == "gecko" && browser.i18n) {
+  if (engine === "gecko" && browser.i18n) {
     return browser.i18n.getMessage(message);
-  } else if (engine == "chromium" && chrome.i18n) {
+  } else if (engine === "chromium" && chrome.i18n) {
     return chrome.i18n.getMessage(message);
   } else {
     throw new Error("Unsupported engine.");
@@ -220,4 +228,34 @@ export const ensureSettingsExist = async (): Promise<boolean> => {
   }
   console.log("AmazonBrandFilter: %cSettings exist!", "color: lightgreen");
   return true;
+};
+
+/**
+ *
+ * @param message
+ */
+export const sendMessageToContent = async (message: PopupMessage) => {
+  getEngineApi().tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const activeTab = tabs[0];
+    if (!activeTab || !activeTab.id || !activeTab.url?.includes(".amazon.")) {
+      return;
+    }
+    getEngineApi().tabs.sendMessage(activeTab.id, message);
+  });
+};
+
+/**
+ *
+ * @param message
+ */
+export const sendMessageToPopup = async (message: BackgroundMessage) => {
+  const engine = getEngine();
+  if (engine === "chromium") {
+    console.log("sending message to popup");
+    chrome.runtime.sendMessage(chrome.runtime.id, message);
+  } else if (engine === "gecko") {
+    browser.runtime.sendMessage(browser.runtime.id, message);
+  } else {
+    throw new Error("Unsupported engine.");
+  }
 };

@@ -226,46 +226,49 @@ const resetBrands = () => {
   resetBrandsSearchResults();
 };
 
+const messageListener = async (message: PopupMessage) => {
+  console.log({ type: message.type, isChecked: message.isChecked });
+  switch (message.type) {
+    case "enabled":
+      if (message.isChecked) {
+        filterBrands();
+      } else {
+        resetBrands();
+        // previously hidden elements should be shown
+        unHideDivs();
+      }
+      break;
+    case "refinerBypass":
+      if (message.isChecked) {
+        resetBrands();
+        // previously hidden elements should be shown
+        unHideDivs();
+      } else {
+        filterBrands();
+      }
+      break;
+    case "useDebugMode":
+      filterBrands();
+      break;
+    case "filterRefiner":
+      resetBrandsRefiner();
+      runFilterRefiner();
+      break;
+    case "refinerMode":
+      runFilterRefiner();
+      break;
+    case "usePersonalBlock":
+    case "personalBlockMap":
+      filterBrands();
+      break;
+    default:
+      break;
+  }
+};
+
 const listenForMessages = () => {
-  getEngineApi().runtime.onMessage.addListener(async (message: PopupMessage) => {
-    console.log({ type: message.type, isChecked: message.isChecked });
-    switch (message.type) {
-      case "enabled":
-        if (message.isChecked) {
-          filterBrands();
-        } else {
-          resetBrands();
-          // previously hidden elements should be shown
-          unHideDivs();
-        }
-        break;
-      case "refinerBypass":
-        if (message.isChecked) {
-          resetBrands();
-          // previously hidden elements should be shown
-          unHideDivs();
-        } else {
-          filterBrands();
-        }
-        break;
-      case "useDebugMode":
-        filterBrands();
-        break;
-      case "filterRefiner":
-        resetBrandsRefiner();
-        runFilterRefiner();
-        break;
-      case "refinerMode":
-        runFilterRefiner();
-        break;
-      case "usePersonalBlock":
-      case "personalBlockMap":
-        filterBrands();
-        break;
-      default:
-        break;
-    }
-  });
+  console.log("AmazonBrandFilter: %cListening for messages!", "color: lightgreen");
+  getEngineApi().runtime.onMessage.addListener(messageListener);
 };
 
 const runFilter = async () => {

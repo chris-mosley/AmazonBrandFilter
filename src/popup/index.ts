@@ -1,10 +1,10 @@
 import {
   ensureSettingsExist,
-  getEngineApi,
   getManifest,
   getMessage,
   getSettings,
   getStorageValue,
+  sendMessageToContent,
   setIcon,
   setStorageValue,
 } from "utils/browser-helpers";
@@ -205,13 +205,7 @@ const setPersonalList = async () => {
 };
 
 const sendMessageToContentScriptPostClick = (message: PopupMessage) => {
-  getEngineApi().tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const activeTab = tabs[0];
-    if (!activeTab || !activeTab.id || !activeTab.url?.includes(".amazon.")) {
-      return;
-    }
-    getEngineApi().tabs.sendMessage(activeTab.id, message);
-  });
+  sendMessageToContent(message);
 };
 
 abfEnabled.addEventListener("click", enableDisable);

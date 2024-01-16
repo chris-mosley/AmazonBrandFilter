@@ -21,9 +21,12 @@ export interface StorageSettings {
 
 export type SyncStorageSettings = Omit<StorageSettings, "brandsMap" | "brandsCount" | "brandsVersion" | "maxWordCount">;
 
-export type PopupMessageType = keyof StorageSettings;
-
 export interface PopupMessage {
-  type: PopupMessageType;
+  type: keyof StorageSettings;
   isChecked: boolean;
+}
+
+export interface BackgroundMessage {
+  type: "storageChanged";
+  area: StorageArea;
 }
