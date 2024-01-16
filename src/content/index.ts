@@ -78,12 +78,11 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
   }
 };
 
-const runFilterRefiner = async (settings: StorageSettings) => {
+const runFilterRefiner = async () => {
+  const { settings, syncSettings } = await getSettings();
   if (!settings.enabled || !settings.filterRefiner) {
     return;
   }
-
-  const { syncSettings } = await getSettings();
 
   const refiner = document.getElementById("brandsRefinements");
   if (!refiner) {
@@ -123,12 +122,11 @@ const runFilterRefiner = async (settings: StorageSettings) => {
   }
 };
 
-const filterBrands = async (settings: StorageSettings) => {
+const filterBrands = async () => {
+  const { settings, syncSettings } = await getSettings();
   if (!settings.enabled) {
     return;
   }
-
-  const { syncSettings } = await getSettings();
 
   const brands = settings.brandsMap;
   if (Object.keys(brands).length === 0) {
@@ -142,6 +140,7 @@ const filterBrands = async (settings: StorageSettings) => {
   }
 
   const divs = getItemDivs();
+  console.log(divs.length);
   for (const div of divs) {
     const itemHeader = div.getElementsByClassName("s-line-clamp-1") as HTMLCollectionOf<HTMLDivElement>;
     if (itemHeader.length !== 0) {
@@ -194,7 +193,7 @@ const filterBrands = async (settings: StorageSettings) => {
   }
 
   if (settings.filterRefiner) {
-    runFilterRefiner(settings);
+    runFilterRefiner();
   }
 };
 
@@ -230,11 +229,10 @@ const resetBrands = () => {
 const listenForMessages = () => {
   getEngineApi().runtime.onMessage.addListener(async (message: PopupMessage) => {
     console.log({ type: message.type, isChecked: message.isChecked });
-    const settings = await getStorageValue();
     switch (message.type) {
       case "enabled":
         if (message.isChecked) {
-          filterBrands(settings);
+          filterBrands();
         } else {
           resetBrands();
           // previously hidden elements should be shown
@@ -247,22 +245,22 @@ const listenForMessages = () => {
           // previously hidden elements should be shown
           unHideDivs();
         } else {
-          filterBrands(settings);
+          filterBrands();
         }
         break;
       case "useDebugMode":
-        filterBrands(settings);
+        filterBrands();
         break;
       case "filterRefiner":
         resetBrandsRefiner();
-        runFilterRefiner(settings);
+        runFilterRefiner();
         break;
       case "refinerMode":
-        runFilterRefiner(settings);
+        runFilterRefiner();
         break;
       case "usePersonalBlock":
       case "personalBlockMap":
-        filterBrands(settings);
+        filterBrands();
         break;
       default:
         break;
@@ -277,7 +275,7 @@ const runFilter = async () => {
   }
 
   const timerStart = performance.now();
-  filterBrands(settings);
+  filterBrands();
   const timerEnd = performance.now();
   setStorageValue({ lastMapRun: timerEnd - timerStart });
 };
