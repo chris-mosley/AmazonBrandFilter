@@ -1,4 +1,4 @@
-# AmazonBrandFilter
+`# AmazonBrandFilter
 
 **Table of content:**
 
@@ -11,7 +11,11 @@
 
 ## What is it?
 
-### AmazonBrandFilter is a Firefox add-on that filters out all of the drop shipping brands that are randomly generated and clog up your search.
+### AmazonBrandFilter is a Firefox and Chrome add-on that filters out all of the drop shipping brands that are randomly generated and clog up your search.
+
+## Where do I get it?
+### [Firefox](https://addons.mozilla.org/en-US/firefox/addon/amazonbrandfilter/)
+### [Chrome](https://chromewebstore.google.com/detail/amazonbrandfilter/mhfjchmiaocbleapojmgnmjfcmanihio)
 
 ## How does it work?
 
