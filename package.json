@@ -1,10 +1,10 @@
 {
-  "name": "AmazonBrandFilter",
   "description": "Filters out all unknown brands from Amazon search results.",
   "version": "0.5.0",
   "keywords": [],
   "author": "",
   "license": "MIT",
+  "private": true,
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/chrome": "^0.0.237",

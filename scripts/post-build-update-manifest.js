@@ -3,8 +3,7 @@ const path = require("path");
 
 const rootPath = path.resolve("./");
 const packageJson = require(`${rootPath}/package.json`);
-const baseManifestJson = require(`${rootPath}/engines/common/manifest/base.json`);
-const contentScriptsJson = require(`${rootPath}/engines/common/manifest/content-scripts.json`);
+const commonManifestJson = require(`${rootPath}/engines/common/manifest.json`);
 const manifestFilePath = path.resolve(__dirname, `${rootPath}/dist/manifest.json`);
 
 try {
@@ -13,9 +12,8 @@ try {
 
   // update the relevant keys
   manifest.version = packageJson.version;
-  manifest.name = packageJson.name;
   manifest.description = packageJson.description;
-  manifest = { ...manifest, ...baseManifestJson, ...contentScriptsJson };
+  manifest = { ...manifest, ...commonManifestJson };
 
   // write the updated manifest file
   fs.writeFileSync(manifestFilePath, JSON.stringify(manifest, null, 2));

@@ -1,4 +1,16 @@
 {
+  "name": "Amazon Brand Filter",
+  "manifest_version": 3,
+  "default_locale": "en",
+  "icons": {
+    "128": "icons/abf-disabled-128.png"
+  },
+  "permissions": ["storage", "activeTab"],
+  "action": {
+    "default_title": "Amazon Brand Filter",
+    "default_area": "navbar",
+    "default_popup": "popup.html"
+  },
   "content_scripts": [
     {
       "matches": [
