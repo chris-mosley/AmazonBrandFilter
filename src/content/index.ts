@@ -164,9 +164,7 @@ const filterBrands = async (settings: StorageSettings) => {
   console.log("AmazonBrandFilter: Brands found");
 
   if (settings.refinerBypass) {
-    if (checkBrandFilter()) {
-      return;
-    }
+    return;
   }
 
   const divs = getItemDivs();
