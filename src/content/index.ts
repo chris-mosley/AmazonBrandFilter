@@ -8,31 +8,31 @@ import {
 import { getItemDivs, unHideDivs } from "utils/helpers";
 import { PopupMessage, StorageSettings } from "utils/types";
 
-const checkBrandFilter = (): boolean => {
-  const boxesdiv = document.getElementById("brandsRefinements")?.children;
-  if (!boxesdiv) {
-    return false;
-  }
+// const checkBrandFilter = (): boolean => {
+//   const boxesdiv = document.getElementById("brandsRefinements")?.children;
+//   if (!boxesdiv) {
+//     return false;
+//   }
 
-  let boxes: HTMLCollectionOf<HTMLInputElement> | undefined;
-  for (const div of boxesdiv) {
-    boxes = div.getElementsByTagName("input");
-    if (boxes.length > 0) {
-      break;
-    }
-  }
+//   let boxes: HTMLCollectionOf<HTMLInputElement> | undefined;
+//   for (const div of boxesdiv) {
+//     boxes = div.getElementsByTagName("input");
+//     if (boxes.length > 0) {
+//       break;
+//     }
+//   }
 
-  if (!boxes) {
-    return false;
-  }
+//   if (!boxes) {
+//     return false;
+//   }
 
-  for (const box of boxes) {
-    if (box.checked) {
-      return true;
-    }
-  }
-  return false;
-};
+//   for (const box of boxes) {
+//     if (box.checked) {
+//       return true;
+//     }
+//   }
+//   return false;
+// };
 
 const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
   const { syncSettings } = await getSettings();
@@ -269,9 +269,11 @@ const listenForMessages = () => {
         break;
       case "refinerBypass":
         if (message.isChecked) {
-          if (checkBrandFilter()) {
-            return;
-          }
+          resetBrands();
+          // previously hidden elements should be shown
+          unHideDivs();
+        } else {
+          filterBrands(settings);
         }
         break;
       case "useDebugMode":
