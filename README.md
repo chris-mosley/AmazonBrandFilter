@@ -1,4 +1,4 @@
-`# AmazonBrandFilter
+# AmazonBrandFilter
 
 **Table of content:**
 
