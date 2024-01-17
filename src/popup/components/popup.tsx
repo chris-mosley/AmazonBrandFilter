@@ -14,13 +14,14 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSettings } from 'popup/context/settings';
-import { getEngineApi, sendMessageToContentScript, setIcon, setStorageValue } from 'utils/browser-helpers';
+import { getEngineApi, getManifest, sendMessageToContentScript, setIcon, setStorageValue } from 'utils/browser-helpers';
 import { BackgroundMessage, StorageSettings } from 'utils/types';
 import { getSanitizedUserInput } from 'utils/helpers';
 
 export const Popup = () => {
   const { t } = useTranslation();
   const { settings, setAll } = useSettings();
+  const [manifestVersion, setManifestVersion] = useState<string>("");
   const [personalBlockText, setPersonalBlockText] = useState<string>("");
   console.log({ settings });
 
@@ -37,6 +38,11 @@ export const Popup = () => {
     return () => {
       port.onMessage.removeListener(messageListener);
     };
+  }, []);
+
+  useEffect(() => {
+    const manifest = getManifest();
+    setManifestVersion(manifest.version);
   }, []);
 
   useEffect(() => {
@@ -74,6 +80,18 @@ export const Popup = () => {
         padding: 8px 16px;
       `}
     >
+      <div
+        css={css`
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          font-size: 0.8rem;
+          font-weight: bold;
+          color: grey;
+        `}
+      >
+        {`v${manifestVersion}`}
+      </div>
       <FormControl sx={{ width: '100%' }}>
         <FormControlLabel
           control={
