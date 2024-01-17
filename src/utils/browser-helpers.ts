@@ -226,7 +226,7 @@ export const ensureSettingsExist = async (): Promise<boolean> => {
  *
  * @param message
  */
-export const sendMessageToContent = async (message: PopupMessage) => {
+export const sendMessageToContentScript = async (message: PopupMessage) => {
   getEngineApi().tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs[0];
     if (!activeTab || !activeTab.id || !activeTab.url?.includes(".amazon.")) {

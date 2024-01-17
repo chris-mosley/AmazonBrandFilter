@@ -1,15 +1,27 @@
 import { css } from '@emotion/react';
-import { FormControl, FormControlLabel, Radio, RadioGroup, Switch } from '@mui/material';
+import { 
+  Button, 
+  FormControl, 
+  FormControlLabel, 
+  InputAdornment, 
+  Link, 
+  Radio, 
+  RadioGroup, 
+  Switch, 
+  TextField, 
+} from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSettings } from 'client/context/settings';
-import { getEngineApi, sendMessageToContent, setIcon, setStorageValue } from 'utils/browser-helpers';
+import { getEngineApi, sendMessageToContentScript, setIcon, setStorageValue } from 'utils/browser-helpers';
 import { BackgroundMessage, StorageSettings } from 'utils/types';
-import { useEffect } from 'react';
+import { getSanitizedUserInput } from 'utils/helpers';
 
 export const Popup = () => {
   const { t } = useTranslation();
   const { settings, setAll } = useSettings();
+  const [personalBlockText, setPersonalBlockText] = useState<string>("");
   console.log({ settings });
 
   const messageListener = (message: BackgroundMessage) => {
@@ -27,6 +39,10 @@ export const Popup = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setPersonalBlockText(Object.keys(settings.personalBlockMap).join("\n"));
+  }, [settings.personalBlockMap]);
+
   const handleChange = <K extends keyof StorageSettings>(
     key: K
   ) => (
@@ -35,7 +51,18 @@ export const Popup = () => {
     const payload = { [key]: value };
     await setStorageValue(payload, "sync");
     await setStorageValue(payload);
-    sendMessageToContent({ type: key, isChecked: typeof value === "boolean" ? value : true });
+    sendMessageToContentScript({ type: key, isChecked: typeof value === "boolean" ? value : true });
+  };
+
+  const handleSavePersonalBlock = async () => {
+    const userInput = getSanitizedUserInput(personalBlockText);
+    const personalBlockMap: Record<string, boolean> = {};
+    for (const brand of userInput) {
+      personalBlockMap[brand] = true;
+    }
+    await setStorageValue({ personalBlockMap }, "sync");
+    await setStorageValue({ personalBlockMap });
+    sendMessageToContentScript({ type: "personalBlockMap", isChecked: settings.usePersonalBlock });
   };
   
   return (
@@ -47,7 +74,7 @@ export const Popup = () => {
         padding: 8px 16px;
       `}
     >
-      <FormControl>
+      <FormControl sx={{ width: '100%' }}>
         <FormControlLabel
           control={
             <Switch 
@@ -125,6 +152,80 @@ export const Popup = () => {
           }
           label={t('popup_personal_blocklist.message')}
         />
+        <div
+          css={css`
+            margin-top: 0.5rem;
+            margin-left: 1.3rem;
+            display: ${settings.usePersonalBlock ? "block" : "none"};
+          `}
+        >
+          <TextField 
+            multiline 
+            minRows="1" 
+            sx={{ width: '100%' }}
+            size="small"
+            variant="outlined" 
+            label={t('popup_personal_blocklist.description')}
+            value={personalBlockText}
+            onChange={(e) => setPersonalBlockText(e.target.value)}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={handleSavePersonalBlock}
+                >
+                  {t('popup_save_button.message')}
+                </Button>
+              </InputAdornment>,
+            }}
+          />
+        </div>
+        <div
+          css={css`
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 4px;
+          `}
+        >
+          <div>
+            {`${t('popup_list_version.message')}${settings.brandsVersion}`}
+          </div>
+          <div>|</div>
+          <div>
+            {`${t('popup_list_count.message')}${settings.brandsCount}`}
+          </div>
+        </div>
+        <div
+          css={css`
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+          `}
+        >
+          <Link 
+            href="https://github.com/chris-mosley/AmazonBrandFilter/issues" 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            {t('popup_feedback_link.message')}
+          </Link>
+          <Link 
+            href="https://github.com/chris-mosley/AmazonBrandFilterList#missing-a-brand"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            {t('popup_missing_brand.message')}
+          </Link>
+          <Link 
+            href="https://github.com/chris-mosley/AmazonBrandFilter#help-translate"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            {t('popup_help_translate.message')}
+          </Link>
+        </div>
       </FormControl>
     </div>
   );

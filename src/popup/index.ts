@@ -4,7 +4,7 @@ import {
   getMessage,
   getSettings,
   getStorageValue,
-  sendMessageToContent,
+  sendMessageToContentScript,
   setIcon,
   setStorageValue,
 } from "utils/browser-helpers";
@@ -205,7 +205,7 @@ const setPersonalList = async () => {
 };
 
 const sendMessageToContentScriptPostClick = (message: PopupMessage) => {
-  sendMessageToContent(message);
+  sendMessageToContentScript(message);
 };
 
 abfEnabled.addEventListener("click", enableDisable);
