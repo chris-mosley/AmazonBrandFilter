@@ -4,7 +4,7 @@ import { brandsUrl, defaultLocalStorageValue, defaultSyncStorageValue, latestRel
 import { getEngineApi, getSettings, getStorageValue, setIcon, setStorageValue } from "utils/browser-helpers";
 import { StorageArea } from "utils/types";
 
-let popupPort: chrome.runtime.Port | Runtime.Port;
+let popupPort: chrome.runtime.Port | Runtime.Port | undefined;
 
 const getBrandsListVersion = async () => {
   console.log("AmazonBrandFilter: %cChecking latest brands list version!", "color: yellow");
@@ -102,7 +102,12 @@ getEngineApi().runtime.onConnect.addListener((port) => {
   }
 });
 
-// listen for storage changes
+// listen for popup disconnection
+popupPort?.onDisconnect.addListener(() => {
+  popupPort = undefined;
+});
+
+// listen for storage changes and send message to popup
 getEngineApi().storage.onChanged.addListener(async (_changes, area) => {
   if (!popupPort) {
     return;
