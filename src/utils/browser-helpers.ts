@@ -1,15 +1,7 @@
 import { browser } from "webextension-polyfill-ts";
 
 import { extractSyncStorageSettingsObject, sleep } from "utils/helpers";
-import {
-  Engine,
-  StorageMode,
-  StorageArea,
-  StorageSettings,
-  SyncStorageSettings,
-  PopupMessage,
-  BackgroundMessage,
-} from "utils/types";
+import { Engine, StorageMode, StorageArea, StorageSettings, SyncStorageSettings, PopupMessage } from "utils/types";
 
 /**
  * retrieves the name of the browser engine based on the runtime environment.
@@ -242,20 +234,4 @@ export const sendMessageToContent = async (message: PopupMessage) => {
     }
     getEngineApi().tabs.sendMessage(activeTab.id, message);
   });
-};
-
-/**
- *
- * @param message
- */
-export const sendMessageToPopup = async (message: BackgroundMessage) => {
-  const engine = getEngine();
-  if (engine === "chromium") {
-    console.log("sending message to popup");
-    chrome.runtime.sendMessage(chrome.runtime.id, message);
-  } else if (engine === "gecko") {
-    browser.runtime.sendMessage(browser.runtime.id, message);
-  } else {
-    throw new Error("Unsupported engine.");
-  }
 };

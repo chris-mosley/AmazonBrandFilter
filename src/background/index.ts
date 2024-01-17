@@ -1,13 +1,10 @@
+import { Runtime } from "webextension-polyfill-ts";
+
 import { brandsUrl, defaultLocalStorageValue, defaultSyncStorageValue, latestReleaseUrl } from "utils/config";
-import {
-  getEngineApi,
-  getSettings,
-  getStorageValue,
-  sendMessageToPopup,
-  setIcon,
-  setStorageValue,
-} from "utils/browser-helpers";
+import { getEngineApi, getSettings, getStorageValue, setIcon, setStorageValue } from "utils/browser-helpers";
 import { StorageArea } from "utils/types";
+
+let popupPort: chrome.runtime.Port | Runtime.Port;
 
 const getBrandsListVersion = async () => {
   console.log("AmazonBrandFilter: %cChecking latest brands list version!", "color: yellow");
@@ -98,7 +95,17 @@ const setStorageSettings = async () => {
   setInterval(checkForBrandListUpdates, 86_400_000); // check for updates once everyday
 })();
 
+// listen for popup connection
+getEngineApi().runtime.onConnect.addListener((port) => {
+  if (port.name === "popup") {
+    popupPort = port;
+  }
+});
+
+// listen for storage changes
 getEngineApi().storage.onChanged.addListener(async (_changes, area) => {
-  console.log({ area });
-  sendMessageToPopup({ type: "storageChanged", area: area as StorageArea });
+  if (!popupPort) {
+    return;
+  }
+  popupPort.postMessage({ type: "storageChanged", area: area as StorageArea });
 });

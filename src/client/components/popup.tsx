@@ -16,17 +16,14 @@ export const Popup = () => {
     if (message.type === "storageChanged") {
       setAll();
     }
-    // indicates that the response should be sent asynchronously
-    // without this we will not get the resonse immediately
-    return true as unknown as void;
   };
 
   useEffect(() => {
-    getEngineApi().runtime.onMessage.addListener(messageListener);
+    const port = getEngineApi().runtime.connect({ name: 'popup' });
+    port.onMessage.addListener(messageListener);
 
-    // Return a cleanup function to remove the listener when the component unmounts
     return () => {
-      getEngineApi().runtime.onMessage.removeListener(messageListener);
+      port.onMessage.removeListener(messageListener);
     };
   }, []);
 
@@ -47,7 +44,7 @@ export const Popup = () => {
         width: 25rem;
         font-size: 16px;
         font-weight: normal;
-        padding: 0.6rem;
+        padding: 8px 16px;
       `}
     >
       <FormControl>

@@ -5,7 +5,11 @@ import { StorageSettings, SyncStorageSettings } from 'utils/types';
 import { getSettings } from 'utils/browser-helpers';
 
 const SettingsContext = createContext(
-  {} as {
+  {
+    settings: defaultLocalStorageValue,
+    syncSettings: defaultSyncStorageValue,
+    setAll: () => Promise.resolve(),
+  } as {
     settings: StorageSettings;
     syncSettings: SyncStorageSettings;
     setAll: () => Promise<void>;
