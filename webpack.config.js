@@ -4,7 +4,7 @@ const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 module.exports = (env, argv) => {
   return {
     mode: argv.mode === "development" ? "development" : "production",
-    devtool: argv.mode === "development" ? "cheap-module-source-map" : "source-map",
+    devtool: argv.mode === "development" ? "cheap-module-source-map" : false,
     entry: {
       background: "./src/background/index.ts",
       content: "./src/content/index.ts",

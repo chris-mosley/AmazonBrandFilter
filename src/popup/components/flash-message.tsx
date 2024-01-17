@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { Alert } from '@mui/material';
 import { useFlashMessage } from 'popup/context/use-flash-message';
 
-export const FlashMessage = () => {
+const FlashMessage = () => {
   const { severity = "info", message } = useFlashMessage();
 
   if (!message) {
@@ -23,3 +23,5 @@ export const FlashMessage = () => {
     </div>
   );
 };
+
+export default FlashMessage;

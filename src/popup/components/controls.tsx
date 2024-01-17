@@ -19,7 +19,7 @@ import { getEngineApi, getManifest, sendMessageToContentScript, setIcon, setStor
 import { BackgroundMessage, StorageSettings } from 'utils/types';
 import { getSanitizedUserInput } from 'utils/helpers';
 
-export const Controls = () => {
+const Controls = () => {
   const { t } = useTranslation();
   const { settings, setAll } = useSettings();
 
@@ -274,3 +274,5 @@ export const Controls = () => {
     </div>
   );
 };
+
+export default Controls;
