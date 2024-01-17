@@ -1,5 +1,6 @@
 const path = require("path");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = (env, argv) => {
   return {
@@ -30,6 +31,19 @@ module.exports = (env, argv) => {
     output: {
       filename: "[name].js",
       path: path.resolve(__dirname, "dist"),
+    },
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            format: {
+              comments: false,
+            },
+          },
+          extractComments: false,
+        }),
+      ],
     },
   };
 };
