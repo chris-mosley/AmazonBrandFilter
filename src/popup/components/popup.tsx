@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useSettings } from 'client/context/settings';
+import { useSettings } from 'popup/context/settings';
 import { getEngineApi, sendMessageToContentScript, setIcon, setStorageValue } from 'utils/browser-helpers';
 import { BackgroundMessage, StorageSettings } from 'utils/types';
 import { getSanitizedUserInput } from 'utils/helpers';

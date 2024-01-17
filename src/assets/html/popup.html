@@ -1,82 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-    <link rel="stylesheet" href="popup.css" />
-  </head>
-
-  <body>
-    <div class="options" id="option-boxes">
-      <!-- Version -->
-      <span id="abf-version" class="abf-version"></span>
-
-      <div>
-        <input type="checkbox" id="abf-enabled" option="abf-enabled" />
-        <label for="abf-enabled" id="abf-enabled-text"></label>
-      </div>
-
-      <div>
-        <input type="checkbox" id="abf-filter-refiner" option="abf-filter-refiner" />
-        <label for="abf-filter-refiner" id="abf-filter-refiner-text"></label>
-      </div>
-
-      <div class="indent">
-        <input type="radio" id="abf-filter-refiner-hide" />
-        <label for="abf-filter-refiner-hide" id="abf-filter-refiner-hide-text"></label>
-
-        <input type="radio" id="abf-filter-refiner-grey" />
-        <label for="abf-filter-refiner-grey"  id="abf-filter-refiner-grey-text"></label>
-      </div>
-
-      <div>
-        <input type="checkbox" id="abf-allow-refine-bypass" option="abf-allow-refine-bypass" />
-        <label for="abf-allow-refine-bypass" id="abf-allow-refine-bypass-text"></label>
-      </div>
-
-      <div>
-        <input type="checkbox" id="abf-debug-mode" option="abf-debug-mode" />
-        <label for="abf-debug-mode" id="abf-debug-mode-text"></label>
-      </div>
-
-      <div>
-        <input type="checkbox" id="abf-personal-block-enabled" option="abf-personal-block-enabled" />
-        <label for="abf-personal-block-enabled" id="abf-personal-block-enabled-text"></label>
-        <span><input type="button" id="abf-personal-block-button" class="abf-personal-block-button" value="Save"/></span>
-        <span id="abf-personal-block-saved-confirm" class="abf-personal-block-saved-confirm"></span>
-      </div>
-
-      <div class="indent spaced">
-        <textarea id="abf-personal-block-textbox" class="abf-personal-block-text" cols="45"></textarea>
-      </div>
-
-      <div class="spaced">
-        <span>
-          <span id="popup-brand-version-text"></span>
-          <span id="version-number"></span>
-          <span> | </span>
-          <span id="popup-brand-count-text"></span>
-          <span id="brand-count"></span
-        ></span>
-      </div>
-
-      <div class="options-links spaced">
-        <a href="https://github.com/chris-mosley/AmazonBrandFilter/issues" id="popup-feedback-text"></a>
-        <a href="https://github.com/chris-mosley/AmazonBrandFilterList#missing-a-brand" id="popup-missing-brand-text"></a>
-        <a href="https://github.com/chris-mosley/AmazonBrandFilter#help-translate" id="popup-help-translate"></a>
-      </div>
-
-      <!-- Last Run -->
-      <div class="last-run">
-        <span id="popup-last-run"></span>
-        <span id="last-run"></span>
-      </div>
-
-      <!-- <div>
-      <input type="button" id="abf-hideall" option="abf-hideall" value="Hide All Results">
-      <input type="button" id="abf-showall" option="abf-showall" value="Show All Results">
-    </div> -->
-    </div>
-
-    <script src="popup.js"></script>
-  </body>
+<html>
+<head>
+  <meta charset="utf-8" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="popup.js"></script>
+</body>
 </html>

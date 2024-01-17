@@ -8,8 +8,7 @@ module.exports = (env, argv) => {
     entry: {
       background: "./src/background/index.ts",
       content: "./src/content/index.ts",
-      // popup: "./src/popup/index.ts",
-      popup: "./src/client/index.tsx",
+      popup: "./src/popup/index.tsx",
       utils: "./src/utils/index.ts",
     },
     module: {

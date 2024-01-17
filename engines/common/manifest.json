@@ -9,7 +9,7 @@
   "action": {
     "default_title": "Amazon Brand Filter",
     "default_area": "navbar",
-    "default_popup": "popup-new.html"
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {

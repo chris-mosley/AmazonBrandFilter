@@ -1,8 +1,8 @@
 import { CssBaseline } from '@mui/material';
 import { createRoot } from 'react-dom/client';
 
-import { Popup } from 'client/components/popup';
-import { SettingsProvider } from 'client/context/settings';
+import { Popup } from 'popup/components/popup';
+import { SettingsProvider } from 'popup/context/settings';
 
 import 'i18n';
 
