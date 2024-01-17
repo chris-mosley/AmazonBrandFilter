@@ -99,12 +99,12 @@ const setStorageSettings = async () => {
 getEngineApi().runtime.onConnect.addListener((port) => {
   if (port.name === "popup") {
     popupPort = port;
-  }
-});
 
-// listen for popup disconnection
-popupPort?.onDisconnect.addListener(() => {
-  popupPort = undefined;
+    // listen for popup disconnection
+    popupPort.onDisconnect.addListener(() => {
+      popupPort = undefined;
+    });
+  }
 });
 
 // listen for storage changes and send message to popup

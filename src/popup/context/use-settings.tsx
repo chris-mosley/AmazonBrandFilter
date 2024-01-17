@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { defaultLocalStorageValue, defaultSyncStorageValue } from 'utils/config';
 import { StorageSettings, SyncStorageSettings } from 'utils/types';
-import { getSettings } from 'utils/browser-helpers';
+import { ensureSettingsExist, getSettings } from 'utils/browser-helpers';
 
 const SettingsContext = createContext(
   {
@@ -25,6 +25,7 @@ const SettingsProvider = ({ children }: SettingsProviderProps) => {
   const [syncSettings, setSyncSettings] = useState<SyncStorageSettings>(defaultSyncStorageValue);
 
   const setAll = async () => {
+    await ensureSettingsExist();
     const res = await getSettings();
     setSettings(res.settings);
     setSyncSettings(res.syncSettings);

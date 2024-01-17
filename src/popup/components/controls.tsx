@@ -26,7 +26,7 @@ export const Controls = () => {
   const [manifestVersion, setManifestVersion] = useState<string>("");
   const [personalBlockText, setPersonalBlockText] = useState<string>("");
   const [alertMessage, setAlertMessage] = useState<string>("");
-  console.log({ settings });
+  console.log(settings);
 
   const messageListener = (message: BackgroundMessage) => {
     if (message.type === "storageChanged") {

@@ -138,17 +138,6 @@ export const getSettings = async () => {
   return { settings, syncSettings };
 };
 
-export const getMessage = async (message: string): Promise<string> => {
-  const engine = getEngine();
-  if (engine === "gecko" && browser.i18n) {
-    return browser.i18n.getMessage(message);
-  } else if (engine === "chromium" && chrome.i18n) {
-    return chrome.i18n.getMessage(message);
-  } else {
-    throw new Error("Unsupported engine.");
-  }
-};
-
 export const setIcon = async () => {
   const result = await getStorageValue("enabled");
   if (result.enabled) {

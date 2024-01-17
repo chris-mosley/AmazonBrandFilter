@@ -130,10 +130,8 @@ const filterBrands = async () => {
 
   const brands = settings.brandsMap;
   if (Object.keys(brands).length === 0) {
-    console.log("AmazonBrandFilter: No brands found");
     return;
   }
-  console.log("AmazonBrandFilter: Brands found");
 
   if (settings.refinerBypass) {
     return;
@@ -199,7 +197,6 @@ const filterBrands = async () => {
     }
   }
   if (hiddenCount === divs.length) {
-    console.log("AmazonBrandFilter: All results filtered!");
     unHideDivs();
     await setStorageValue({ allResultsFiltered: true });
   } else {
@@ -241,7 +238,6 @@ const resetBrands = () => {
 };
 
 const messageListener = async (message: PopupMessage) => {
-  console.log({ type: message.type, isChecked: message.isChecked });
   switch (message.type) {
     case "enabled":
       if (message.isChecked) {
