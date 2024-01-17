@@ -58,5 +58,9 @@
   "popup_help_translate": {
     "message": "Help translate",
     "description": "Link to help translate the extension"
+  },
+  "popup_all_results_filtered": {
+    "message": "Showing all results as all items have been filtered",
+    "description": "Message to show when all results are filtered"
   }
 }

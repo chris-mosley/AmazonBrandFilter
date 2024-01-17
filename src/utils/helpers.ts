@@ -8,8 +8,8 @@ export const sleep = (ms: number) => {
 };
 
 export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
-  const divs = document.getElementsByClassName("s-result-item");
-  return divs as HTMLCollectionOf<HTMLDivElement>;
+  const divs = document.querySelectorAll(`[data-component-type="s-search-result"].s-result-item`);
+  return Array.from(divs) as unknown as HTMLCollectionOf<HTMLDivElement>;
 };
 
 export const unHideDivs = () => {

@@ -140,7 +140,6 @@ const filterBrands = async () => {
   }
 
   const divs = getItemDivs();
-  console.log(divs.length);
   for (const div of divs) {
     const itemHeader = div.getElementsByClassName("s-line-clamp-1") as HTMLCollectionOf<HTMLDivElement>;
     if (itemHeader.length !== 0) {
@@ -190,6 +189,21 @@ const filterBrands = async () => {
       continue;
     }
     await descriptionSearch(settings, div);
+  }
+
+  const itemsHiddenAfterFiltering = getItemDivs();
+  let hiddenCount: number = 0;
+  for (const div of itemsHiddenAfterFiltering) {
+    if (div.style.display === "none") {
+      hiddenCount += 1;
+    }
+  }
+  if (hiddenCount === divs.length) {
+    console.log("AmazonBrandFilter: All results filtered!");
+    unHideDivs();
+    await setStorageValue({ allResultsFiltered: true });
+  } else {
+    await setStorageValue({ allResultsFiltered: false });
   }
 
   if (settings.filterRefiner) {

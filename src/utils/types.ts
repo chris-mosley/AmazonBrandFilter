@@ -4,11 +4,12 @@ export type StorageArea = "local" | "sync";
 export type StorageMode = "normal" | "overwrite";
 
 export interface StorageSettings {
-  isFirstRun: boolean;
   brandsVersion: number | null;
   brandsCount: number | null;
   brandsMap: Record<string, boolean>;
   maxWordCount: number;
+  allResultsFiltered: boolean;
+  isFirstRun: boolean;
   enabled: boolean;
   filterRefiner: boolean;
   refinerMode: "grey" | "hide";
@@ -19,7 +20,10 @@ export interface StorageSettings {
   lastMapRun: number | null;
 }
 
-export type SyncStorageSettings = Omit<StorageSettings, "brandsMap" | "brandsCount" | "brandsVersion" | "maxWordCount">;
+export type SyncStorageSettings = Omit<
+  StorageSettings,
+  "brandsMap" | "brandsCount" | "brandsVersion" | "maxWordCount" | "allResultsFiltered"
+>;
 
 export interface PopupMessage {
   type: keyof StorageSettings;

@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { 
+  Alert,
   Button, 
   FormControl, 
   FormControlLabel, 
@@ -13,16 +14,18 @@ import {
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useSettings } from 'popup/context/settings';
+import { useSettings } from 'popup/context/use-settings';
 import { getEngineApi, getManifest, sendMessageToContentScript, setIcon, setStorageValue } from 'utils/browser-helpers';
 import { BackgroundMessage, StorageSettings } from 'utils/types';
 import { getSanitizedUserInput } from 'utils/helpers';
 
-export const Popup = () => {
+export const Controls = () => {
   const { t } = useTranslation();
   const { settings, setAll } = useSettings();
+
   const [manifestVersion, setManifestVersion] = useState<string>("");
   const [personalBlockText, setPersonalBlockText] = useState<string>("");
+  const [alertMessage, setAlertMessage] = useState<string>("");
   console.log({ settings });
 
   const messageListener = (message: BackgroundMessage) => {
@@ -48,6 +51,14 @@ export const Popup = () => {
   useEffect(() => {
     setPersonalBlockText(Object.keys(settings.personalBlockMap).join("\n"));
   }, [settings.personalBlockMap]);
+
+  useEffect(() => {
+    if (!settings.allResultsFiltered) {
+      setAlertMessage("");
+      return;
+    }
+    setAlertMessage(t('popup_all_results_filtered.message'));
+  }, [settings.allResultsFiltered]);
 
   const handleChange = <K extends keyof StorageSettings>(
     key: K
@@ -245,6 +256,21 @@ export const Popup = () => {
           </Link>
         </div>
       </FormControl>
+      
+      {alertMessage && (
+        <div
+          css={css`
+            margin: 0.4rem;
+            width: calc(100% - 0.8rem);
+          `}
+        >
+          <Alert 
+            severity="info"
+          >
+            {alertMessage}
+          </Alert>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,8 +1,10 @@
 import { CssBaseline } from '@mui/material';
 import { createRoot } from 'react-dom/client';
 
-import { Popup } from 'popup/components/popup';
-import { SettingsProvider } from 'popup/context/settings';
+import { Controls } from 'popup/components/controls';
+import { FlashMessage } from 'popup/components/flash-message';
+import { FlashMessageProvider } from 'popup/context/use-flash-message';
+import { SettingsProvider } from 'popup/context/use-settings';
 
 import 'i18n';
 
@@ -11,7 +13,10 @@ const App = () => {
     <>
       <CssBaseline />
       <SettingsProvider>
-        <Popup/>
+        <FlashMessageProvider>
+          <Controls/>
+          <FlashMessage />
+        </FlashMessageProvider>
       </SettingsProvider>
     </>
   )
