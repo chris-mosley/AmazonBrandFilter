@@ -1,14 +1,9 @@
 import { AlertProps } from "@mui/material";
 import { Dispatch, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-const FlashMessageContext = createContext({
-  message: undefined,
-  severity: undefined,
-  setMessage: () => Promise.resolve(),
-  setSeverity: () => Promise.resolve(),
-} as {
+const FlashMessageContext = createContext({} as {
   message: string | undefined;
-  severity: AlertProps['severity'];
+  severity: AlertProps['severity'] | undefined;
   setMessage: Dispatch<SetStateAction<string | undefined>>; 
   setSeverity: Dispatch<SetStateAction<AlertProps['severity'] | undefined>>;
 });

@@ -4,16 +4,21 @@ import {
   Button, 
   FormControl, 
   FormControlLabel, 
+  IconButton, 
   InputAdornment, 
   Link, 
   Radio, 
   RadioGroup, 
   Switch, 
-  TextField, 
+  TextField,
+  Tooltip,
 } from '@mui/material';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useColorMode } from 'popup/context/use-color-mode';
 import { useSettings } from 'popup/context/use-settings';
 import { getEngineApi, getManifest, sendMessageToContentScript, setIcon, setStorageValue } from 'utils/browser-helpers';
 import { BackgroundMessage, StorageSettings } from 'utils/types';
@@ -21,6 +26,7 @@ import { getSanitizedUserInput } from 'utils/helpers';
 
 const Controls = () => {
   const { t } = useTranslation();
+  const { mode, toggleMode } = useColorMode();
   const { settings, setAll } = useSettings();
 
   const [manifestVersion, setManifestVersion] = useState<string>("");
@@ -96,13 +102,36 @@ const Controls = () => {
           position: absolute;
           top: 8px;
           right: 8px;
-          font-size: 0.8rem;
-          font-weight: bold;
-          color: grey;
+          z-index: 1;
+
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
         `}
       >
-        {`v${manifestVersion}`}
+        <div
+          css={css`
+            opacity: 0.8;
+          `}
+        >
+          <Tooltip title={`Toggle ${mode} mode`}>
+            <IconButton sx={{ ml: 1 }} size="small" color="inherit" onClick={toggleMode}>
+              {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
+          </Tooltip>
+        </div>
+        
+        <div
+          css={css`
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: grey;
+          `}
+        >
+          {`v${manifestVersion}`}
+        </div>
       </div>
+      
       <FormControl sx={{ width: '100%' }}>
         <FormControlLabel
           control={
