@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { Alert } from '@mui/material';
-import { useFlashMessage } from 'popup/context/use-flash-message';
+import { useFlashMessage } from 'common/context/use-flash-message';
 
 const FlashMessage = () => {
   const { severity = "info", message } = useFlashMessage();

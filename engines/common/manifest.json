@@ -3,6 +3,9 @@
   "manifest_version": 3,
   "default_locale": "en",
   "icons": {
+    "16": "icons/abf-disabled-16.png",
+    "32": "icons/abf-disabled-32.png",
+    "48": "icons/abf-disabled-48.png",
     "128": "icons/abf-disabled-128.png"
   },
   "permissions": ["storage", "activeTab"],
@@ -10,26 +13,5 @@
     "default_title": "Amazon Brand Filter",
     "default_area": "navbar",
     "default_popup": "popup.html"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "*://*.amazon.com/*",
-        "*://*.amazon.ca/*",
-        "*://*.amazon.cn/*",
-        "*://*.amazon.co.jp/*",
-        "*://*.amazon.com/*",
-        "*://*.amazon.com.au/*",
-        "*://*.amazon.com.mx/*",
-        "*://*.amazon.co.uk/*",
-        "*://*.amazon.de/*",
-        "*://*.amazon.es/*",
-        "*://*.amazon.fr/*",
-        "*://*.amazon.in/*",
-        "*://*.amazon.it/*",
-        "*://*.amazon.nl/*"
-      ],
-      "js": ["content.js"]
-    }
-  ]
+  }
 }

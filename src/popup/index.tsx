@@ -1,45 +1,94 @@
-import 'i18n';
-
-import React, { Suspense, useState } from 'react';
-import { CssBaseline, ThemeProvider, createTheme, useMediaQuery } from '@mui/material';
+import { css } from '@emotion/react';
+import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { useTranslation } from 'react-i18next';
 
-import { FlashMessageProvider } from 'popup/context/use-flash-message';
-import { SettingsProvider } from 'popup/context/use-settings';
-import { ColorModeProvider } from 'popup/context/use-color-mode';
-import { ColorMode } from 'popup/utils/types';
+import Structure from 'common/components/structure';
+import { getManifest, getStorageValue } from 'utils/browser-helpers';
+import { PopupMessage } from 'utils/types';
 
-const Controls = React.lazy(() => import('popup/components/controls'));
-const FlashMessage = React.lazy(() => import('popup/components/flash-message'));
+import LogoEnabled from 'assets/icons/abf-enabled-128.png';
+import LogoDisabled from 'assets/icons/abf-disabled-128.png';
+import { Typography } from '@mui/material';
 
 const App = () => {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [mode, setMode] = useState<ColorMode>(prefersDarkMode ? 'dark' : 'light');
+  const { t } = useTranslation();
   
-  const theme = React.useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-        },
-      }),
-    [mode],
-  );
+  const [useEnabledSrc, setUseEnabledSrc] = useState<boolean>(false);
+  const [manifestVersion, setManifestVersion] = useState<string>("");
+
+  const handleSetImageSrc = async () => {
+    const result = await getStorageValue('enabled');
+    setUseEnabledSrc(result.enabled);
+  };
+
+  const messageListener = (event: MessageEvent) => {
+    const message: PopupMessage = event.data;
+    if (message.type === "enabled") {
+      handleSetImageSrc();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("message", messageListener);
+
+    return () => {
+      window.removeEventListener("message", messageListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    handleSetImageSrc();
+  }, []);
+
+  useEffect(() => {
+    const manifest = getManifest();
+    setManifestVersion(manifest.version);
+  }, []);
 
   return (
-    <ColorModeProvider mode={mode} setMode={setMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <SettingsProvider>
-          <FlashMessageProvider>
-            <Suspense fallback={<div>Loading...</div>}>
-              <Controls/>
-              <FlashMessage />
-            </Suspense>
-          </FlashMessageProvider>
-        </SettingsProvider>
-      </ThemeProvider>
-    </ColorModeProvider>
+    <Structure>
+      <div
+          css={css`
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 1;
+            
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: grey;
+          `}
+        >
+          {`v${manifestVersion}`}
+        </div>
+      <div
+        css={css`
+          width: 25rem;
+          padding: 8px 16px;
+
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        `}
+      >
+        <Typography variant="h5">
+            {t('introduction.message')}
+        </Typography>
+        <Typography variant="body1">
+            {t('introduction.description')}
+        </Typography>
+        <img
+          css={css`
+            width: 48px;
+            height: 48px;
+          `}
+          src={useEnabledSrc ? LogoEnabled : LogoDisabled}
+          alt='abf-logo' 
+        />
+      </div>
+    </Structure>
   )
 };
 

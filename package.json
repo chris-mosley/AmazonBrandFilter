@@ -23,6 +23,7 @@
     "@typescript-eslint/parser": "^6.13.2",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.2",
     "husky": "^8.0.3",
     "i18next": "^23.7.16",

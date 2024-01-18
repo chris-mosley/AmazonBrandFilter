@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, createContext, useContext, useMemo } from "react";
 
-import { ColorMode } from "popup/utils/types";
+import { setStorageValue } from "utils/browser-helpers";
+import { ColorMode } from "utils/types";
 
 const ColorModeContext = createContext({} as {
   mode: ColorMode;
@@ -14,8 +15,10 @@ interface ColorModeProviderProps {
 }
 
 const ColorModeProvider = ({ mode, setMode, children }: ColorModeProviderProps) => {
-  const toggleMode = () => {
-    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+  const toggleMode = async () => {
+    const newMode = mode === 'light' ? 'dark' : 'light';
+    setMode(newMode);
+    await setStorageValue({ colorMode: newMode });
   };
   
   const value = useMemo(() => ({

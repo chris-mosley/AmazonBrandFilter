@@ -18,10 +18,10 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useColorMode } from 'popup/context/use-color-mode';
-import { useSettings } from 'popup/context/use-settings';
-import { getEngineApi, getManifest, sendMessageToContentScript, setIcon, setStorageValue } from 'utils/browser-helpers';
-import { BackgroundMessage, StorageSettings } from 'utils/types';
+import { useColorMode } from 'common/context/use-color-mode';
+import { useSettings } from 'controls/context/use-settings';
+import { sendMessageToParent, setStorageValue } from 'utils/browser-helpers';
+import { PopupMessage, StorageSettings } from 'utils/types';
 import { getSanitizedUserInput } from 'utils/helpers';
 
 const Controls = () => {
@@ -29,29 +29,22 @@ const Controls = () => {
   const { mode, toggleMode } = useColorMode();
   const { settings, setAll } = useSettings();
 
-  const [manifestVersion, setManifestVersion] = useState<string>("");
   const [personalBlockText, setPersonalBlockText] = useState<string>("");
   const [alertMessage, setAlertMessage] = useState<string>("");
-  console.log(settings);
 
-  const messageListener = (message: BackgroundMessage) => {
-    if (message.type === "storageChanged") {
+  const messageListener = (event: MessageEvent) => {
+    const message: PopupMessage = event.data;
+    if (message.type === "allResultsFiltered") {
       setAll();
     }
   };
 
   useEffect(() => {
-    const port = getEngineApi().runtime.connect({ name: 'popup' });
-    port.onMessage.addListener(messageListener);
+    window.addEventListener("message", messageListener);
 
     return () => {
-      port.onMessage.removeListener(messageListener);
+      window.removeEventListener("message", messageListener);
     };
-  }, []);
-
-  useEffect(() => {
-    const manifest = getManifest();
-    setManifestVersion(manifest.version);
   }, []);
 
   useEffect(() => {
@@ -74,7 +67,8 @@ const Controls = () => {
     const payload = { [key]: value };
     await setStorageValue(payload, "sync");
     await setStorageValue(payload);
-    sendMessageToContentScript({ type: key, isChecked: typeof value === "boolean" ? value : true });
+    sendMessageToParent({ type: key, isChecked: typeof value === "boolean" ? value : true });
+    setAll();
   };
 
   const handleSavePersonalBlock = async () => {
@@ -85,7 +79,8 @@ const Controls = () => {
     }
     await setStorageValue({ personalBlockMap }, "sync");
     await setStorageValue({ personalBlockMap });
-    sendMessageToContentScript({ type: "personalBlockMap", isChecked: settings.usePersonalBlock });
+    sendMessageToParent({ type: "personalBlockMap", isChecked: settings.usePersonalBlock })
+    setAll();
   };
   
   return (
@@ -103,10 +98,6 @@ const Controls = () => {
           top: 8px;
           right: 8px;
           z-index: 1;
-
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
         `}
       >
         <div
@@ -120,16 +111,6 @@ const Controls = () => {
             </IconButton>
           </Tooltip>
         </div>
-        
-        <div
-          css={css`
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: grey;
-          `}
-        >
-          {`v${manifestVersion}`}
-        </div>
       </div>
       
       <FormControl sx={{ width: '100%' }}>
@@ -138,10 +119,7 @@ const Controls = () => {
             <Switch 
               size="small" 
               checked={settings.enabled} 
-              onChange={async () => {
-                await handleChange('enabled')(!settings.enabled)();
-                await setIcon();
-              }} 
+              onChange={handleChange('enabled')(!settings.enabled)} 
             />
           }
           label={t('popup_enabled.message')}
@@ -212,7 +190,8 @@ const Controls = () => {
         />
         <div
           css={css`
-            margin-top: 0.5rem;
+            margin-top: 0.6rem;
+            margin-bottom: 0.6rem;
             margin-left: 1.3rem;
             display: ${settings.usePersonalBlock ? "block" : "none"};
           `}

@@ -1,4 +1,9 @@
 {
+  "introduction": {
+    "message": "Amazon Brand Filter",
+    "warning": "Para utilizar esta extensión, debes estar en un sitio web de Amazon (por ejemplo, amazon.com, amazon.co.uk, amazon.de, etc.)",
+    "description": "Para comenzar, haz clic en el botón en la parte inferior derecha de la página!"
+  },
   "popup_enabled": {
     "message": "Activar Amazon Brand Filter",
     "description": "Activar el filtro de marcas de Amazon"

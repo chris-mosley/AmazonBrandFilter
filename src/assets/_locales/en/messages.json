@@ -1,4 +1,9 @@
 {
+  "introduction": {
+    "message": "Amazon Brand Filter",
+    "warning": "To use this extension, you must be on an Amazon marketplace site (e.g. amazon.com, amazon.co.uk, amazon.de, etc.)",
+    "description": "To get started, click on the button in the bottom right of the page!"
+  },
   "popup_enabled": {
     "message": "Enable Amazon Brand Filter",
     "description": "Enable Amazon Brand Filter"

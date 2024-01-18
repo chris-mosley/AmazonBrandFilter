@@ -24,4 +24,5 @@ export const defaultLocalStorageValue: StorageSettings = {
   brandsCount: 0,
   maxWordCount: 0,
   allResultsFiltered: false,
+  colorMode: null,
 };

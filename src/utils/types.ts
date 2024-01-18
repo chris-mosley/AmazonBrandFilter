@@ -3,6 +3,8 @@ export type Engine = "gecko" | "chromium";
 export type StorageArea = "local" | "sync";
 export type StorageMode = "normal" | "overwrite";
 
+export type ColorMode = "light" | "dark";
+
 export interface StorageSettings {
   brandsVersion: number | null;
   brandsCount: number | null;
@@ -18,11 +20,12 @@ export interface StorageSettings {
   personalBlockMap: Record<string, boolean>;
   useDebugMode: boolean;
   lastMapRun: number | null;
+  colorMode: ColorMode | null; // can be null to accomodate browser theme
 }
 
 export type SyncStorageSettings = Omit<
   StorageSettings,
-  "brandsMap" | "brandsCount" | "brandsVersion" | "maxWordCount" | "allResultsFiltered"
+  "brandsMap" | "brandsCount" | "brandsVersion" | "maxWordCount" | "allResultsFiltered" | "colorMode"
 >;
 
 export interface PopupMessage {
@@ -33,4 +36,12 @@ export interface PopupMessage {
 export interface BackgroundMessage {
   type: "storageChanged";
   area: StorageArea;
+}
+
+export interface InfoMessage {
+  type: "install" | "update";
+}
+
+export interface ContentMessage {
+  type: "contentLoaded" | "contentUnloaded";
 }

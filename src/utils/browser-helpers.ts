@@ -1,7 +1,16 @@
 import { browser } from "webextension-polyfill-ts";
 
 import { extractSyncStorageSettingsObject, sleep } from "utils/helpers";
-import { Engine, StorageMode, StorageArea, StorageSettings, SyncStorageSettings, PopupMessage } from "utils/types";
+import {
+  Engine,
+  StorageMode,
+  StorageArea,
+  StorageSettings,
+  SyncStorageSettings,
+  PopupMessage,
+  BackgroundMessage,
+  ContentMessage,
+} from "utils/types";
 
 /**
  * retrieves the name of the browser engine based on the runtime environment.
@@ -212,15 +221,45 @@ export const ensureSettingsExist = async (): Promise<boolean> => {
 };
 
 /**
+ * used to send messages to the background script
  *
  * @param message
  */
-export const sendMessageToContentScript = async (message: PopupMessage) => {
+export const sendRuntimeMessage = async (message: PopupMessage | BackgroundMessage | ContentMessage) => {
+  const engine = getEngine();
+  if (engine === "chromium") {
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage(message, (response) => {
+        resolve(response);
+      });
+    });
+  } else if (engine === "gecko") {
+    return browser.runtime.sendMessage(message);
+  } else {
+    throw new Error("Unsupported engine.");
+  }
+};
+
+/**
+ * used to send messages to the content script
+ *
+ * @param message
+ */
+export const sendTabsMessage = async (message: PopupMessage | BackgroundMessage) => {
   getEngineApi().tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs[0];
-    if (!activeTab || !activeTab.id || !activeTab.url?.includes(".amazon.")) {
+    if (!activeTab || !activeTab.id) {
       return;
     }
     getEngineApi().tabs.sendMessage(activeTab.id, message);
   });
+};
+
+/**
+ * send message to parent window (from iframe)
+ *
+ * @param message
+ */
+export const sendMessageToParent = async (message: PopupMessage | BackgroundMessage) => {
+  window.parent.postMessage(message, "*");
 };
