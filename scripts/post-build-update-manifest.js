@@ -1,10 +1,10 @@
 const fs = require("fs");
-const { matches } = require("lodash");
 const path = require("path");
 
 const rootPath = path.resolve("./");
 const packageJson = require(`${rootPath}/package.json`);
 const manifestFilePath = path.resolve(__dirname, `${rootPath}/dist/manifest.json`);
+
 let commonManifestJson = require(`${rootPath}/engines/common/manifest.json`);
 let commonMatchesJson = require(`${rootPath}/engines/common/matches.json`);
 let commonWebAccessibleResourcesJson = require(`${rootPath}/engines/common/web-accessible-resources.json`);
@@ -44,8 +44,13 @@ try {
 
   // write the updated manifest file
   fs.writeFileSync(manifestFilePath, JSON.stringify(manifest, null, 2));
-
   console.log(`Version updated to ${packageJson.version} in manifest.json.`);
+
+  // move the analyzer report.html out of the dist folder if it exists
+  if (fs.existsSync(`${rootPath}/dist/report.html`)) {
+    fs.renameSync(`${rootPath}/dist/report.html`, `${rootPath}/report.html`);
+    console.log(`Moved 'report.html' to ${rootPath}`);
+  }
 } catch (error) {
   console.error(`Error updating manifest.json: ${error.message}`);
 }

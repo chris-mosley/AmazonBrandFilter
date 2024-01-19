@@ -1,6 +1,9 @@
 const path = require("path");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const DashboardPlugin = require("webpack-dashboard/plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (env, argv) => {
   return {
@@ -9,8 +12,8 @@ module.exports = (env, argv) => {
     entry: {
       utils: "./src/utils/index.ts",
       background: "./src/background/index.ts",
-      popup: "./src/popup/index.tsx",
       content: "./src/content/index.ts",
+      popup: "./src/popup/index.tsx",
       controls: "./src/controls/index.tsx",
       toggle: "./src/toggle/index.tsx",
     },
@@ -55,5 +58,10 @@ module.exports = (env, argv) => {
         }),
       ],
     },
+    plugins: [
+      new CleanWebpackPlugin(),
+      new DashboardPlugin(),
+      new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
+    ],
   };
 };

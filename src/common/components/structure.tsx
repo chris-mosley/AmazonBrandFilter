@@ -1,7 +1,10 @@
 import 'i18n';
 
 import React, { useEffect, useState } from 'react';
-import { CssBaseline, ThemeProvider, createTheme, useMediaQuery } from '@mui/material';
+import createTheme from '@mui/material/styles/createTheme';
+import CssBaseline from '@mui/material/CssBaseline';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { ColorModeProvider } from 'common/context/use-color-mode';
 import { ColorMode } from 'utils/types';

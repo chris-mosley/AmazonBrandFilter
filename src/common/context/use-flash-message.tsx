@@ -1,4 +1,4 @@
-import { AlertProps } from "@mui/material";
+import { AlertProps } from "@mui/material/Alert";
 import { Dispatch, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const FlashMessageContext = createContext({} as {

@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Alert } from '@mui/material';
+import Alert from '@mui/material/Alert';
 import { useFlashMessage } from 'common/context/use-flash-message';
 
 const FlashMessage = () => {

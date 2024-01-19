@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +10,6 @@ import { PopupMessage } from 'utils/types';
 
 import LogoEnabled from 'assets/icons/abf-enabled-128.png';
 import LogoDisabled from 'assets/icons/abf-disabled-128.png';
-import { Typography } from '@mui/material';
 
 const App = () => {
   const { t } = useTranslation();
