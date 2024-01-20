@@ -12,7 +12,15 @@ export const injectElements = () => {
   const controlsContainer = document.createElement("div");
   controlsContainer.id = "abf-controls-container";
   controlsContainer.className = "closed";
+  // saving the original transition value to restore it later
+  const originalTransition = controlsContainer.style.transition;
+  // unset transition to prevent animation on page load
+  controlsContainer.style.transition = "none";
   container.appendChild(controlsContainer);
+  // wait for transition to finish before removing inline style
+  setTimeout(() => {
+    controlsContainer.style.transition = originalTransition;
+  }, 100);
 
   const controlsIframe = document.createElement("iframe");
   controlsIframe.id = "abf-controls-iframe";
