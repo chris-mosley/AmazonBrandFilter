@@ -57,6 +57,17 @@ module.exports = (env, argv) => {
           extractComments: false,
         }),
       ],
+      splitChunks: {
+        // remember to be careful when splitting chunks that belong to more than one group
+        cacheGroups: {
+          // use this chunk group for any of the iframes that make use of react
+          client: {
+            test: /[\\/]node_modules[\\/](react|react-dom|@mui|@emotion|i18next\/dist\/cjs|react-i18next\/dist\/es)[\\/]/,
+            name: 'client',
+            chunks: 'all',
+          },
+        },
+      },
     },
     plugins: [
       new CleanWebpackPlugin(),
