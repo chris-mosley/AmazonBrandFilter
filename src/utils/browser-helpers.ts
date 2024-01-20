@@ -241,21 +241,6 @@ export const sendRuntimeMessage = async (message: PopupMessage | BackgroundMessa
 };
 
 /**
- * used to send messages to the content script
- *
- * @param message
- */
-export const sendTabsMessage = async (message: PopupMessage | BackgroundMessage) => {
-  getEngineApi().tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const activeTab = tabs[0];
-    if (!activeTab || !activeTab.id) {
-      return;
-    }
-    getEngineApi().tabs.sendMessage(activeTab.id, message);
-  });
-};
-
-/**
  * send message to parent window (from iframe)
  *
  * @param message
