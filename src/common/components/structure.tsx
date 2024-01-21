@@ -1,4 +1,4 @@
-import 'i18n';
+import 'i18n/config';
 
 import React, { useEffect, useState } from 'react';
 import createTheme from '@mui/material/styles/createTheme';

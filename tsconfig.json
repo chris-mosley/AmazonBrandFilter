@@ -36,5 +36,5 @@
     "jsxImportSource": "@emotion/react",
     "resolveJsonModule": true
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests", "@types"]
 }
