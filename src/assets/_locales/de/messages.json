@@ -1,4 +1,9 @@
 {
+  "introduction": {
+    "message": "Amazon Brand Filter",
+    "warning": "Um diese Erweiterung zu nutzen, musst du auf einer Amazon-Marktplatzseite sein (z. B. amazon.com, amazon.co.uk, amazon.de usw.)",
+    "description": "Um loszulegen, klicke auf die Schaltfläche unten rechts auf der Seite!"
+  },
   "popup_enabled": {
     "message": "Aktivieren Sie Amazon Brand Filter",
     "description": "Aktivieren Sie Amazon Brand Filter"
@@ -58,5 +63,9 @@
   "popup_help_translate": {
     "message": "Help translate",
     "description": "Link to help translate the extension"
+  },
+  "popup_all_results_filtered": {
+    "message": "Alle Ergebnisse werden angezeigt, da alle Elemente gefiltert wurden",
+    "description": "Nachricht, die angezeigt wird, wenn alle Ergebnisse gefiltert sind"
   }
 }

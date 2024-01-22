@@ -1,0 +1,16 @@
+[
+  "*://*.amazon.com/*",
+  "*://*.amazon.ca/*",
+  "*://*.amazon.cn/*",
+  "*://*.amazon.co.jp/*",
+  "*://*.amazon.com/*",
+  "*://*.amazon.com.au/*",
+  "*://*.amazon.com.mx/*",
+  "*://*.amazon.co.uk/*",
+  "*://*.amazon.de/*",
+  "*://*.amazon.es/*",
+  "*://*.amazon.fr/*",
+  "*://*.amazon.in/*",
+  "*://*.amazon.it/*",
+  "*://*.amazon.nl/*"
+]

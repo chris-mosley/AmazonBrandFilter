@@ -1,4 +1,6 @@
-import _ from "lodash";
+import difference from "lodash/difference";
+import keys from "lodash/keys";
+import omit from "lodash/omit";
 
 import { defaultLocalStorageValue, defaultSyncStorageValue } from "utils/config";
 import { StorageSettings, SyncStorageSettings } from "utils/types";
@@ -8,8 +10,8 @@ export const sleep = (ms: number) => {
 };
 
 export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
-  const divs = document.getElementsByClassName("s-result-item");
-  return divs as HTMLCollectionOf<HTMLDivElement>;
+  const divs = document.querySelectorAll(`[data-component-type="s-search-result"].s-result-item`);
+  return Array.from(divs) as unknown as HTMLCollectionOf<HTMLDivElement>;
 };
 
 export const unHideDivs = () => {
@@ -41,8 +43,8 @@ export const getSanitizedUserInput = (userInput: string) => {
  * @returns
  */
 export const extractSyncStorageSettingsObject = (settings: StorageSettings): SyncStorageSettings => {
-  const keysDefaultSettings = _.keys(defaultLocalStorageValue);
-  const keysSyncSettings = _.keys(defaultSyncStorageValue);
-  const exclusiveKeys = _.difference(keysDefaultSettings, keysSyncSettings);
-  return _.omit(settings, exclusiveKeys) as SyncStorageSettings;
+  const keysDefaultSettings = keys(defaultLocalStorageValue);
+  const keysSyncSettings = keys(defaultSyncStorageValue);
+  const exclusiveKeys = difference(keysDefaultSettings, keysSyncSettings);
+  return omit(settings, exclusiveKeys) as SyncStorageSettings;
 };

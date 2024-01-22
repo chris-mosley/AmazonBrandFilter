@@ -23,4 +23,6 @@ export const defaultLocalStorageValue: StorageSettings = {
   brandsVersion: 0,
   brandsCount: 0,
   maxWordCount: 0,
+  allResultsFiltered: false,
+  colorMode: null,
 };
