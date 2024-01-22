@@ -48,8 +48,8 @@
     "webpack-dashboard": "^3.3.8"
   },
   "lint-staged": {
-    "src/**/*.ts": [
-      "prettier --write \"src/**/*.ts\""
+    "src/**/*.{ts,tsx}": [
+      "prettier --write \"src/**/*.{ts,tsx}\""
     ],
     "src/**/*.json": [
       "prettier --write \"src/**/*.json\""

@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import { css } from "@emotion/react";
 import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -11,16 +11,16 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import { useColorMode } from 'common/context/use-color-mode';
-import { useSettings } from 'controls/context/use-settings';
-import { sendMessageToParent, setStorageValue } from 'utils/browser-helpers';
-import { PopupMessage, StorageSettings } from 'utils/types';
-import { getSanitizedUserInput } from 'utils/helpers';
+import { useColorMode } from "common/context/use-color-mode";
+import { useSettings } from "controls/context/use-settings";
+import { sendMessageToParent, setStorageValue } from "utils/browser-helpers";
+import { PopupMessage, StorageSettings } from "utils/types";
+import { getSanitizedUserInput } from "utils/helpers";
 
 const Controls = () => {
   const { t } = useTranslation();
@@ -54,20 +54,19 @@ const Controls = () => {
       setAlertMessage("");
       return;
     }
-    setAlertMessage(t('popup_all_results_filtered.message'));
+    setAlertMessage(t("popup_all_results_filtered.message"));
   }, [settings.allResultsFiltered]);
 
-  const handleChange = <K extends keyof StorageSettings>(
-    key: K
-  ) => (
-    value: StorageSettings[K]
-  ) => async () => {
-    const payload = { [key]: value };
-    await setStorageValue(payload, "sync");
-    await setStorageValue(payload);
-    sendMessageToParent({ type: key, isChecked: typeof value === "boolean" ? value : true });
-    setAll();
-  };
+  const handleChange =
+    <K extends keyof StorageSettings>(key: K) =>
+    (value: StorageSettings[K]) =>
+    async () => {
+      const payload = { [key]: value };
+      await setStorageValue(payload, "sync");
+      await setStorageValue(payload);
+      sendMessageToParent({ type: key, isChecked: typeof value === "boolean" ? value : true });
+      setAll();
+    };
 
   const handleSavePersonalBlock = async () => {
     const userInput = getSanitizedUserInput(personalBlockText);
@@ -77,10 +76,10 @@ const Controls = () => {
     }
     await setStorageValue({ personalBlockMap }, "sync");
     await setStorageValue({ personalBlockMap });
-    sendMessageToParent({ type: "personalBlockMap", isChecked: settings.usePersonalBlock })
+    sendMessageToParent({ type: "personalBlockMap", isChecked: settings.usePersonalBlock });
     setAll();
   };
-  
+
   return (
     <div
       css={css`
@@ -105,86 +104,68 @@ const Controls = () => {
         >
           <Tooltip title={`Toggle ${mode} mode`}>
             <IconButton sx={{ ml: 1 }} size="small" color="inherit" onClick={toggleMode}>
-              {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+              {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
           </Tooltip>
         </div>
       </div>
-      
-      <FormControl sx={{ width: '100%' }}>
+
+      <FormControl sx={{ width: "100%" }}>
         <FormControlLabel
           control={
-            <Switch 
-              size="small" 
-              checked={settings.enabled} 
-              onChange={handleChange('enabled')(!settings.enabled)} 
-            />
+            <Switch size="small" checked={settings.enabled} onChange={handleChange("enabled")(!settings.enabled)} />
           }
-          label={t('popup_enabled.message')}
+          label={t("popup_enabled.message")}
         />
         <FormControlLabel
           control={
-            <Switch 
-              size="small" 
-              checked={settings.filterRefiner} 
-              onChange={handleChange('filterRefiner')(!settings.filterRefiner)} 
+            <Switch
+              size="small"
+              checked={settings.filterRefiner}
+              onChange={handleChange("filterRefiner")(!settings.filterRefiner)}
             />
           }
-          label={t('popup_filter_sidebar.message')}
+          label={t("popup_filter_sidebar.message")}
         />
-        <RadioGroup
-          row
-          aria-labelledby="popup-radio-buttons-group-label"
-          name="popup-radio-buttons-group"
-        >
-          <FormControlLabel 
-            control={
-              <Radio 
-                checked={settings.refinerMode === "hide"} 
-                onChange={handleChange('refinerMode')('hide')} 
-              />
-            } 
-            label={t('popup_sidebar_hide.message')} 
+        <RadioGroup row aria-labelledby="popup-radio-buttons-group-label" name="popup-radio-buttons-group">
+          <FormControlLabel
+            control={<Radio checked={settings.refinerMode === "hide"} onChange={handleChange("refinerMode")("hide")} />}
+            label={t("popup_sidebar_hide.message")}
           />
-          <FormControlLabel 
-            control={
-              <Radio 
-                checked={settings.refinerMode === "grey"} 
-                onChange={handleChange('refinerMode')('grey')} 
-              />
-            } 
-            label={t('popup_sidebar_grey.message')}
+          <FormControlLabel
+            control={<Radio checked={settings.refinerMode === "grey"} onChange={handleChange("refinerMode")("grey")} />}
+            label={t("popup_sidebar_grey.message")}
           />
         </RadioGroup>
         <FormControlLabel
           control={
-            <Switch 
-              size="small" 
-              checked={settings.refinerBypass} 
-              onChange={handleChange('refinerBypass')(!settings.refinerBypass)} 
+            <Switch
+              size="small"
+              checked={settings.refinerBypass}
+              onChange={handleChange("refinerBypass")(!settings.refinerBypass)}
             />
           }
-          label={t('popup_allow_refine_bypass.message')}
+          label={t("popup_allow_refine_bypass.message")}
         />
         <FormControlLabel
           control={
-            <Switch 
-              size="small" 
-              checked={settings.useDebugMode} 
-              onChange={handleChange('useDebugMode')(!settings.useDebugMode)}
+            <Switch
+              size="small"
+              checked={settings.useDebugMode}
+              onChange={handleChange("useDebugMode")(!settings.useDebugMode)}
             />
           }
-          label={t('popup_debug.message')}
+          label={t("popup_debug.message")}
         />
         <FormControlLabel
           control={
-            <Switch 
-              size="small" 
-              checked={settings.usePersonalBlock} 
-              onChange={handleChange('usePersonalBlock')(!settings.usePersonalBlock)}
+            <Switch
+              size="small"
+              checked={settings.usePersonalBlock}
+              onChange={handleChange("usePersonalBlock")(!settings.usePersonalBlock)}
             />
           }
-          label={t('popup_personal_blocklist.message')}
+          label={t("popup_personal_blocklist.message")}
         />
         <div
           css={css`
@@ -194,25 +175,23 @@ const Controls = () => {
             display: ${settings.usePersonalBlock ? "block" : "none"};
           `}
         >
-          <TextField 
-            multiline 
-            minRows="1" 
-            sx={{ width: '100%' }}
+          <TextField
+            multiline
+            minRows="1"
+            sx={{ width: "100%" }}
             size="small"
-            variant="outlined" 
-            label={t('popup_personal_blocklist.description')}
+            variant="outlined"
+            label={t("popup_personal_blocklist.description")}
             value={personalBlockText}
             onChange={(e) => setPersonalBlockText(e.target.value)}
             InputProps={{
-              endAdornment: <InputAdornment position="end">
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={handleSavePersonalBlock}
-                >
-                  {t('popup_save_button.message')}
-                </Button>
-              </InputAdornment>,
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button size="small" variant="outlined" onClick={handleSavePersonalBlock}>
+                    {t("popup_save_button.message")}
+                  </Button>
+                </InputAdornment>
+              ),
             }}
           />
         </div>
@@ -224,13 +203,9 @@ const Controls = () => {
             gap: 4px;
           `}
         >
-          <div>
-            {`${t('popup_list_version.message')}${settings.brandsVersion}`}
-          </div>
+          <div>{`${t("popup_list_version.message")}${settings.brandsVersion}`}</div>
           <div>|</div>
-          <div>
-            {`${t('popup_list_count.message')}${settings.brandsCount}`}
-          </div>
+          <div>{`${t("popup_list_count.message")}${settings.brandsCount}`}</div>
         </div>
         <div
           css={css`
@@ -239,30 +214,30 @@ const Controls = () => {
             flex-direction: column;
           `}
         >
-          <Link 
-            href="https://github.com/chris-mosley/AmazonBrandFilter/issues" 
-            target="_blank" 
+          <Link
+            href="https://github.com/chris-mosley/AmazonBrandFilter/issues"
+            target="_blank"
             rel="noopener noreferrer"
           >
-            {t('popup_feedback_link.message')}
+            {t("popup_feedback_link.message")}
           </Link>
-          <Link 
+          <Link
             href="https://github.com/chris-mosley/AmazonBrandFilterList#missing-a-brand"
-            target="_blank" 
+            target="_blank"
             rel="noopener noreferrer"
           >
-            {t('popup_missing_brand.message')}
+            {t("popup_missing_brand.message")}
           </Link>
-          <Link 
+          <Link
             href="https://github.com/chris-mosley/AmazonBrandFilter#help-translate"
-            target="_blank" 
+            target="_blank"
             rel="noopener noreferrer"
           >
-            {t('popup_help_translate.message')}
+            {t("popup_help_translate.message")}
           </Link>
         </div>
       </FormControl>
-      
+
       {alertMessage && (
         <div
           css={css`
@@ -270,11 +245,7 @@ const Controls = () => {
             width: calc(100% - 0.8rem);
           `}
         >
-          <Alert 
-            severity="info"
-          >
-            {alertMessage}
-          </Alert>
+          <Alert severity="info">{alertMessage}</Alert>
         </div>
       )}
     </div>

@@ -1,19 +1,19 @@
-import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
-import { createRoot } from 'react-dom/client';
+import { css } from "@emotion/react";
+import { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
 
-import Structure from 'common/components/structure';
-import { getStorageValue } from 'utils/browser-helpers';
-import { PopupMessage } from 'utils/types';
+import Structure from "common/components/structure";
+import { getStorageValue } from "utils/browser-helpers";
+import { PopupMessage } from "utils/types";
 
-import LogoEnabled from 'assets/icons/abf-enabled-128.png';
-import LogoDisabled from 'assets/icons/abf-disabled-128.png';
+import LogoEnabled from "assets/icons/abf-enabled-128.png";
+import LogoDisabled from "assets/icons/abf-disabled-128.png";
 
 const App = () => {
   const [useEnabledSrc, setUseEnabledSrc] = useState<boolean>(false);
 
   const handleSetImageSrc = async () => {
-    const result = await getStorageValue('enabled');
+    const result = await getStorageValue("enabled");
     setUseEnabledSrc(result.enabled);
   };
 
@@ -44,11 +44,11 @@ const App = () => {
           height: 48px;
         `}
         src={useEnabledSrc ? LogoEnabled : LogoDisabled}
-        alt='abf-logo' 
+        alt="abf-logo"
       />
     </Structure>
-  )
+  );
 };
 
-const root = createRoot(document.getElementById('app') as HTMLElement);
-root.render(<App/>);
+const root = createRoot(document.getElementById("app") as HTMLElement);
+root.render(<App />);
