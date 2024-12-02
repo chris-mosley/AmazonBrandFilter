@@ -19,7 +19,7 @@
 
 ## How does it work?
 
-### It uses an Allow List over here: https://github.com/chris-mosley/AmazonBrandFilterList
+### It uses an Allow List over [here](https://github.com/chris-mosley/AmazonBrandFilterList). 
 
 The allow list can be updated any time. By default the add-on will update this list at initial startup and then once a day after that.
 
@@ -33,7 +33,7 @@ Because we're all sick of crappy fake brands clogging up our search!
 
 ### Missing a Brand?
 
-Please refer to the Submission Criteria in the AmazonBrandFilterList repo here: https://github.com/chris-mosley/AmazonBrandFilterList#submission-criteria
+Please refer to the Submission Criteria in the [AmazonBrandFilterList](https://github.com/chris-mosley/AmazonBrandFilterList#submission-criteria) repo.
 
 ### Which Brands are allowed?
 
@@ -48,7 +48,7 @@ A good (but not foolproof) rule of thumb is that if a brand has a dedicated webs
 I didn't expect this to make it outside my home country of the USA but I'm thrilled that others are interested!  To that ends I'm hoping to accomadate as many as possible.
 Unfortunately I'm monolingual and the best I could do would be to use internet translation to give crappy translations for an unknown number of languages.  
 
-So if you would like to see your language represented.  Please translate all of the terms found in this document:
+So if you would like to see your language represented.  Please help translate all of the terms found in messages.json for your locale [here](src/assets/_locales).
 
 
 ### Roadmap
