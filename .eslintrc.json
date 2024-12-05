@@ -18,7 +18,7 @@
       }
     ]
   },
-  "ignorePatterns": ["node_modules/", "dist/", "*.config.js", "scripts/"],
+  "ignorePatterns": ["node_modules/", "dist/", "*.config.js", "scripts/", "i18n.ts"],
   "env": {
     "browser": true,
     "webextensions": true

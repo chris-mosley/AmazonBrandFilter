@@ -13,7 +13,7 @@
     "type": "module"
   },
   "content_security_policy": {
-    "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; connect-src https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest;"
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src https://raw.githubusercontent.com/chris-mosley/AmazonBrandFilterList/main/brands.txt https://api.github.com/repos/chris-mosley/AmazonBrandFilterList/releases/latest;"
   },
   "web_accessible_resources": [
     {

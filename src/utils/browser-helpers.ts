@@ -1,7 +1,16 @@
 import { browser } from "webextension-polyfill-ts";
 
 import { extractSyncStorageSettingsObject, sleep } from "utils/helpers";
-import { Engine, StorageMode, StorageArea, StorageSettings, SyncStorageSettings } from "utils/types";
+import {
+  Engine,
+  StorageMode,
+  StorageArea,
+  StorageSettings,
+  SyncStorageSettings,
+  PopupMessage,
+  BackgroundMessage,
+  ContentMessage,
+} from "utils/types";
 
 /**
  * retrieves the name of the browser engine based on the runtime environment.
@@ -138,17 +147,6 @@ export const getSettings = async () => {
   return { settings, syncSettings };
 };
 
-export const getMessage = async (message: string): Promise<string> => {
-  const engine = getEngine();
-  if (engine == "gecko" && browser.i18n) {
-    return browser.i18n.getMessage(message);
-  } else if (engine == "chromium" && chrome.i18n) {
-    return chrome.i18n.getMessage(message);
-  } else {
-    throw new Error("Unsupported engine.");
-  }
-};
-
 export const setIcon = async () => {
   const result = await getStorageValue("enabled");
   if (result.enabled) {
@@ -220,4 +218,33 @@ export const ensureSettingsExist = async (): Promise<boolean> => {
   }
   console.log("AmazonBrandFilter: %cSettings exist!", "color: lightgreen");
   return true;
+};
+
+/**
+ * used to send messages to the background script
+ *
+ * @param message
+ */
+export const sendRuntimeMessage = async (message: PopupMessage | BackgroundMessage | ContentMessage) => {
+  const engine = getEngine();
+  if (engine === "chromium") {
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage(message, (response) => {
+        resolve(response);
+      });
+    });
+  } else if (engine === "gecko") {
+    return browser.runtime.sendMessage(message);
+  } else {
+    throw new Error("Unsupported engine.");
+  }
+};
+
+/**
+ * send message to parent window (from iframe)
+ *
+ * @param message
+ */
+export const sendMessageToParent = async (message: PopupMessage | BackgroundMessage) => {
+  window.parent.postMessage(message, "*");
 };
