@@ -5,7 +5,7 @@ const rootPath = path.resolve("./");
 const packageJson = require(`${rootPath}/package.json`);
 const baseManifestJson = require(`${rootPath}/engines/common/manifest/base.json`);
 const contentScriptsJson = require(`${rootPath}/engines/common/manifest/content-scripts.json`);
-const manifestFilePath = path.resolve(__dirname, `${rootPath}/dist/manifest.json`);
+const manifestFilePath = path.resolve(__dirname, `${rootPath}/dist/gecko/manifest.json`);
 
 try {
   // read the manifest file
