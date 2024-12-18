@@ -26,10 +26,6 @@ module.exports = (env, argv) => {
         "~/": "./src",
       },
       plugins: [new TsconfigPathsPlugin()],
-    },
-    output: {
-      filename: "[name].js",
-      path: path.resolve(__dirname, "dist"),
-    },
+    }
   };
 };

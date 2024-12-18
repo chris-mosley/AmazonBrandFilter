@@ -18,5 +18,9 @@ module.exports = (env, argv) => {
         ],
       }),
     ],
+    output: {
+      filename: "[name].js",
+      path: path.resolve(rootPath, "dist","gecko"),
+    },
   };
 };

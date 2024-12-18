@@ -8,10 +8,14 @@ import {
 import { getItemDivs, unHideDivs } from "utils/helpers";
 import { PopupMessage, StorageSettings } from "utils/types";
 
+const debugRed = "#ffbbbb";
+const debugGreen = "#bbffbb";
+const debugYellow = "#ffffbb";
+
 const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
   const { syncSettings } = await getSettings();
 
-  const shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
+  var shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length === 0) {
     return;
   }
@@ -28,10 +32,14 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
 
       if (settings.brandsMap[searchTerm]) {
         if (syncSettings.usePersonalBlock) {
+          // block if found in personal block list
           if (syncSettings.personalBlockMap && syncSettings.personalBlockMap[searchTerm]) {
             if (settings.useDebugMode) {
               div.style.display = "block";
-              div.style.backgroundColor = "yellow";
+              div.style.backgroundColor = debugYellow;
+              if (!shortText.item(0)!.textContent?.includes("ABF: " + searchTerm)) {
+                shortText.item(0)!.textContent = "ABF: " + searchTerm + " - " + shortText.item(0)?.textContent;
+              }
             } else {
               div.style.display = "none";
               div.style.backgroundColor = "white";
@@ -41,8 +49,19 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
             // if personal block is not enabled then we want to show the item again
             div.style.display = "block";
             if (settings.useDebugMode) {
-              div.style.backgroundColor = "green";
+              div.style.backgroundColor = debugGreen;
+              if (!shortText.item(0)!.textContent?.includes("ABF: " + searchTerm)) {
+                var element = document.createElement("div");
+                element.innerText = "ABF: " + searchTerm;
+                div.insertAdjacentElement("afterbegin", element);
+                // shortText.item(0)!.textContent = ("ABF: " + searchTerm + " - " + shortText.item(0)?.textContent);
+              }
             } else {
+              if (shortText.item(0)!.textContent?.includes("ABF: " + searchTerm)) {
+                shortText.item(0)!.textContent = shortText
+                  .item(0)!
+                  .textContent!.replace("ABF: " + searchTerm + " - ", "");
+              }
               div.style.backgroundColor = "white";
             }
             return;
@@ -51,8 +70,16 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
           // if personal block is not enabled then we want to show the item again
           div.style.display = "block";
           if (settings.useDebugMode) {
-            div.style.backgroundColor = "green";
+            div.style.backgroundColor = debugGreen;
+
+            if (div.getElementsByClassName("ABF-" + searchTerm).length === 0) {
+              addDebugLabel(div, searchTerm);
+            }
           } else {
+            if (div.getElementsByClassName("ABF-" + searchTerm).length != 0) {
+              removeDebugLabel(div, searchTerm);
+            }
+
             div.style.backgroundColor = "white";
           }
           return;
@@ -60,8 +87,14 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
 
         if (settings.useDebugMode) {
           div.style.display = "block";
-          div.style.backgroundColor = "green";
+          div.style.backgroundColor = debugGreen;
+          var element = document.createElement("div");
+          element.innerText = "ABF: " + searchTerm;
+          div.insertAdjacentElement("afterbegin", element);
         } else {
+          if (div.getElementsByClassName("ABF-" + searchTerm).length != 0) {
+            removeDebugLabel(div, searchTerm);
+          }
           div.style.backgroundColor = "white";
         }
         return;
@@ -71,13 +104,24 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
 
   if (settings.useDebugMode) {
     div.style.display = "block";
-    div.style.backgroundColor = "red";
+    div.style.backgroundColor = debugRed;
   } else {
     div.style.display = "none";
     div.style.backgroundColor = "white";
   }
 };
 
+const addDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
+  var abflabel = document.createElement("span");
+  abflabel.innerText = "ABF: " + searchTerm;
+  abflabel.className = "ABF-" + searchTerm;
+  abflabel.style.backgroundColor = "darkgreen";
+  abflabel.style.color = "white";
+  div.insertAdjacentElement("afterbegin", abflabel);
+};
+const removeDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
+  div.getElementsByClassName("ABF-" + searchTerm)[0]!.remove();
+};
 const runFilterRefiner = async (settings: StorageSettings) => {
   if (!settings.enabled || !settings.filterRefiner) {
     return;
@@ -132,10 +176,10 @@ const filterBrands = async (settings: StorageSettings) => {
 
   const brands = settings.brandsMap;
   if (Object.keys(brands).length === 0) {
-    console.log("AmazonBrandFilter: No brands found");
+    console.debug("AmazonBrandFilter: No brands found");
     return;
   }
-  console.log("AmazonBrandFilter: Brands found");
+  console.debug("AmazonBrandFilter: Brands found");
 
   if (settings.refinerBypass) {
     return;
@@ -159,7 +203,7 @@ const filterBrands = async (settings: StorageSettings) => {
           } else {
             div.style.display = "block";
             if (settings.useDebugMode) {
-              div.style.backgroundColor = "green";
+              div.style.backgroundColor = debugGreen;
             } else {
               div.style.backgroundColor = "white";
             }
@@ -168,7 +212,7 @@ const filterBrands = async (settings: StorageSettings) => {
         } else {
           div.style.display = "block";
           if (settings.useDebugMode) {
-            div.style.backgroundColor = "green";
+            div.style.backgroundColor = debugGreen;
           } else {
             div.style.backgroundColor = "white";
           }
@@ -177,7 +221,7 @@ const filterBrands = async (settings: StorageSettings) => {
       } else {
         if (settings.useDebugMode) {
           div.style.display = "block";
-          div.style.backgroundColor = "red";
+          div.style.backgroundColor = debugRed;
         } else {
           div.style.display = "none";
           div.style.backgroundColor = "white";
@@ -304,7 +348,7 @@ const startObserver = async () => {
       return;
     }
 
-    console.log("AmazonBrandFilter: Mutation detected!");
+    console.debug("AmazonBrandFilter: Mutation detected!");
     runFilter();
   });
   observer.observe(document, {
