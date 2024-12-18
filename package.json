@@ -55,8 +55,8 @@
     "prepare": "husky install",
     "lint": "yarn eslint src/**/*.ts",
     "test": "jest",
-    "win-build-gecko": "Remove-Item dist/gecko -Recurse -Force; webpack --mode development --config engines/gecko/webpack.config.js; node scripts\\post-build-update-manifest-gecko.js",
-    "win-build-chromium": "Remove-Item dist/chromium -Recurse -Force; webpack --mode development --config engines/chromium/webpack.config.js; node scripts\\post-build-update-manifest-chromium.js",
+    "win-build-gecko": "Remove-Item dist/gecko -Recurse -Force -ErrorAction SilentlyContinue; webpack --mode development --config engines/gecko/webpack.config.js; node scripts\\post-build-update-manifest-gecko.js; Get-ChildItem dist/gecko | Compress-Archive -DestinationPath dist/gecko/abf.zip -Force",
+    "win-build-chromium": "Remove-Item dist/chromium -Recurse -Force -ErrorAction SilentlyContinue; webpack --mode development --config engines/chromium/webpack.config.js; node scripts\\post-build-update-manifest-chromium.js",
     "nix-build-gecko": "rm -rf dist/gecko && webpack --mode development --config engines/gecko/webpack.config.js && node scripts/post-build-update-manifest-gecko.js",
     "nix-build-chromium": "rm -rf dist/chromium && webpack --mode development --config engines/chromium/webpack.config.js && node scripts/post-build-update-manifest-chromium.js"
   }
