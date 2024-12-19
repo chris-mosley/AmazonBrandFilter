@@ -47,6 +47,10 @@
     "message": "Comentarios (inglés)",
     "description": "Enlace a github para informar problemas o solicitar funciones"
   },
+  "popup_dashboard": {
+    "message": "Panel",
+    "description": "Panel de filtro de marca de Amazon"
+  },
   "popup_missing_brand": {
     "message": "¿Falta una marca?",
     "description": "Enlace a AmazonBrandFilter para solicitar que se agregue una marca"

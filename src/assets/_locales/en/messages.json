@@ -47,6 +47,10 @@
     "message": "Feedback",
     "description": "Link to github to report issues or request features"
   },
+  "popup_dashboard": {
+    "message": "Dashboard",
+    "description": "Amazon Brand Filter Dashboard"
+  },
   "popup_missing_brand": {
     "message": "Missing a brand?",
     "description": "Link to AmazonBrandFilter to request a brand be added"

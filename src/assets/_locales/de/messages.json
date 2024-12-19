@@ -47,6 +47,10 @@
     "message": "Feedback (Englisch)",
     "description": "Link zu Github, um Probleme zu melden oder Funktionen anzufordern"
   },
+  "popup_dashboard": {
+    "message": "Armaturenbrett",
+    "description": "Amazon-Markenfilter-Dashboard"
+  },
   "popup_missing_brand": {
     "message": "Fehlt eine Marke?",
     "description": "Link zu AmazonBrandFilter, um das Hinzufügen einer Marke zu beantragen"
