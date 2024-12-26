@@ -8,6 +8,8 @@ export interface StorageSettings {
   brandsVersion: number | null;
   brandsCount: number | null;
   brandsMap: Record<string, boolean>;
+  deptMap: Record<string, boolean>;
+  currentDepts: Record<string, boolean>;
   maxWordCount: number;
   enabled: boolean;
   filterRefiner: boolean;

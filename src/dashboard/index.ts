@@ -34,6 +34,7 @@ const abfFilterRefinerGreyText = document.getElementById("abf-filter-refiner-gre
 const abfAllowRefineBypassText = document.getElementById("abf-allow-refine-bypass-text")! as HTMLInputElement;
 const abfDebugModeText = document.getElementById("abf-debug-mode-text")! as HTMLInputElement;
 const abfPersonalBlockEnabledText = document.getElementById("abf-personal-block-enabled-text")! as HTMLInputElement;
+const abfCurrentDeptsDiv = document.getElementById("abf-current-depts")! as HTMLInputElement;
 
 const abfPersonalBlockText = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
 const brandListVersionText = document.getElementById("popup-brand-version-text")! as HTMLSpanElement;
@@ -129,6 +130,28 @@ const enableDisable = async (_event: Event) => {
   await setStorageValue({ enabled: abfEnabled.checked });
   await setIcon();
   sendMessageToContentScriptPostClick({ type: "enabled", isChecked: abfEnabled.checked });
+};
+
+const setCurrentDepartments = async () => {
+  const currentDepts = await (await getStorageValue("currentDepts", "local")).currentDepts;
+
+  if (currentDepts === undefined) {
+    const deptDiv = document.createElement("div");
+    deptDiv.innerText = "Unknown";
+  }
+  const keys = Object.keys(currentDepts);
+  for (const key of keys) {
+    const deptCheckbox = document.createElement("input");
+    if (currentDepts[key] === true) {
+      deptCheckbox.checked = true;
+    } else {
+      deptCheckbox.checked = false;
+    }
+    const deptText = document.createElement("input");
+    deptText.innerText = key;
+    abfCurrentDeptsDiv.appendChild(deptCheckbox);
+    abfCurrentDeptsDiv.appendChild(deptText);
+  }
 };
 
 const setFilterRefiner = async (_event: Event) => {
@@ -232,6 +255,7 @@ abfPersonalBlockButton.addEventListener("click", savePersonalBlock);
   await ensureSettingsExist();
   setPopupBoxStates();
   setTextBoxStates();
+  setCurrentDepartments();
   setPersonalList();
   console.log("AmazonBrandFilter: %cPopup script loaded!", "color: lightgreen");
 })();

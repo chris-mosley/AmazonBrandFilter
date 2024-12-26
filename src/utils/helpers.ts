@@ -12,6 +12,25 @@ export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
   return divs as HTMLCollectionOf<HTMLDivElement>;
 };
 
+export const getDepartments = (): string[] => {
+  const divs = document.getElementById("departments");
+  var depts: string[] = [];
+  if (divs === null) {
+    console.log("AmazonBrandFilter: Departments not found");
+    depts.push("Unknown");
+    return depts;
+  }
+  console.log(`AmazonBrandFilter: Departments found count: ${divs.children.length}`);
+  for (const div of divs.children as HTMLCollectionOf<HTMLDivElement>) {
+    // if (div.className == "a-size-base a-color-base") {
+    console.log(`AmazonBrandFilter: Department found: ${div.innerText}`);
+    depts.push(div.innerText);
+    // }
+  }
+  console.log(`AmazonBrandFilter: Departments found: ${depts}`);
+  return depts;
+};
+
 export const unHideDivs = () => {
   const divs = getItemDivs();
   for (const div of divs) {

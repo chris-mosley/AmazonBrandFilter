@@ -5,7 +5,7 @@ import {
   getStorageValue,
   setStorageValue,
 } from "utils/browser-helpers";
-import { getItemDivs, unHideDivs } from "utils/helpers";
+import { getDepartments, getItemDivs, unHideDivs } from "utils/helpers";
 import { PopupMessage, StorageSettings } from "utils/types";
 
 const debugRed = "#ffbbbb";
@@ -159,12 +159,26 @@ const runFilterRefiner = async (settings: StorageSettings) => {
 
       if (settings.useDebugMode) {
         div.style.display = "inline-block";
-        div.style.backgroundColor = "red";
+        div.style.backgroundColor = debugRed;
       } else {
         div.style.backgroundColor = "white";
       }
     }
   }
+};
+
+const updateDepartmentList = async () => {
+  const departmentList = getDepartments();
+  if (!departmentList) {
+    return;
+  }
+
+  console.log("AmazonBrandFilter: Updating department list");
+  var currentDepts = <Record<string, boolean>>{};
+  for (const dept of departmentList) {
+    currentDepts[dept] = true;
+  }
+  setStorageValue({ currentDepts: currentDepts });
 };
 
 const filterBrands = async (settings: StorageSettings) => {
@@ -179,7 +193,9 @@ const filterBrands = async (settings: StorageSettings) => {
     console.debug("AmazonBrandFilter: No brands found");
     return;
   }
-  console.debug("AmazonBrandFilter: Brands found");
+  if (settings.useDebugMode) {
+    console.debug("AmazonBrandFilter: Brands found");
+  }
 
   if (settings.refinerBypass) {
     return;
@@ -327,6 +343,7 @@ const runFilter = async () => {
 };
 
 const startObserver = async () => {
+  const settings = await getStorageValue();
   console.log("AmazonBrandFilter: Starting observer!");
   const observer = new MutationObserver(async (mutations) => {
     // check if the mutation is invalid
@@ -347,8 +364,9 @@ const startObserver = async () => {
     if (mutationInvalid) {
       return;
     }
-
-    console.debug("AmazonBrandFilter: Mutation detected!");
+    if (settings.useDebugMode) {
+      console.debug("AmazonBrandFilter: Mutation detected!");
+    }
     runFilter();
   });
   observer.observe(document, {
@@ -363,5 +381,7 @@ const startObserver = async () => {
   runFilter();
   listenForMessages();
   startObserver();
+  updateDepartmentList();
+
   console.log("AmazonBrandFilter: %cContent script loaded!", "color: lightgreen");
 })();
