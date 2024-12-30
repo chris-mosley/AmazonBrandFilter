@@ -1,3 +1,4 @@
+import _ from "lodash";
 import {
   ensureSettingsExist,
   getEngineApi,
@@ -14,7 +15,13 @@ const debugYellow = "#ffffbb";
 
 const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
   const { syncSettings } = await getSettings();
-
+  const currentDepts = await (await getStorageValue("currentDepts")).currentDepts;
+  for (const dept in currentDepts) {
+    if (syncSettings.knownDepts[dept] != null && syncSettings.knownDepts[dept] != true) {
+      console.log("AmazonBrandFilter: knownDepts[dept] is: " + syncSettings.knownDepts[dept]);
+      return;
+    }
+  }
   var shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length === 0) {
     return;
@@ -54,7 +61,6 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
                 var element = document.createElement("div");
                 element.innerText = "ABF: " + searchTerm;
                 div.insertAdjacentElement("afterbegin", element);
-                // shortText.item(0)!.textContent = ("ABF: " + searchTerm + " - " + shortText.item(0)?.textContent);
               }
             } else {
               if (shortText.item(0)!.textContent?.includes("ABF: " + searchTerm)) {
@@ -172,13 +178,25 @@ const updateDepartmentList = async () => {
   if (!departmentList) {
     return;
   }
-
-  console.log("AmazonBrandFilter: Updating department list");
   var currentDepts = <Record<string, boolean>>{};
   for (const dept of departmentList) {
     currentDepts[dept] = true;
   }
-  setStorageValue({ currentDepts: currentDepts });
+  await setStorageValue({ currentDepts: currentDepts });
+
+  var updateDepartmentList = false;
+  const syncKnownDepts = await getStorageValue("knownDepts", "sync");
+  for (const dept of departmentList) {
+    if (!syncKnownDepts.knownDepts[dept]) {
+      syncKnownDepts.knownDepts[dept] = true;
+      updateDepartmentList = true;
+    }
+  }
+  // only update if we found something new.  I suspect there may be optimization for this in the future rather than setting the entire list when we update it.
+  if (updateDepartmentList) {
+    await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "sync");
+    await setStorageValue({ deptCount: Object.keys(syncKnownDepts.knownDepts).length }, "sync");
+  }
 };
 
 const filterBrands = async (settings: StorageSettings) => {
@@ -376,12 +394,12 @@ const startObserver = async () => {
 };
 
 (async () => {
+  updateDepartmentList();
   unHideDivs();
   await ensureSettingsExist();
   runFilter();
   listenForMessages();
   startObserver();
-  updateDepartmentList();
 
   console.log("AmazonBrandFilter: %cContent script loaded!", "color: lightgreen");
 })();

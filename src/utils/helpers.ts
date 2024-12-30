@@ -1,5 +1,12 @@
 import _ from "lodash";
 
+// import {
+//   ensureSettingsExist,
+//   getSettings,
+//   getStorageValue,
+//   setIcon,
+//   setStorageValue,
+// } from "utils/browser-helpers";
 import { defaultLocalStorageValue, defaultSyncStorageValue } from "utils/config";
 import { StorageSettings, SyncStorageSettings } from "utils/types";
 
@@ -20,14 +27,14 @@ export const getDepartments = (): string[] => {
     depts.push("Unknown");
     return depts;
   }
-  console.log(`AmazonBrandFilter: Departments found count: ${divs.children.length}`);
-  for (const div of divs.children as HTMLCollectionOf<HTMLDivElement>) {
-    // if (div.className == "a-size-base a-color-base") {
-    console.log(`AmazonBrandFilter: Department found: ${div.innerText}`);
+  const deptElements = divs.getElementsByClassName("a-spacing-micro");
+  for (const div of deptElements as HTMLCollectionOf<HTMLDivElement>) {
+    // so we just get the top level departments
+    if (div.className.match(".*indent.*")) {
+      continue;
+    }
     depts.push(div.innerText);
-    // }
   }
-  console.log(`AmazonBrandFilter: Departments found: ${depts}`);
   return depts;
 };
 
@@ -38,6 +45,27 @@ export const unHideDivs = () => {
   }
 };
 
+// export const setDepartmentFiltering = async (dept: string, enabled: boolean) => {
+
+//   if(!await ensureSettingsExist())
+//   {
+//     console.debug("AmazonBrandFilter: Settings not found");
+//     return;
+//   }
+//   const knownDepts = await getStorageValue("deptMap");
+//   if(knownDepts === undefined)
+//   {
+//     console.debug("AmazonBrandFilter: Department map not found");
+//     return;
+//   }
+//   if(knownDepts.deptMap[dept] === undefined)
+//   {
+//     console.debug("AmazonBrandFilter: Department not found");
+//     return;
+//   }
+//   knownDepts.deptMap[dept] = enabled;
+
+// };
 /**
  * use regular expression to split the input string based on the delimiters
  * delimiterPattern matches one or more commas, spaces, new lines, or return characters

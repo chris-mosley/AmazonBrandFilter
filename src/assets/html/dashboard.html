@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="dashboard.css" />
   </head>
 
   <body>
@@ -37,14 +37,17 @@
         <input type="checkbox" id="abf-debug-mode" option="abf-debug-mode" />
         <label for="abf-debug-mode" id="abf-debug-mode-text"></label>
       </div>
-
+      <div id="popup-department-header-text"></div>
+      <div class="indent">
+        <div id="abf-current-depts"></div> 
+      </div>
+      
+      
       <div>
         <input type="checkbox" id="abf-personal-block-enabled" option="abf-personal-block-enabled" />
         <label for="abf-personal-block-enabled" id="abf-personal-block-enabled-text"></label>
         <span><input type="button" id="abf-personal-block-button" class="abf-personal-block-button" value="Save"/></span>
         <span id="abf-personal-block-saved-confirm" class="abf-personal-block-saved-confirm"></span>
-      </div>
-      <div id="abf-current-depts">
       </div>
       <div class="indent spaced">
         <textarea id="abf-personal-block-textbox" class="abf-personal-block-text" cols="45"></textarea>
@@ -56,10 +59,19 @@
           <span id="version-number"></span>
           <span> | </span>
           <span id="popup-brand-count-text"></span>
-          <span id="brand-count"></span
-        ></span>
+          <span id="brand-count"></span>
+          <span> | </span>
+          <span id="dept-count-text"></span>
+          <span id="dept-count"></span>
+        </span>
       </div>
-
+      
+      <div>
+        <span><input type="button" id="abf-dashboard-show-dept-button" class="abf-personal-block-button" value="Show"/></span>
+        <label for="abf-personal-block-enabled" id="abf-dashboard-show-dept-button-text"></label>
+      </div>
+      <div class="indent spaced" id="abf-dashboard-depts">
+      </div>
       <div class="options-links spaced">
         <a href="dashboard.html" id="popup-dashboard" target="_blank"></a>
         <a href="https://github.com/chris-mosley/AmazonBrandFilter/issues" id="popup-feedback-text"></a>
@@ -79,6 +91,6 @@
     </div> -->
     </div>
 
-    <script src="popup.js"></script>
+    <script src="gui.js"></script>
   </body>
 </html>

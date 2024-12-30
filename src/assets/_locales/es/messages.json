@@ -31,6 +31,10 @@
     "message": "Ahorrar",
     "description": "botón guardar"
   },
+  "popup_department_header": {
+    "message": "Departments",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
   "popup_save_confirm": {
     "message": "Salvado!",
     "description": "Confirmación de lista personal guardada"

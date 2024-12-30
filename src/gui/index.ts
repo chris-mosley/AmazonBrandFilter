@@ -11,6 +11,7 @@ import {
 import { getSanitizedUserInput } from "utils/helpers";
 import { PopupMessage } from "utils/types";
 
+// checkboxes
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
 const abfFilterRefiner = document.getElementById("abf-filter-refiner")! as HTMLInputElement;
 const abfFilterRefinerHide = document.getElementById("abf-filter-refiner-hide")! as HTMLInputElement;
@@ -27,6 +28,7 @@ const versionNumber = document.getElementById("version-number")! as HTMLSpanElem
 const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
 const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
+// labels
 const abfEnabledText = document.getElementById("abf-enabled-text")! as HTMLInputElement;
 const abfFilterRefinerText = document.getElementById("abf-filter-refiner-text")! as HTMLInputElement;
 const abfFilterRefinerHideText = document.getElementById("abf-filter-refiner-hide-text")! as HTMLInputElement;
@@ -35,7 +37,7 @@ const abfAllowRefineBypassText = document.getElementById("abf-allow-refine-bypas
 const abfDebugModeText = document.getElementById("abf-debug-mode-text")! as HTMLInputElement;
 const abfPersonalBlockEnabledText = document.getElementById("abf-personal-block-enabled-text")! as HTMLInputElement;
 const abfCurrentDeptsDiv = document.getElementById("abf-current-depts")! as HTMLInputElement;
-
+const abfDepartmentHeaderText = document.getElementById("popup-department-header-text")! as HTMLInputElement;
 const abfPersonalBlockText = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
 const brandListVersionText = document.getElementById("popup-brand-version-text")! as HTMLSpanElement;
 const brandCountText = document.getElementById("popup-brand-count-text")! as HTMLSpanElement;
@@ -56,6 +58,7 @@ const setText = async () => {
   abfPersonalBlockEnabledText.innerText = await getMessage("popup_personal_blocklist");
   abfPersonalBlockButton.innerText = await getMessage("popup_save_button");
   abfPersonalBlockText.innerText = await getMessage("popup_save_confirm");
+  abfDepartmentHeaderText.innerText = await getMessage("popup_department_header");
   brandListVersionText.innerText = await getMessage("popup_list_version");
   brandCountText.innerText = await getMessage("popup_list_count");
   feedbackText.innerText = await getMessage("popup_feedback_link");
@@ -133,6 +136,7 @@ const enableDisable = async (_event: Event) => {
 };
 
 const setCurrentDepartments = async () => {
+  abfCurrentDeptsDiv.innerHTML = "";
   const currentDepts = await (await getStorageValue("currentDepts", "local")).currentDepts;
   if (currentDepts === undefined) {
     const deptDiv = document.createElement("div");
@@ -141,8 +145,8 @@ const setCurrentDepartments = async () => {
     return;
   }
   const keys = Object.keys(currentDepts);
-  //const keys = ["test1","test2","test3"];
   for (const key of keys) {
+    const deptDiv = document.createElement("div");
     const deptCheckbox = document.createElement("input");
     deptCheckbox.type = "checkbox";
     deptCheckbox.id = `abf-dept-entry-${key.replace(" ", "-")}`;
@@ -154,8 +158,9 @@ const setCurrentDepartments = async () => {
     const deptText = document.createElement("label");
     deptText.htmlFor = `abf-dept-entry-${key.replace(" ", "-")}`;
     deptText.innerText = key;
-    abfCurrentDeptsDiv.appendChild(deptCheckbox);
-    abfCurrentDeptsDiv.appendChild(deptText);
+    deptDiv.appendChild(deptCheckbox);
+    deptDiv.appendChild(deptText);
+    abfCurrentDeptsDiv.appendChild(deptDiv);
   }
 };
 
@@ -260,7 +265,6 @@ abfPersonalBlockButton.addEventListener("click", savePersonalBlock);
   setAddonVersion();
   await ensureSettingsExist();
   setPopupBoxStates();
-  setCurrentDepartments();
   setTextBoxStates();
   setPersonalList();
   console.log("AmazonBrandFilter: %cPopup script loaded!", "color: lightgreen");

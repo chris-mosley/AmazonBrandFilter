@@ -8,8 +8,9 @@ export const brandsUrl: string = "https://raw.githubusercontent.com/chris-mosley
 export const defaultSyncStorageValue: SyncStorageSettings = {
   isFirstRun: false,
   deptMap: {},
-  currentDepts: { Unknown: true },
   enabled: true,
+  knownDepts: {},
+  deptCount: 0,
   filterRefiner: false,
   refinerMode: "grey",
   refinerBypass: false,
@@ -21,6 +22,7 @@ export const defaultSyncStorageValue: SyncStorageSettings = {
 
 export const defaultLocalStorageValue: StorageSettings = {
   ...defaultSyncStorageValue,
+  currentDepts: { Unknown: true },
   brandsMap: {},
   brandsVersion: 0,
   brandsCount: 0,

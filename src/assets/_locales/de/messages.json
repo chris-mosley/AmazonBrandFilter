@@ -35,6 +35,10 @@
     "message": "Gerettet!",
     "description": "Persönliche Liste gespeicherte Bestätigung"
   },
+  "popup_department_header": {
+    "message": "Departments",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
   "popup_list_version": {
     "message": "Liste Version: ",
     "description": "Zeigen, welche Version der Liste wir haben"

@@ -31,11 +31,15 @@
     "message": "Save",
     "description": "Save button"
   },
+  "popup_department_header": {
+    "message": "Departments",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
   "popup_save_confirm": {
     "message": "Saved!",
     "description": "Personal list saved confirmation"
   },
-  "popup_list_version": {
+  "brand_list_version": {
     "message": "List Version: ",
     "description": "Show what version of the list we have"
   },
@@ -62,5 +66,13 @@
   "popup_help_translate": {
     "message": "Help translate",
     "description": "Link to help translate the extension"
+  },
+  "dashboard_show_department_button": {
+    "message": "Show All Departments",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
+  "dept_list_count": {
+    "message": "Known Departments: ",
+    "description": "How many departments we know about"
   }
 }
