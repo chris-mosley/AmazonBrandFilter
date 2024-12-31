@@ -12,6 +12,7 @@ export interface StorageSettings {
   currentDepts: Record<string, boolean>;
   knownDepts: Record<string, boolean>;
   deptCount: number | null;
+  showAllDepts: boolean;
   maxWordCount: number;
   enabled: boolean;
   filterRefiner: boolean;

@@ -27,24 +27,24 @@
     "message": "Personal Blocklist",
     "description": "Enable or disable personal blocklist"
   },
-  "popup_save_button": {
+  "save_button": {
     "message": "Save",
     "description": "Save button"
   },
-  "popup_department_header": {
-    "message": "Departments",
-    "description": "Current Departments, uncheck to disable filtering for a department"
-  },
-  "popup_save_confirm": {
+  "save_confirm": {
     "message": "Saved!",
     "description": "Personal list saved confirmation"
+  },
+  "department_header": {
+    "message": "Departments: ",
+    "description": "Current Departments, uncheck to disable filtering for a department"
   },
   "brand_list_version": {
     "message": "List Version: ",
     "description": "Show what version of the list we have"
   },
-  "popup_list_count": {
-    "message": "Known Brands: ",
+  "brand_list_count": {
+    "message": "Brands: ",
     "description": "How many brands we know about"
   },
   "popup_feedback_link": {
@@ -67,12 +67,16 @@
     "message": "Help translate",
     "description": "Link to help translate the extension"
   },
-  "dashboard_show_department_button": {
-    "message": "Show All Departments",
+  "show_all": {
+    "message": "Show All",
     "description": "Current Departments, uncheck to disable filtering for a department"
   },
-  "dept_list_count": {
-    "message": "Known Departments: ",
+  "hide_all": {
+    "message": "Hide All",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
+  "dept_count": {
+    "message": "Departments: ",
     "description": "How many departments we know about"
   }
 }

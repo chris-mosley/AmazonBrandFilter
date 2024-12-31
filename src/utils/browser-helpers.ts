@@ -141,6 +141,7 @@ export const getSettings = async () => {
 export const getMessage = async (message: string): Promise<string> => {
   const engine = getEngine();
   if (engine == "gecko" && browser.i18n) {
+    browser.i18n.getMessage(message);
     return browser.i18n.getMessage(message);
   } else if (engine == "chromium" && chrome.i18n) {
     return chrome.i18n.getMessage(message);

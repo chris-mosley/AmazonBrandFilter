@@ -182,7 +182,7 @@ const updateDepartmentList = async () => {
   for (const dept of departmentList) {
     currentDepts[dept] = true;
   }
-  await setStorageValue({ currentDepts: currentDepts });
+  await setStorageValue({ currentDepts: currentDepts }, "local");
 
   var updateDepartmentList = false;
   const syncKnownDepts = await getStorageValue("knownDepts", "sync");
@@ -194,7 +194,9 @@ const updateDepartmentList = async () => {
   }
   // only update if we found something new.  I suspect there may be optimization for this in the future rather than setting the entire list when we update it.
   if (updateDepartmentList) {
+    await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "local");
     await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "sync");
+    await setStorageValue({ deptCount: Object.keys(syncKnownDepts.knownDepts).length }, "local");
     await setStorageValue({ deptCount: Object.keys(syncKnownDepts.knownDepts).length }, "sync");
   }
 };

@@ -11,6 +11,7 @@ export const defaultSyncStorageValue: SyncStorageSettings = {
   enabled: true,
   knownDepts: {},
   deptCount: 0,
+  showAllDepts: false,
   filterRefiner: false,
   refinerMode: "grey",
   refinerBypass: false,
