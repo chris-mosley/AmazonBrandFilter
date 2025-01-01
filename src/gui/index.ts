@@ -9,7 +9,7 @@ import {
   setStorageValue,
 } from "utils/browser-helpers";
 import { getSanitizedUserInput } from "utils/helpers";
-import { PopupMessage } from "utils/types";
+import { PopupMessage, GuiLocation } from "utils/types";
 
 // checkboxes
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
@@ -41,18 +41,18 @@ const abfDebugModeText = document.getElementById("abf-debug-mode-text")! as HTML
 const abfPersonalBlockEnabledText = document.getElementById("abf-personal-block-enabled-text")! as HTMLInputElement;
 const abfCurrentDeptsDiv = document.getElementById("abf-current-depts")! as HTMLInputElement;
 const abfDepartmentHeaderText = document.getElementById("department-header-text")! as HTMLInputElement;
-const abfDepartmentListText = document.getElementById("department-list-text")! as HTMLInputElement;
+const abfDepartmentsText = document.getElementById("department-list-text")! as HTMLInputElement;
 const abfPersonalBlockText = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
 const brandListVersionText = document.getElementById("brand-version-text")! as HTMLSpanElement;
 const brandCountText = document.getElementById("brand-count-text")! as HTMLSpanElement;
-const deptCountText = document.getElementById("dept-count-text")! as HTMLSpanElement;
 const feedbackText = document.getElementById("popup-feedback-text")! as HTMLSpanElement;
 const missingBrandText = document.getElementById("popup-missing-brand-text")! as HTMLSpanElement;
 const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
 const helptranslate = document.getElementById("popup-help-translate")! as HTMLSpanElement;
 const dashboard = document.getElementById("popup-dashboard")! as HTMLSpanElement;
 
-const setText = async (locationPath: string) => {
+const setText = async (locationPath: GuiLocation) => {
+  const { settings, syncSettings } = await getSettings();
   // these have to be snake_case because chrome doesnt support hyphens in i18n
   abfEnabledText.innerText = await getMessage("popup_enabled");
   abfFilterRefinerText.innerText = await getMessage("popup_filter_sidebar");
@@ -71,11 +71,20 @@ const setText = async (locationPath: string) => {
   lastRunText.innerText = await getMessage("popup_last_run");
   helptranslate.innerText = await getMessage("popup_help_translate");
   dashboard.innerText = await getMessage("popup_dashboard");
-  deptCountText.innerText = await getMessage("dept_count");
-
+  abfDepartmentsText.innerText = await getMessage("department_header");
   if (locationPath === "dashboard") {
-    abfDepartmentListText.innerText = await getMessage("department_header");
-    deptViewControlButton.value = await getMessage("show_all");
+    if (syncSettings.showAllDepts === null) {
+      if (settings.showAllDepts) {
+        deptViewControlButton.value = await getMessage("show_all");
+      } else {
+        deptViewControlButton.value = await getMessage("hide_all");
+      }
+    }
+    if (syncSettings.showAllDepts) {
+      deptViewControlButton.value = await getMessage("show_all");
+    } else {
+      deptViewControlButton.value = await getMessage("hide_all");
+    }
   }
 };
 
@@ -147,35 +156,6 @@ const enableDisable = async (_event: Event) => {
   sendMessageToContentScriptPostClick({ type: "enabled", isChecked: abfEnabled.checked });
 };
 
-const setCurrentDepartments = async () => {
-  abfCurrentDeptsDiv.innerHTML = "";
-  const currentDepts = await (await getStorageValue("currentDepts", "local")).currentDepts;
-  if (currentDepts === undefined) {
-    const deptDiv = document.createElement("div");
-    deptDiv.innerText = "Unknown";
-    abfCurrentDeptsDiv.appendChild(deptDiv);
-    return;
-  }
-  const keys = Object.keys(currentDepts);
-  for (const key of keys) {
-    const deptDiv = document.createElement("div");
-    const deptCheckbox = document.createElement("input");
-    deptCheckbox.type = "checkbox";
-    deptCheckbox.id = `abf-dept-entry-${key.replace(" ", "-")}`;
-    if (currentDepts[key] === true) {
-      deptCheckbox.checked = true;
-    } else {
-      deptCheckbox.checked = false;
-    }
-    const deptText = document.createElement("label");
-    deptText.htmlFor = `abf-dept-entry-${key.replace(" ", "-")}`;
-    deptText.innerText = key;
-    deptDiv.appendChild(deptCheckbox);
-    deptDiv.appendChild(deptText);
-    abfCurrentDeptsDiv.appendChild(deptDiv);
-  }
-};
-
 const setFilterRefiner = async (_event: Event) => {
   await setStorageValue({ filterRefiner: abfFilterRefiner.checked }, "sync");
   await setStorageValue({ filterRefiner: abfFilterRefiner.checked });
@@ -214,6 +194,18 @@ const setPersonalBlockEnabled = async (_event: Event) => {
   await setStorageValue({ usePersonalBlock: abfPersonalBlockEnabled.checked }, "sync");
   await setStorageValue({ usePersonalBlock: abfPersonalBlockEnabled.checked });
   sendMessageToContentScriptPostClick({ type: "usePersonalBlock", isChecked: abfPersonalBlockEnabled.checked });
+};
+
+const saveDepartmentFilter = async (dept: string, enabled: boolean) => {
+  const knownDepts = await getStorageValue("knownDepts", "sync");
+  knownDepts.knownDepts[dept] = enabled;
+  setStorageValue(knownDepts, "local");
+  setStorageValue(knownDepts, "sync");
+};
+
+const processDepartmentFilter = async (dept: string, enabled: boolean) => {
+  await saveDepartmentFilter(dept, enabled);
+  sendMessageToContentScriptPostClick({ type: "deptFilter", isChecked: enabled });
 };
 
 const savePersonalBlock = async () => {
@@ -265,7 +257,7 @@ const showDepartmentList = async (_event: Event) => {
   }
 };
 
-const createDepartmentList = async () => {
+const createDepartmentList = async (guiLocation: GuiLocation) => {
   console.log("AmazonBrandFilter: %cshowDepartmentList", "color: yellow");
   let result = await getStorageValue("knownDepts", "sync");
 
@@ -278,17 +270,19 @@ const createDepartmentList = async () => {
     return;
   }
   console.debug(`showDepartmentList: ${Object.keys(result.knownDepts).length} departments found in sync storage`);
-
-  const textValue = Object.keys(result.knownDepts).sort();
+  var textValue = null;
+  if (guiLocation === "dashboard") {
+    textValue = Object.keys(result.knownDepts).sort();
+  } else {
+    var currentDepts = await (await getStorageValue("currentDepts", "local")).currentDepts;
+    textValue = Object.keys(currentDepts).sort();
+    if (textValue === undefined) {
+      textValue = await getMessage("dept_unknown");
+    }
+  }
 
   for (const key of textValue) {
-    var showAllDepts = await getStorageValue("showAllDepts", "sync");
     const deptDiv = document.createElement("div");
-    if (showAllDepts.showAllDepts) {
-      deptDiv.style.display = "block";
-    } else {
-      deptDiv.style.display = "none";
-    }
     const deptCheckbox = document.createElement("input");
     deptCheckbox.type = "checkbox";
     deptCheckbox.id = `abf-dept-checkbox-${key.replace(" ", "-")}`;
@@ -298,7 +292,7 @@ const createDepartmentList = async () => {
       deptCheckbox.checked = false;
     }
     deptCheckbox.addEventListener("click", () => {
-      setDepartmentFiltering(key, deptCheckbox.checked);
+      processDepartmentFilter(key, deptCheckbox.checked);
     });
     const deptEntryLabel = document.createElement("label");
     deptEntryLabel.htmlFor = deptCheckbox.id;
@@ -306,15 +300,12 @@ const createDepartmentList = async () => {
 
     deptDiv.appendChild(deptCheckbox);
     deptDiv.appendChild(deptEntryLabel);
-    abfFullDeptListDiv.appendChild(deptDiv);
+    if (guiLocation === "popup") {
+      abfCurrentDeptsDiv.appendChild(deptDiv);
+    } else {
+      abfFullDeptListDiv.appendChild(deptDiv);
+    }
   }
-};
-
-const setDepartmentFiltering = async (dept: string, enabled: boolean) => {
-  const knownDepts = await getStorageValue("knownDepts", "sync");
-  knownDepts.knownDepts[dept] = enabled;
-  setStorageValue(knownDepts, "local");
-  setStorageValue(knownDepts, "sync");
 };
 
 const sendMessageToContentScriptPostClick = (message: PopupMessage) => {
@@ -336,25 +327,23 @@ abfDebugMode.addEventListener("click", setDebugMode);
 abfPersonalBlockEnabled.addEventListener("click", setPersonalBlockEnabled);
 abfPersonalBlockButton.addEventListener("click", savePersonalBlock);
 
-var locationPath = "popup";
+var guiLocation: GuiLocation = "popup";
 if (location.pathname === "/dashboard.html") {
-  locationPath = "dashboard";
+  guiLocation = "dashboard";
 }
-
 // these are only on the dashboard
-if (locationPath === "dashboard") {
+if (guiLocation === "dashboard") {
   deptViewControlButton.addEventListener("click", showDepartmentList);
 }
 // abfHideAll.addEventListener("click", hideAll)
 
 (async () => {
   await ensureSettingsExist();
-  setText(locationPath);
-  setCurrentDepartments();
+  setText(guiLocation);
   setAddonVersion();
   setCheckBoxStates();
   setTextBoxStates();
   setPersonalList();
-  createDepartmentList();
+  createDepartmentList(guiLocation);
   console.log("AmazonBrandFilter: %cgui script loaded!", "color: lightgreen");
 })();

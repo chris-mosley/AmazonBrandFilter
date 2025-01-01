@@ -45,27 +45,6 @@ export const unHideDivs = () => {
   }
 };
 
-// export const setDepartmentFiltering = async (dept: string, enabled: boolean) => {
-
-//   if(!await ensureSettingsExist())
-//   {
-//     console.debug("AmazonBrandFilter: Settings not found");
-//     return;
-//   }
-//   const knownDepts = await getStorageValue("deptMap");
-//   if(knownDepts === undefined)
-//   {
-//     console.debug("AmazonBrandFilter: Department map not found");
-//     return;
-//   }
-//   if(knownDepts.deptMap[dept] === undefined)
-//   {
-//     console.debug("AmazonBrandFilter: Department not found");
-//     return;
-//   }
-//   knownDepts.deptMap[dept] = enabled;
-
-// };
 /**
  * use regular expression to split the input string based on the delimiters
  * delimiterPattern matches one or more commas, spaces, new lines, or return characters

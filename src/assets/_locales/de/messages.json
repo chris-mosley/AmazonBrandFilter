@@ -66,5 +66,21 @@
   "popup_help_translate": {
     "message": "Help translate",
     "description": "Link to help translate the extension"
+  },
+  "show_all": {
+    "message": "Alles anzeigen",
+    "description": "Zum Ein-/Ausblenden der Schaltfläche für bekannte Abteilungen im Dashboard"
+  },
+  "hide_all": {
+    "message": "Alles ausblenden",
+    "description": "Zum Ein-/Ausblenden der Schaltfläche für bekannte Abteilungen im Dashboard"
+  },
+  "dept_count": {
+    "message": "Abteilungen: ",
+    "description": "How many departments we know about"
+  },
+  "dept_unknown": {
+    "message": "Unbekannt",
+    "description": "Unbekannte Abteilung"
   }
 }

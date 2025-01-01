@@ -1,5 +1,5 @@
 export type Engine = "gecko" | "chromium";
-
+export type GuiLocation = "popup" | "dashboard";
 export type StorageArea = "local" | "sync";
 export type StorageMode = "normal" | "overwrite";
 
@@ -13,6 +13,7 @@ export interface StorageSettings {
   knownDepts: Record<string, boolean>;
   deptCount: number | null;
   showAllDepts: boolean;
+  deptFilter: boolean;
   maxWordCount: number;
   enabled: boolean;
   filterRefiner: boolean;

@@ -69,14 +69,18 @@
   },
   "show_all": {
     "message": "Show All",
-    "description": "Current Departments, uncheck to disable filtering for a department"
+    "description": "For show/hide button for known departments on the dashboard"
   },
   "hide_all": {
     "message": "Hide All",
-    "description": "Current Departments, uncheck to disable filtering for a department"
+    "description": "For show/hide button for known departments on the dashboard"
   },
   "dept_count": {
     "message": "Departments: ",
     "description": "How many departments we know about"
+  },
+  "dept_unknown": {
+    "message": "Unknown",
+    "description": "Unknown department"
   }
 }

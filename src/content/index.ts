@@ -15,13 +15,6 @@ const debugYellow = "#ffffbb";
 
 const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
   const { syncSettings } = await getSettings();
-  const currentDepts = await (await getStorageValue("currentDepts")).currentDepts;
-  for (const dept in currentDepts) {
-    if (syncSettings.knownDepts[dept] != null && syncSettings.knownDepts[dept] != true) {
-      console.log("AmazonBrandFilter: knownDepts[dept] is: " + syncSettings.knownDepts[dept]);
-      return;
-    }
-  }
   var shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length === 0) {
     return;
@@ -57,18 +50,9 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
             div.style.display = "block";
             if (settings.useDebugMode) {
               div.style.backgroundColor = debugGreen;
-              if (!shortText.item(0)!.textContent?.includes("ABF: " + searchTerm)) {
-                var element = document.createElement("div");
-                element.innerText = "ABF: " + searchTerm;
-                div.insertAdjacentElement("afterbegin", element);
-              }
+              addDebugLabel(div, searchTerm);
             } else {
-              if (shortText.item(0)!.textContent?.includes("ABF: " + searchTerm)) {
-                shortText.item(0)!.textContent = shortText
-                  .item(0)!
-                  .textContent!.replace("ABF: " + searchTerm + " - ", "");
-              }
-              div.style.backgroundColor = "white";
+              removeDebugLabel(div, searchTerm);
             }
             return;
           }
@@ -77,30 +61,18 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
           div.style.display = "block";
           if (settings.useDebugMode) {
             div.style.backgroundColor = debugGreen;
-
-            if (div.getElementsByClassName("ABF-" + searchTerm).length === 0) {
-              addDebugLabel(div, searchTerm);
-            }
+            addDebugLabel(div, searchTerm);
           } else {
-            if (div.getElementsByClassName("ABF-" + searchTerm).length != 0) {
-              removeDebugLabel(div, searchTerm);
-            }
-
+            removeDebugLabel(div, searchTerm);
             div.style.backgroundColor = "white";
           }
           return;
         }
 
         if (settings.useDebugMode) {
-          div.style.display = "block";
-          div.style.backgroundColor = debugGreen;
-          var element = document.createElement("div");
-          element.innerText = "ABF: " + searchTerm;
-          div.insertAdjacentElement("afterbegin", element);
+          addDebugLabel(div, searchTerm);
         } else {
-          if (div.getElementsByClassName("ABF-" + searchTerm).length != 0) {
-            removeDebugLabel(div, searchTerm);
-          }
+          removeDebugLabel(div, searchTerm);
           div.style.backgroundColor = "white";
         }
         return;
@@ -118,15 +90,19 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
 };
 
 const addDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
-  var abflabel = document.createElement("span");
-  abflabel.innerText = "ABF: " + searchTerm;
-  abflabel.className = "ABF-" + searchTerm;
-  abflabel.style.backgroundColor = "darkgreen";
-  abflabel.style.color = "white";
-  div.insertAdjacentElement("afterbegin", abflabel);
+  if (div.getElementsByClassName("ABF-" + searchTerm).length === 0) {
+    var abflabel = document.createElement("span");
+    abflabel.innerText = "ABF: " + searchTerm;
+    abflabel.className = "ABF-" + searchTerm;
+    abflabel.style.backgroundColor = "darkgreen";
+    abflabel.style.color = "white";
+    div.insertAdjacentElement("afterbegin", abflabel);
+  }
 };
 const removeDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
-  div.getElementsByClassName("ABF-" + searchTerm)[0]!.remove();
+  if (div.getElementsByClassName("ABF-" + searchTerm).length > 0) {
+    div.getElementsByClassName("ABF-" + searchTerm)[0]!.remove();
+  }
 };
 const runFilterRefiner = async (settings: StorageSettings) => {
   if (!settings.enabled || !settings.filterRefiner) {
@@ -178,16 +154,21 @@ const updateDepartmentList = async () => {
   if (!departmentList) {
     return;
   }
+  const syncKnownDepts = await getStorageValue("knownDepts", "sync");
   var currentDepts = <Record<string, boolean>>{};
   for (const dept of departmentList) {
-    currentDepts[dept] = true;
+    if (syncKnownDepts.knownDepts[dept] === false) {
+      currentDepts[dept] = false;
+    } else {
+      currentDepts[dept] = true;
+    }
   }
   await setStorageValue({ currentDepts: currentDepts }, "local");
 
   var updateDepartmentList = false;
-  const syncKnownDepts = await getStorageValue("knownDepts", "sync");
+
   for (const dept of departmentList) {
-    if (!syncKnownDepts.knownDepts[dept]) {
+    if (syncKnownDepts.knownDepts[dept] === undefined) {
       syncKnownDepts.knownDepts[dept] = true;
       updateDepartmentList = true;
     }
@@ -219,6 +200,15 @@ const filterBrands = async (settings: StorageSettings) => {
 
   if (settings.refinerBypass) {
     return;
+  }
+  // if any of the departments are set not to filter we just cancel for now.
+  const currentDepts = await (await getStorageValue("currentDepts")).currentDepts;
+  for (const dept in currentDepts) {
+    if (syncSettings.knownDepts[dept] != null && syncSettings.knownDepts[dept] != true) {
+      console.log("AmazonBrandFilter: knownDepts[dept] is: " + syncSettings.knownDepts[dept]);
+      resetBrands();
+      return;
+    }
   }
 
   const divs = getItemDivs();
@@ -342,6 +332,9 @@ const listenForMessages = () => {
         break;
       case "usePersonalBlock":
       case "personalBlockMap":
+        filterBrands(settings);
+        break;
+      case "deptFilter":
         filterBrands(settings);
         break;
       default:

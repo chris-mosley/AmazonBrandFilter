@@ -19,6 +19,7 @@ export const defaultSyncStorageValue: SyncStorageSettings = {
   useDebugMode: false,
   personalBlockMap: {},
   lastMapRun: null,
+  deptFilter: false,
 };
 
 export const defaultLocalStorageValue: StorageSettings = {

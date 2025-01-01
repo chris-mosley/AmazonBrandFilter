@@ -107,6 +107,11 @@ section.clear-options > select,
   display: none;
 }
 
+#abf-dept-view-control {
+  position: right;
+  float: right;
+}
+
 .abf-personal-block-saved-confirm {
   display: none;
   float: right;
