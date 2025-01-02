@@ -18,15 +18,22 @@ input[type="radio"],
 input[type="button"] {
   cursor: pointer;
 }
-#abf-current-depts > div > input[type="checkbox"]{
-  margin-right: 0.3em;
-}
+
 label {
   user-select: none;
   padding: 0.2rem 0;
 }
 
-input[type="button"] {
+#abf-dashboard-depts > div{
+  user-select: none;
+  padding: 0.1rem 0;
+  margin-left: 1.3rem;
+}
+#abf-dashboard-depts > div > input[type="checkbox"]{
+  margin-right: 0.3em;
+}
+
+input[type="button"]{
   padding: 0 0.6rem;
 }
 
@@ -70,6 +77,7 @@ input[type="button"] {
   margin-left: 1.3rem;
 }
 
+
 /* Instead of creating a spacer element, use this in 
     a div to add spacings above that div */
 .spaced {
@@ -107,6 +115,11 @@ section.clear-options > select,
   position: right;
   float: right;
   display: none;
+}
+
+#abf-dept-view-control {
+  position: right;
+  float: right;
 }
 
 .abf-personal-block-saved-confirm {

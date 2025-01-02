@@ -5,7 +5,7 @@ import {
   getStorageValue,
   setStorageValue,
 } from "utils/browser-helpers";
-import { getItemDivs, unHideDivs } from "utils/helpers";
+import { getDepartments, getItemDivs, unHideDivs } from "utils/helpers";
 import { PopupMessage, StorageSettings } from "utils/types";
 
 const debugRed = "#ffbbbb";
@@ -14,7 +14,6 @@ const debugYellow = "#ffffbb";
 
 const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement) => {
   const { syncSettings } = await getSettings();
-
   var shortText = div.getElementsByClassName("a-color-base a-text-normal") as HTMLCollectionOf<HTMLDivElement>;
   if (shortText.length === 0) {
     return;
@@ -37,9 +36,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
             if (settings.useDebugMode) {
               div.style.display = "block";
               div.style.backgroundColor = debugYellow;
-              if (!shortText.item(0)!.textContent?.includes("ABF: " + searchTerm)) {
-                shortText.item(0)!.textContent = "ABF: " + searchTerm + " - " + shortText.item(0)?.textContent;
-              }
+              addDebugLabel(div, searchTerm);
             } else {
               div.style.display = "none";
               div.style.backgroundColor = "white";
@@ -50,19 +47,9 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
             div.style.display = "block";
             if (settings.useDebugMode) {
               div.style.backgroundColor = debugGreen;
-              if (!shortText.item(0)!.textContent?.includes("ABF: " + searchTerm)) {
-                var element = document.createElement("div");
-                element.innerText = "ABF: " + searchTerm;
-                div.insertAdjacentElement("afterbegin", element);
-                // shortText.item(0)!.textContent = ("ABF: " + searchTerm + " - " + shortText.item(0)?.textContent);
-              }
+              addDebugLabel(div, searchTerm);
             } else {
-              if (shortText.item(0)!.textContent?.includes("ABF: " + searchTerm)) {
-                shortText.item(0)!.textContent = shortText
-                  .item(0)!
-                  .textContent!.replace("ABF: " + searchTerm + " - ", "");
-              }
-              div.style.backgroundColor = "white";
+              removeDebugLabel(div);
             }
             return;
           }
@@ -71,30 +58,18 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
           div.style.display = "block";
           if (settings.useDebugMode) {
             div.style.backgroundColor = debugGreen;
-
-            if (div.getElementsByClassName("ABF-" + searchTerm).length === 0) {
-              addDebugLabel(div, searchTerm);
-            }
+            addDebugLabel(div, searchTerm);
           } else {
-            if (div.getElementsByClassName("ABF-" + searchTerm).length != 0) {
-              removeDebugLabel(div, searchTerm);
-            }
-
+            removeDebugLabel(div);
             div.style.backgroundColor = "white";
           }
           return;
         }
 
         if (settings.useDebugMode) {
-          div.style.display = "block";
-          div.style.backgroundColor = debugGreen;
-          var element = document.createElement("div");
-          element.innerText = "ABF: " + searchTerm;
-          div.insertAdjacentElement("afterbegin", element);
+          addDebugLabel(div, searchTerm);
         } else {
-          if (div.getElementsByClassName("ABF-" + searchTerm).length != 0) {
-            removeDebugLabel(div, searchTerm);
-          }
+          removeDebugLabel(div);
           div.style.backgroundColor = "white";
         }
         return;
@@ -112,15 +87,19 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
 };
 
 const addDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
-  var abflabel = document.createElement("span");
-  abflabel.innerText = "ABF: " + searchTerm;
-  abflabel.className = "ABF-" + searchTerm;
-  abflabel.style.backgroundColor = "darkgreen";
-  abflabel.style.color = "white";
-  div.insertAdjacentElement("afterbegin", abflabel);
+  if (div.getElementsByClassName("ABF-DebugLabel " + searchTerm).length === 0) {
+    var abflabel = document.createElement("span");
+    abflabel.innerText = "ABF: " + searchTerm;
+    abflabel.className = "ABF-DebugLabel " + searchTerm;
+    abflabel.style.backgroundColor = "darkgreen";
+    abflabel.style.color = "white";
+    div.insertAdjacentElement("afterbegin", abflabel);
+  }
 };
-const removeDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
-  div.getElementsByClassName("ABF-" + searchTerm)[0]!.remove();
+const removeDebugLabel = (div: HTMLDivElement) => {
+  if (div.getElementsByClassName("ABF-DebugLabel").length > 0) {
+    div.getElementsByClassName("ABF-DebugLabel")[0]!.remove();
+  }
 };
 const runFilterRefiner = async (settings: StorageSettings) => {
   if (!settings.enabled || !settings.filterRefiner) {
@@ -159,11 +138,45 @@ const runFilterRefiner = async (settings: StorageSettings) => {
 
       if (settings.useDebugMode) {
         div.style.display = "inline-block";
-        div.style.backgroundColor = "red";
+        div.style.backgroundColor = debugRed;
       } else {
         div.style.backgroundColor = "white";
       }
     }
+  }
+};
+
+const updateDepartmentList = async () => {
+  const departmentList = getDepartments();
+  if (!departmentList) {
+    return;
+  }
+  const syncKnownDepts = await getStorageValue("knownDepts", "sync");
+  var currentDepts = <Record<string, boolean>>{};
+  for (const dept of departmentList) {
+    if (syncKnownDepts.knownDepts[dept] === false) {
+      currentDepts[dept] = false;
+    } else {
+      currentDepts[dept] = true;
+    }
+  }
+  await setStorageValue({ currentDepts: currentDepts }, "local");
+
+  var updateDepartmentList = false;
+
+  for (const dept of departmentList) {
+    if (syncKnownDepts.knownDepts[dept] === undefined) {
+      syncKnownDepts.knownDepts[dept] = true;
+      updateDepartmentList = true;
+    }
+  }
+  // only update if we found something new.  I suspect there may be optimization for this in the future rather than setting the entire list when we update it.
+  if (updateDepartmentList) {
+    const knownDeptCount = Object.keys(syncKnownDepts.knownDepts).length;
+    await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "local");
+    await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "sync");
+    await setStorageValue({ deptCount: knownDeptCount }, "local");
+    await setStorageValue({ deptCount: knownDeptCount }, "sync");
   }
 };
 
@@ -179,10 +192,21 @@ const filterBrands = async (settings: StorageSettings) => {
     console.debug("AmazonBrandFilter: No brands found");
     return;
   }
-  console.debug("AmazonBrandFilter: Brands found");
+  if (settings.useDebugMode) {
+    console.debug("AmazonBrandFilter: Brands found");
+  }
 
   if (settings.refinerBypass) {
     return;
+  }
+  // if any of the departments are set not to filter we just cancel for now.
+  const currentDepts = await (await getStorageValue("currentDepts")).currentDepts;
+  for (const dept in currentDepts) {
+    if (syncSettings.knownDepts[dept] != null && syncSettings.knownDepts[dept] != true) {
+      console.log("AmazonBrandFilter: knownDepts[dept] is: " + syncSettings.knownDepts[dept]);
+      resetBrands();
+      return;
+    }
   }
 
   const divs = getItemDivs();
@@ -258,6 +282,7 @@ const resetBrandsRefiner = () => {
 const resetBrandsSearchResults = () => {
   const divs = [...getItemDivs()] as HTMLDivElement[];
   divs.forEach((div) => {
+    removeDebugLabel(div);
     div.style.backgroundColor = "white";
     div.style.display = "block";
   });
@@ -308,6 +333,9 @@ const listenForMessages = () => {
       case "personalBlockMap":
         filterBrands(settings);
         break;
+      case "deptFilter":
+        filterBrands(settings);
+        break;
       default:
         break;
     }
@@ -327,6 +355,7 @@ const runFilter = async () => {
 };
 
 const startObserver = async () => {
+  const settings = await getStorageValue();
   console.log("AmazonBrandFilter: Starting observer!");
   const observer = new MutationObserver(async (mutations) => {
     // check if the mutation is invalid
@@ -347,8 +376,9 @@ const startObserver = async () => {
     if (mutationInvalid) {
       return;
     }
-
-    console.debug("AmazonBrandFilter: Mutation detected!");
+    if (settings.useDebugMode) {
+      console.debug("AmazonBrandFilter: Mutation detected!");
+    }
     runFilter();
   });
   observer.observe(document, {
@@ -358,10 +388,12 @@ const startObserver = async () => {
 };
 
 (async () => {
+  updateDepartmentList();
   unHideDivs();
   await ensureSettingsExist();
   runFilter();
   listenForMessages();
   startObserver();
+
   console.log("AmazonBrandFilter: %cContent script loaded!", "color: lightgreen");
 })();

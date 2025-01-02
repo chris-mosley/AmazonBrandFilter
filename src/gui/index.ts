@@ -9,8 +9,14 @@ import {
   setStorageValue,
 } from "utils/browser-helpers";
 import { getSanitizedUserInput } from "utils/helpers";
-import { PopupMessage } from "utils/types";
+import { PopupMessage, GuiLocation } from "utils/types";
 
+var guiLocation: GuiLocation = "popup";
+if (location.pathname === "/dashboard.html") {
+  guiLocation = "dashboard";
+}
+
+// checkboxes
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
 const abfFilterRefiner = document.getElementById("abf-filter-refiner")! as HTMLInputElement;
 const abfFilterRefinerHide = document.getElementById("abf-filter-refiner-hide")! as HTMLInputElement;
@@ -21,12 +27,15 @@ const abfPersonalBlockEnabled = document.getElementById("abf-personal-block-enab
 const abfPersonalBlockTextBox = document.getElementById("abf-personal-block-textbox")! as HTMLTextAreaElement;
 const abfPersonalBlockButton = document.getElementById("abf-personal-block-button")! as HTMLButtonElement;
 const abfVersion = document.getElementById("abf-version")! as HTMLSpanElement;
-// const abfHideAll = document.getElementById("abf-hideall")! as HTMLButtonElement;
 const abfPersonalBlockSavedConfirm = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
 const versionNumber = document.getElementById("version-number")! as HTMLSpanElement;
 const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
+const deptCount = document.getElementById("dept-count")! as HTMLSpanElement;
 const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
+const abfFullDeptListDiv = document.getElementById("abf-dashboard-depts")! as HTMLTextAreaElement;
+const deptViewControlButton = document.getElementById("abf-dept-view-control")! as HTMLButtonElement;
+// labels
 const abfEnabledText = document.getElementById("abf-enabled-text")! as HTMLInputElement;
 const abfFilterRefinerText = document.getElementById("abf-filter-refiner-text")! as HTMLInputElement;
 const abfFilterRefinerHideText = document.getElementById("abf-filter-refiner-hide-text")! as HTMLInputElement;
@@ -34,17 +43,20 @@ const abfFilterRefinerGreyText = document.getElementById("abf-filter-refiner-gre
 const abfAllowRefineBypassText = document.getElementById("abf-allow-refine-bypass-text")! as HTMLInputElement;
 const abfDebugModeText = document.getElementById("abf-debug-mode-text")! as HTMLInputElement;
 const abfPersonalBlockEnabledText = document.getElementById("abf-personal-block-enabled-text")! as HTMLInputElement;
-
+const abfCurrentDeptsDiv = document.getElementById("abf-current-depts")! as HTMLInputElement;
+const abfDepartmentHeaderText = document.getElementById("department-header-text")! as HTMLInputElement;
+const abfDepartmentsText = document.getElementById("department-list-text")! as HTMLInputElement;
 const abfPersonalBlockText = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
-const brandListVersionText = document.getElementById("popup-brand-version-text")! as HTMLSpanElement;
-const brandCountText = document.getElementById("popup-brand-count-text")! as HTMLSpanElement;
+const brandListVersionText = document.getElementById("brand-version-text")! as HTMLSpanElement;
+const brandCountText = document.getElementById("brand-count-text")! as HTMLSpanElement;
 const feedbackText = document.getElementById("popup-feedback-text")! as HTMLSpanElement;
 const missingBrandText = document.getElementById("popup-missing-brand-text")! as HTMLSpanElement;
 const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
 const helptranslate = document.getElementById("popup-help-translate")! as HTMLSpanElement;
 const dashboard = document.getElementById("popup-dashboard")! as HTMLSpanElement;
 
-const setText = async () => {
+const setText = async (locationPath: GuiLocation) => {
+  const { settings, syncSettings } = await getSettings();
   // these have to be snake_case because chrome doesnt support hyphens in i18n
   abfEnabledText.innerText = await getMessage("popup_enabled");
   abfFilterRefinerText.innerText = await getMessage("popup_filter_sidebar");
@@ -53,18 +65,40 @@ const setText = async () => {
   abfAllowRefineBypassText.innerText = await getMessage("popup_allow_refine_bypass");
   abfDebugModeText.innerText = await getMessage("popup_debug");
   abfPersonalBlockEnabledText.innerText = await getMessage("popup_personal_blocklist");
-  abfPersonalBlockButton.innerText = await getMessage("popup_save_button");
-  abfPersonalBlockText.innerText = await getMessage("popup_save_confirm");
-  brandListVersionText.innerText = await getMessage("popup_list_version");
-  brandCountText.innerText = await getMessage("popup_list_count");
+  abfPersonalBlockButton.value = await getMessage("save_button");
+  abfPersonalBlockText.innerText = await getMessage("save_confirm");
+
+  brandListVersionText.innerText = await getMessage("brand_list_version");
+  brandCountText.innerText = await getMessage("brand_list_count");
   feedbackText.innerText = await getMessage("popup_feedback_link");
   missingBrandText.innerText = await getMessage("popup_missing_brand");
   lastRunText.innerText = await getMessage("popup_last_run");
   helptranslate.innerText = await getMessage("popup_help_translate");
-  dashboard.innerText = await getMessage("popup_dashboard");
+  abfDepartmentsText.innerText = await getMessage("department_header");
+  if (locationPath === "dashboard") {
+    if (syncSettings.showAllDepts === null) {
+      if (settings.showAllDepts) {
+        deptViewControlButton.value = await getMessage("hide_all");
+        abfFullDeptListDiv.style.display = "block";
+      } else {
+        deptViewControlButton.value = await getMessage("show_all");
+        abfFullDeptListDiv.style.display = "none";
+        abfDepartmentHeaderText.innerText = await getMessage("department_header");
+      }
+    }
+    if (syncSettings.showAllDepts) {
+      deptViewControlButton.value = await getMessage("hide_all");
+      abfFullDeptListDiv.style.display = "block";
+    } else {
+      deptViewControlButton.value = await getMessage("show_all");
+      abfFullDeptListDiv.style.display = "none";
+    }
+  } else {
+    dashboard.innerText = await getMessage("popup_dashboard");
+  }
 };
 
-const setPopupBoxStates = async () => {
+const setCheckBoxStates = async () => {
   const { settings, syncSettings } = await getSettings();
 
   if (syncSettings.enabled) {
@@ -95,6 +129,7 @@ const setPopupBoxStates = async () => {
 
   versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
   brandCount.innerText = settings.brandsCount?.toString() ?? "";
+  deptCount.innerText = settings.deptCount?.toString() ?? "";
 
   if (syncSettings.lastMapRun) {
     lastRun.innerText = `${syncSettings.lastMapRun}ms`;
@@ -171,6 +206,18 @@ const setPersonalBlockEnabled = async (_event: Event) => {
   sendMessageToContentScriptPostClick({ type: "usePersonalBlock", isChecked: abfPersonalBlockEnabled.checked });
 };
 
+const saveDepartmentFilter = async (dept: string, enabled: boolean) => {
+  const knownDepts = await getStorageValue("knownDepts", "sync");
+  knownDepts.knownDepts[dept] = enabled;
+  setStorageValue(knownDepts, "local");
+  setStorageValue(knownDepts, "sync");
+};
+
+const processDepartmentFilter = async (dept: string, enabled: boolean) => {
+  await saveDepartmentFilter(dept, enabled);
+  sendMessageToContentScriptPostClick({ type: "deptFilter", isChecked: enabled });
+};
+
 const savePersonalBlock = async () => {
   const userInput = getSanitizedUserInput(abfPersonalBlockTextBox.value);
   const personalBlockMap: Record<string, boolean> = {};
@@ -206,6 +253,71 @@ const setPersonalList = async () => {
   abfPersonalBlockTextBox.rows = textHeight;
 };
 
+const showDepartmentList = async (_event: Event) => {
+  if (abfFullDeptListDiv.style.display === "none") {
+    abfFullDeptListDiv.style.display = "block";
+    deptViewControlButton.value = await getMessage("hide_all");
+    setStorageValue({ showAllDepts: true }, "local");
+    setStorageValue({ showAllDepts: true }, "sync");
+  } else {
+    abfFullDeptListDiv.style.display = "none";
+    deptViewControlButton.value = await getMessage("show_all");
+    setStorageValue({ showAllDepts: false }, "local");
+    setStorageValue({ showAllDepts: false }, "sync");
+  }
+};
+
+const createDepartmentList = async (guiLocation: GuiLocation) => {
+  console.log("AmazonBrandFilter: %cshowDepartmentList", "color: yellow");
+  let result = await getStorageValue("knownDepts", "sync");
+
+  if (Object.keys(result.knownDepts).length === 0) {
+    console.log("showDepartmentList: no knownDepts found in sync storage");
+    return;
+  }
+  if (!result.knownDepts) {
+    console.log("showDepartmentList: knownDeptsMap is empty");
+    return;
+  }
+  console.debug(`showDepartmentList: ${Object.keys(result.knownDepts).length} departments found in sync storage`);
+  var textValue = null;
+  if (guiLocation === "dashboard") {
+    textValue = Object.keys(result.knownDepts).sort();
+  } else {
+    var currentDepts = await (await getStorageValue("currentDepts", "local")).currentDepts;
+    textValue = Object.keys(currentDepts).sort();
+    if (textValue === undefined) {
+      textValue = await getMessage("dept_unknown");
+    }
+  }
+
+  for (const key of textValue) {
+    const deptDiv = document.createElement("div");
+    const deptCheckbox = document.createElement("input");
+    deptCheckbox.type = "checkbox";
+    deptCheckbox.id = `abf-dept-checkbox-${key.replace(" ", "-")}`;
+    if (result.knownDepts[key]) {
+      deptCheckbox.checked = true;
+    } else {
+      deptCheckbox.checked = false;
+    }
+    deptCheckbox.addEventListener("click", () => {
+      processDepartmentFilter(key, deptCheckbox.checked);
+    });
+    const deptEntryLabel = document.createElement("label");
+    deptEntryLabel.htmlFor = deptCheckbox.id;
+    deptEntryLabel.innerText = key;
+
+    deptDiv.appendChild(deptCheckbox);
+    deptDiv.appendChild(deptEntryLabel);
+    if (guiLocation === "popup") {
+      abfCurrentDeptsDiv.appendChild(deptDiv);
+    } else {
+      abfFullDeptListDiv.appendChild(deptDiv);
+    }
+  }
+};
+
 const sendMessageToContentScriptPostClick = (message: PopupMessage) => {
   getEngineApi().tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs[0];
@@ -224,14 +336,20 @@ abfAllowRefineBypass.addEventListener("click", setRefinerBypass);
 abfDebugMode.addEventListener("click", setDebugMode);
 abfPersonalBlockEnabled.addEventListener("click", setPersonalBlockEnabled);
 abfPersonalBlockButton.addEventListener("click", savePersonalBlock);
+
+// these are only on the dashboard
+if (guiLocation === "dashboard") {
+  deptViewControlButton.addEventListener("click", showDepartmentList);
+}
 // abfHideAll.addEventListener("click", hideAll)
 
 (async () => {
-  setText();
-  setAddonVersion();
   await ensureSettingsExist();
-  setPopupBoxStates();
+  setText(guiLocation);
+  setAddonVersion();
+  createDepartmentList(guiLocation);
+  setCheckBoxStates();
   setTextBoxStates();
   setPersonalList();
-  console.log("AmazonBrandFilter: %cPopup script loaded!", "color: lightgreen");
+  console.log("AmazonBrandFilter: %cgui script loaded!", "color: lightgreen");
 })();

@@ -31,6 +31,10 @@
     "message": "Ahorrar",
     "description": "botón guardar"
   },
+  "popup_department_header": {
+    "message": "Departments",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
   "popup_save_confirm": {
     "message": "Salvado!",
     "description": "Confirmación de lista personal guardada"
@@ -62,5 +66,21 @@
   "popup_help_translate": {
     "message": "Help translate",
     "description": "Link to help translate the extension"
+  },
+  "show_all": {
+    "message": "Mostrar todo",
+    "description": "Para mostrar/ocultar el botón para departamentos conocidos en el panel"
+  },
+  "hide_all": {
+    "message": "Ocultar todo",
+    "description": "Para mostrar/ocultar el botón para departamentos conocidos en el panel"
+  },
+  "dept_count": {
+    "message": "Departamentos: ",
+    "description": "Cuántos departamentos conocemos"
+  },
+  "dept_unknown": {
+    "message": "Desconocido",
+    "description": "Departamento desconocido"
   }
 }

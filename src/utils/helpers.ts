@@ -1,5 +1,12 @@
 import _ from "lodash";
 
+// import {
+//   ensureSettingsExist,
+//   getSettings,
+//   getStorageValue,
+//   setIcon,
+//   setStorageValue,
+// } from "utils/browser-helpers";
 import { defaultLocalStorageValue, defaultSyncStorageValue } from "utils/config";
 import { StorageSettings, SyncStorageSettings } from "utils/types";
 
@@ -10,6 +17,25 @@ export const sleep = (ms: number) => {
 export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
   const divs = document.getElementsByClassName("s-result-item");
   return divs as HTMLCollectionOf<HTMLDivElement>;
+};
+
+export const getDepartments = (): string[] => {
+  const divs = document.getElementById("departments");
+  var depts: string[] = [];
+  if (divs === null) {
+    console.log("AmazonBrandFilter: Departments not found");
+    depts.push("Unknown");
+    return depts;
+  }
+  const deptElements = divs.getElementsByClassName("a-spacing-micro");
+  for (const div of deptElements as HTMLCollectionOf<HTMLDivElement>) {
+    // so we just get the top level departments
+    if (div.className.match(".*indent.*")) {
+      continue;
+    }
+    depts.push(div.innerText);
+  }
+  return depts;
 };
 
 export const unHideDivs = () => {

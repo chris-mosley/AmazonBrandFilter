@@ -7,7 +7,11 @@ export const brandsUrl: string = "https://raw.githubusercontent.com/chris-mosley
 // don't copy brandsMap for sync storage
 export const defaultSyncStorageValue: SyncStorageSettings = {
   isFirstRun: false,
+  deptMap: {},
   enabled: true,
+  knownDepts: {},
+  deptCount: 0,
+  showAllDepts: false,
   filterRefiner: false,
   refinerMode: "grey",
   refinerBypass: false,
@@ -15,10 +19,12 @@ export const defaultSyncStorageValue: SyncStorageSettings = {
   useDebugMode: false,
   personalBlockMap: {},
   lastMapRun: null,
+  deptFilter: false,
 };
 
 export const defaultLocalStorageValue: StorageSettings = {
   ...defaultSyncStorageValue,
+  currentDepts: { Unknown: true },
   brandsMap: {},
   brandsVersion: 0,
   brandsCount: 0,
