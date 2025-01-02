@@ -11,6 +11,11 @@ import {
 import { getSanitizedUserInput } from "utils/helpers";
 import { PopupMessage, GuiLocation } from "utils/types";
 
+var guiLocation: GuiLocation = "popup";
+if (location.pathname === "/dashboard.html") {
+  guiLocation = "dashboard";
+}
+
 // checkboxes
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
 const abfFilterRefiner = document.getElementById("abf-filter-refiner")! as HTMLInputElement;
@@ -22,7 +27,6 @@ const abfPersonalBlockEnabled = document.getElementById("abf-personal-block-enab
 const abfPersonalBlockTextBox = document.getElementById("abf-personal-block-textbox")! as HTMLTextAreaElement;
 const abfPersonalBlockButton = document.getElementById("abf-personal-block-button")! as HTMLButtonElement;
 const abfVersion = document.getElementById("abf-version")! as HTMLSpanElement;
-// const abfHideAll = document.getElementById("abf-hideall")! as HTMLButtonElement;
 const abfPersonalBlockSavedConfirm = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
 const versionNumber = document.getElementById("version-number")! as HTMLSpanElement;
 const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
@@ -63,28 +67,34 @@ const setText = async (locationPath: GuiLocation) => {
   abfPersonalBlockEnabledText.innerText = await getMessage("popup_personal_blocklist");
   abfPersonalBlockButton.value = await getMessage("save_button");
   abfPersonalBlockText.innerText = await getMessage("save_confirm");
-  abfDepartmentHeaderText.innerText = await getMessage("department_header");
+
   brandListVersionText.innerText = await getMessage("brand_list_version");
   brandCountText.innerText = await getMessage("brand_list_count");
   feedbackText.innerText = await getMessage("popup_feedback_link");
   missingBrandText.innerText = await getMessage("popup_missing_brand");
   lastRunText.innerText = await getMessage("popup_last_run");
   helptranslate.innerText = await getMessage("popup_help_translate");
-  dashboard.innerText = await getMessage("popup_dashboard");
   abfDepartmentsText.innerText = await getMessage("department_header");
   if (locationPath === "dashboard") {
     if (syncSettings.showAllDepts === null) {
       if (settings.showAllDepts) {
-        deptViewControlButton.value = await getMessage("show_all");
-      } else {
         deptViewControlButton.value = await getMessage("hide_all");
+        abfFullDeptListDiv.style.display = "block";
+      } else {
+        deptViewControlButton.value = await getMessage("show_all");
+        abfFullDeptListDiv.style.display = "none";
+        abfDepartmentHeaderText.innerText = await getMessage("department_header");
       }
     }
     if (syncSettings.showAllDepts) {
-      deptViewControlButton.value = await getMessage("show_all");
-    } else {
       deptViewControlButton.value = await getMessage("hide_all");
+      abfFullDeptListDiv.style.display = "block";
+    } else {
+      deptViewControlButton.value = await getMessage("show_all");
+      abfFullDeptListDiv.style.display = "none";
     }
+  } else {
+    dashboard.innerText = await getMessage("popup_dashboard");
   }
 };
 
@@ -327,10 +337,6 @@ abfDebugMode.addEventListener("click", setDebugMode);
 abfPersonalBlockEnabled.addEventListener("click", setPersonalBlockEnabled);
 abfPersonalBlockButton.addEventListener("click", savePersonalBlock);
 
-var guiLocation: GuiLocation = "popup";
-if (location.pathname === "/dashboard.html") {
-  guiLocation = "dashboard";
-}
 // these are only on the dashboard
 if (guiLocation === "dashboard") {
   deptViewControlButton.addEventListener("click", showDepartmentList);
@@ -341,9 +347,9 @@ if (guiLocation === "dashboard") {
   await ensureSettingsExist();
   setText(guiLocation);
   setAddonVersion();
+  createDepartmentList(guiLocation);
   setCheckBoxStates();
   setTextBoxStates();
   setPersonalList();
-  createDepartmentList(guiLocation);
   console.log("AmazonBrandFilter: %cgui script loaded!", "color: lightgreen");
 })();

@@ -1,4 +1,3 @@
-import _ from "lodash";
 import {
   ensureSettingsExist,
   getEngineApi,
@@ -37,9 +36,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
             if (settings.useDebugMode) {
               div.style.display = "block";
               div.style.backgroundColor = debugYellow;
-              if (!shortText.item(0)!.textContent?.includes("ABF: " + searchTerm)) {
-                shortText.item(0)!.textContent = "ABF: " + searchTerm + " - " + shortText.item(0)?.textContent;
-              }
+              addDebugLabel(div, searchTerm);
             } else {
               div.style.display = "none";
               div.style.backgroundColor = "white";
@@ -52,7 +49,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
               div.style.backgroundColor = debugGreen;
               addDebugLabel(div, searchTerm);
             } else {
-              removeDebugLabel(div, searchTerm);
+              removeDebugLabel(div);
             }
             return;
           }
@@ -63,7 +60,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
             div.style.backgroundColor = debugGreen;
             addDebugLabel(div, searchTerm);
           } else {
-            removeDebugLabel(div, searchTerm);
+            removeDebugLabel(div);
             div.style.backgroundColor = "white";
           }
           return;
@@ -72,7 +69,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
         if (settings.useDebugMode) {
           addDebugLabel(div, searchTerm);
         } else {
-          removeDebugLabel(div, searchTerm);
+          removeDebugLabel(div);
           div.style.backgroundColor = "white";
         }
         return;
@@ -90,18 +87,18 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
 };
 
 const addDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
-  if (div.getElementsByClassName("ABF-" + searchTerm).length === 0) {
+  if (div.getElementsByClassName("ABF-DebugLabel " + searchTerm).length === 0) {
     var abflabel = document.createElement("span");
     abflabel.innerText = "ABF: " + searchTerm;
-    abflabel.className = "ABF-" + searchTerm;
+    abflabel.className = "ABF-DebugLabel " + searchTerm;
     abflabel.style.backgroundColor = "darkgreen";
     abflabel.style.color = "white";
     div.insertAdjacentElement("afterbegin", abflabel);
   }
 };
-const removeDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
-  if (div.getElementsByClassName("ABF-" + searchTerm).length > 0) {
-    div.getElementsByClassName("ABF-" + searchTerm)[0]!.remove();
+const removeDebugLabel = (div: HTMLDivElement) => {
+  if (div.getElementsByClassName("ABF-DebugLabel").length > 0) {
+    div.getElementsByClassName("ABF-DebugLabel")[0]!.remove();
   }
 };
 const runFilterRefiner = async (settings: StorageSettings) => {
@@ -175,10 +172,11 @@ const updateDepartmentList = async () => {
   }
   // only update if we found something new.  I suspect there may be optimization for this in the future rather than setting the entire list when we update it.
   if (updateDepartmentList) {
+    const knownDeptCount = Object.keys(syncKnownDepts.knownDepts).length;
     await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "local");
     await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "sync");
-    await setStorageValue({ deptCount: Object.keys(syncKnownDepts.knownDepts).length }, "local");
-    await setStorageValue({ deptCount: Object.keys(syncKnownDepts.knownDepts).length }, "sync");
+    await setStorageValue({ deptCount: knownDeptCount }, "local");
+    await setStorageValue({ deptCount: knownDeptCount }, "sync");
   }
 };
 
@@ -284,6 +282,7 @@ const resetBrandsRefiner = () => {
 const resetBrandsSearchResults = () => {
   const divs = [...getItemDivs()] as HTMLDivElement[];
   divs.forEach((div) => {
+    removeDebugLabel(div);
     div.style.backgroundColor = "white";
     div.style.display = "block";
   });

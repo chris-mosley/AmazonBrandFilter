@@ -18,7 +18,9 @@ input[type="radio"],
 input[type="button"] {
   cursor: pointer;
 }
-
+#abf-current-depts > div > input[type="checkbox"]{
+  margin-right: 0.3em;
+}
 label {
   user-select: none;
   padding: 0.2rem 0;
