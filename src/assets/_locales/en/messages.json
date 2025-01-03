@@ -82,5 +82,9 @@
   "dept_unknown": {
     "message": "Unknown",
     "description": "Unknown department"
+  },
+  "current_departments": {
+    "message": "Current Departments",
+    "description": "Current Departments"
   }
 }

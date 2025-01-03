@@ -82,5 +82,9 @@
   "dept_unknown": {
     "message": "Desconocido",
     "description": "Departamento desconocido"
+  },
+  "current_departments": {
+    "message": "Departamentos actuales",
+    "description": "Departamentos actuales"
   }
 }
