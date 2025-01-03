@@ -54,7 +54,8 @@ const missingBrandText = document.getElementById("popup-missing-brand-text")! as
 const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
 const helptranslate = document.getElementById("popup-help-translate")! as HTMLSpanElement;
 const dashboard = document.getElementById("popup-dashboard")! as HTMLSpanElement;
-const abfCurrentDepartments = document.getElementById("abf-current-depts")! as HTMLSpanElement;
+const abfCurrentDepartments = document.getElementById("abf-current-depts-header")! as HTMLSpanElement;
+
 const setText = async (locationPath: GuiLocation) => {
   const { settings, syncSettings } = await getSettings();
   // these have to be snake_case because chrome doesnt support hyphens in i18n
