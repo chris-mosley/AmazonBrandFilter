@@ -54,6 +54,7 @@ const missingBrandText = document.getElementById("popup-missing-brand-text")! as
 const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
 const helptranslate = document.getElementById("popup-help-translate")! as HTMLSpanElement;
 const dashboard = document.getElementById("popup-dashboard")! as HTMLSpanElement;
+const abfCurrentDepartments = document.getElementById("abf-current-depts-header")! as HTMLSpanElement;
 
 const setText = async (locationPath: GuiLocation) => {
   const { settings, syncSettings } = await getSettings();
@@ -95,6 +96,7 @@ const setText = async (locationPath: GuiLocation) => {
     }
   } else {
     dashboard.innerText = await getMessage("popup_dashboard");
+    abfCurrentDepartments.innerText = await getMessage("current_departments");
   }
 };
 
