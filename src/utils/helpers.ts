@@ -20,7 +20,7 @@ export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
 };
 
 export const getDepartments = (): string[] => {
-  const divs = document.getElementById("departments");
+  var divs = document.getElementById("departments");
   var depts: string[] = [];
   if (divs === null) {
     console.log("AmazonBrandFilter: Departments not found");
@@ -28,6 +28,33 @@ export const getDepartments = (): string[] => {
     return depts;
   }
   const deptElements = divs.getElementsByClassName("a-spacing-micro");
+
+  // if we cant find the deparments, we hope we're in the mobile version and try to find from the filter tabs
+  if (deptElements.length === 0) {
+    const filterTabs = document.getElementsByClassName("a-section s-vtabs-contents-container");
+    if (filterTabs === null) {
+      console.log("AmazonBrandFilter: Departments not found");
+      depts.push("Unknown");
+      return depts;
+    }
+
+    for (const tab of filterTabs as HTMLCollectionOf<HTMLDivElement>) {
+      if (tab.children.namedItem("departments") === null) {
+        continue;
+      }
+      const filterBarDeptElements = tab.children.namedItem("departments");
+      if (filterBarDeptElements === null) {
+        continue;
+      }
+
+      for (const div of filterBarDeptElements.getElementsByClassName(
+        "a-size-small a-color-base puis-bold-weight-text"
+      ) as HTMLCollectionOf<HTMLDivElement>) {
+        depts.push(div.innerText);
+      }
+    }
+  }
+
   for (const div of deptElements as HTMLCollectionOf<HTMLDivElement>) {
     // so we just get the top level departments
     if (div.className.match(".*indent.*")) {
