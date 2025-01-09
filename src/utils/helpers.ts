@@ -20,21 +20,61 @@ export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
 };
 
 export const getDepartments = (): string[] => {
-  const divs = document.getElementById("departments");
+  var divs = document.getElementById("departments");
+
   var depts: string[] = [];
-  if (divs === null) {
-    console.log("AmazonBrandFilter: Departments not found");
-    depts.push("Unknown");
-    return depts;
-  }
-  const deptElements = divs.getElementsByClassName("a-spacing-micro");
-  for (const div of deptElements as HTMLCollectionOf<HTMLDivElement>) {
-    // so we just get the top level departments
-    if (div.className.match(".*indent.*")) {
-      continue;
+  if (divs !== null) {
+    const deptElements = divs.getElementsByClassName("a-spacing-micro");
+
+    // if we cant find the deparments, we hope we're in the mobile version and try to find from the filter tabs
+    if (deptElements.length !== 0) {
+      for (const div of deptElements as HTMLCollectionOf<HTMLDivElement>) {
+        // so we just get the top level departments
+        if (div.className.match(".*indent.*")) {
+          continue;
+        }
+        depts.push(div.innerText);
+      }
+      return depts;
     }
-    depts.push(div.innerText);
   }
+  const filterTabs = document.getElementsByClassName("a-section s-vtabs-contents-container");
+  if (filterTabs.length > 0) {
+    for (const tab of filterTabs as HTMLCollectionOf<HTMLDivElement>) {
+      if (tab.children.namedItem("departments") === null) {
+        continue;
+      }
+      const filterBarDeptElements = tab.children.namedItem("departments");
+      if (filterBarDeptElements === null) {
+        continue;
+      }
+
+      for (const div of filterBarDeptElements.getElementsByClassName(
+        "a-size-small a-color-base puis-bold-weight-text"
+      ) as HTMLCollectionOf<HTMLDivElement>) {
+        depts.push(div.innerText);
+      }
+      return depts;
+    }
+  }
+  //data-a-expander-name="sf-departments"
+  const filterElements = document.querySelector('[data-a-expander-name="sf-departments"]');
+  if (filterElements !== null) {
+    const filterBarDeptElements = filterElements.getElementsByClassName(
+      "a-section a-spacing-mini a-text-left sf-refinement-heading"
+    );
+    if (filterBarDeptElements.length > 0) {
+      for (const div of filterBarDeptElements as HTMLCollectionOf<HTMLDivElement>) {
+        for (const child of div.children as HTMLCollectionOf<HTMLDivElement>) {
+          depts.push(child.innerText);
+        }
+      }
+      return depts;
+    }
+  }
+
+  console.log("AmazonBrandFilter: Departments not found");
+  depts.push("Unknown");
   return depts;
 };
 
