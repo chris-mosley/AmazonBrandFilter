@@ -1,0 +1,90 @@
+{
+  "popup_enabled": {
+    "message": "Activer le filtre de marque Amazon",
+    "description": "Enable Amazon Brand Filter"
+  },
+  "popup_filter_sidebar": {
+    "message": "Filtrer la barre latérale",
+    "description": "Also hide brands in the sidebar"
+  },
+  "popup_sidebar_hide": {
+    "message": "Cacher",
+    "description": "Hide filtered items in the sidebar"
+  },
+  "popup_sidebar_grey": {
+    "message": "surligner",
+    "description": "Grey out filtered items in the sidebar"
+  },
+  "popup_allow_refine_bypass": {
+    "message": "Autoriser le contournement de la barre latérale",
+    "description": "Disable filtering when you select a brand in the sidebar"
+  },
+  "popup_debug": {
+    "message": "Mode débogage",
+    "description": "Enable or disable debug mode"
+  },
+  "popup_personal_blocklist": {
+    "message": "Liste de marques filtrées",
+    "description": "Enable or disable personal blocklist"
+  },
+  "save_button": {
+    "message": "Sauvegarder",
+    "description": "Save button"
+  },
+  "save_confirm": {
+    "message": "Sauvé!",
+    "description": "Personal list saved confirmation"
+  },
+  "department_header": {
+    "message": "Départements: ",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
+  "brand_list_version": {
+    "message": "Version de la liste: ",
+    "description": "Show what version of the list we have"
+  },
+  "brand_list_count": {
+    "message": "Marques: ",
+    "description": "How many brands we know about"
+  },
+  "popup_feedback_link": {
+    "message": "Commentaires (anglais)",
+    "description": "Link to github to report issues or request features"
+  },
+  "popup_dashboard": {
+    "message": "Tableau de bord",
+    "description": "Amazon Brand Filter Dashboard"
+  },
+  "popup_missing_brand": {
+    "message": "Il vous manque une marque?",
+    "description": "Link to AmazonBrandFilter to request a brand be added"
+  },
+  "popup_last_run": {
+    "message": "Last exécution",
+    "description": "How long the last run took"
+  },
+  "popup_help_translate": {
+    "message": "Aidez à traduire",
+    "description": "Link to help translate the extension"
+  },
+  "show_all": {
+    "message": "Afficher tout",
+    "description": "For show/hide button for known departments on the dashboard"
+  },
+  "hide_all": {
+    "message": "Masquer tout",
+    "description": "For show/hide button for known departments on the dashboard"
+  },
+  "dept_count": {
+    "message": "Départements: ",
+    "description": "How many departments we know about"
+  },
+  "dept_unknown": {
+    "message": "Inconnu",
+    "description": "Unknown department"
+  },
+  "current_departments": {
+    "message": "Départements actuels",
+    "description": "Current Departments"
+  }
+}
