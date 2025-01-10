@@ -24,7 +24,7 @@
     "description": "Enable or disable debug mode"
   },
   "popup_personal_blocklist": {
-    "message": "Liste de blocage personnelle",
+    "message": "Liste de marques filtrées",
     "description": "Enable or disable personal blocklist"
   },
   "save_button": {
