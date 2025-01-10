@@ -12,7 +12,7 @@
     "description": "Hide filtered items in the sidebar"
   },
   "popup_sidebar_grey": {
-    "message": "Grisé",
+    "message": "surligner",
     "description": "Grey out filtered items in the sidebar"
   },
   "popup_allow_refine_bypass": {
@@ -60,7 +60,7 @@
     "description": "Link to AmazonBrandFilter to request a brand be added"
   },
   "popup_last_run": {
-    "message": "Dernière exécution",
+    "message": "Last exécution",
     "description": "How long the last run took"
   },
   "popup_help_translate": {
