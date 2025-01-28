@@ -13,6 +13,7 @@ export const defaultSyncStorageValue: SyncStorageSettings = {
   deptCount: 0,
   showAllDepts: false,
   filterRefiner: false,
+  filterWithRefiner: false,
   refinerMode: "grey",
   refinerBypass: false,
   usePersonalBlock: false,

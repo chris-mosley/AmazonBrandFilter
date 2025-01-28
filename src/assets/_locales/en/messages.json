@@ -86,5 +86,13 @@
   "current_departments": {
     "message": "Current Departments",
     "description": "Current Departments"
+  },
+  "use_filter_with_refiner": {
+    "message": "Filter with Refiner",
+    "description": "label for Filter with Refiner checkbox"
+  },
+  "use_filter_with_refiner_tooltip": {
+    "message": "Base brand filter on the brands showing in the refiner on the left side of the page.  This will reduce false positives but might also increase false negatives if Amazon doesn't show all the brands on the page.",
+    "description": "tooltip for use_filter_with_refiner"
   }
 }

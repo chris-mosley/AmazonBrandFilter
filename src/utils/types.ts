@@ -23,6 +23,7 @@ export interface StorageSettings {
   personalBlockMap: Record<string, boolean>;
   useDebugMode: boolean;
   lastMapRun: number | null;
+  filterWithRefiner: boolean;
 }
 
 export type SyncStorageSettings = Omit<

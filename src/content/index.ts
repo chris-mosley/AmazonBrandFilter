@@ -187,7 +187,26 @@ const filterBrands = async (settings: StorageSettings) => {
 
   const { syncSettings } = await getSettings();
 
-  const brands = settings.brandsMap;
+  var brands = settings.brandsMap;
+  if (syncSettings.filterWithRefiner) {
+    const refinerBrands = document.getElementById("brandsRefinements")?.getElementsByClassName("a-spacing-micro");
+    if (refinerBrands) {
+      var refinerKnownBrands: Record<string, boolean> = {};
+      for (const div of refinerBrands) {
+        const searchTerm = div.textContent?.toUpperCase();
+        if (searchTerm && brands[searchTerm]) {
+          refinerKnownBrands[searchTerm] = true;
+        }
+      }
+      if (refinerKnownBrands != null) {
+        brands = refinerKnownBrands;
+        if (settings.useDebugMode) {
+          console.debug("Found brands in refiner: " + Object.keys(refinerKnownBrands).join(","));
+        }
+      }
+    }
+  }
+
   if (Object.keys(brands).length === 0) {
     console.debug("AmazonBrandFilter: No brands found");
     return;
