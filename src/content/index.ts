@@ -222,7 +222,14 @@ const filterBrands = async (settings: StorageSettings) => {
   }
 
   if (settings.refinerBypass) {
-    return;
+    const refiner = document.getElementById("brandsRefinements")?.getElementsByTagName("input");
+    if (refiner) {
+      for (const input of refiner) {
+        if (input.checked) {
+          return;
+        }
+      }
+    }
   }
   // if any of the departments are set not to filter we just cancel for now.
   const currentDepts = await (await getStorageValue("currentDepts")).currentDepts;
