@@ -84,6 +84,11 @@ input[type="button"]{
   margin-top: 0.1rem;
 }
 
+.double-spaced {
+  margin-top: 0.2rem;
+}
+
+
 /* Other */
 section.clear-options {
   padding: 0.5em 0;

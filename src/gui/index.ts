@@ -28,6 +28,9 @@ const abfPersonalBlockTextBox = document.getElementById("abf-personal-block-text
 const abfPersonalBlockButton = document.getElementById("abf-personal-block-button")! as HTMLButtonElement;
 const abfVersion = document.getElementById("abf-version")! as HTMLSpanElement;
 const abfPersonalBlockSavedConfirm = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
+const abfFilterWithRefiner = document.getElementById("abf-use-filter-with-refiner")! as HTMLInputElement;
+
+// numbers
 const versionNumber = document.getElementById("version-number")! as HTMLSpanElement;
 const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
 const deptCount = document.getElementById("dept-count")! as HTMLSpanElement;
@@ -55,6 +58,8 @@ const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
 const helptranslate = document.getElementById("popup-help-translate")! as HTMLSpanElement;
 const dashboard = document.getElementById("popup-dashboard")! as HTMLSpanElement;
 const abfCurrentDepartments = document.getElementById("abf-current-depts-header")! as HTMLSpanElement;
+const abfFilterWithRefinerText = document.getElementById("abf-use-filter-with-refiner-text")! as HTMLInputElement;
+const abfExperimentalFeatures = document.getElementById("abf-experimental-features")! as HTMLSpanElement;
 
 const setText = async (locationPath: GuiLocation) => {
   const { settings, syncSettings } = await getSettings();
@@ -64,6 +69,7 @@ const setText = async (locationPath: GuiLocation) => {
   abfFilterRefinerHideText.innerText = await getMessage("popup_sidebar_hide");
   abfFilterRefinerGreyText.innerText = await getMessage("popup_sidebar_grey");
   abfAllowRefineBypassText.innerText = await getMessage("popup_allow_refine_bypass");
+
   abfDebugModeText.innerText = await getMessage("popup_debug");
   abfPersonalBlockEnabledText.innerText = await getMessage("popup_personal_blocklist");
   abfPersonalBlockButton.value = await getMessage("save_button");
@@ -77,6 +83,10 @@ const setText = async (locationPath: GuiLocation) => {
   helptranslate.innerText = await getMessage("popup_help_translate");
   abfDepartmentsText.innerText = await getMessage("department_header");
   if (locationPath === "dashboard") {
+    abfFilterWithRefinerText.innerText = await getMessage("use_filter_with_refiner");
+    abfFilterWithRefinerText.title = await getMessage("use_filter_with_refiner_tooltip");
+    abfExperimentalFeatures.innerText = await getMessage("experimental_features");
+    abfExperimentalFeatures.title = await getMessage("experimental_features_tooltip");
     if (syncSettings.showAllDepts === null) {
       if (settings.showAllDepts) {
         deptViewControlButton.value = await getMessage("hide_all");
@@ -100,7 +110,7 @@ const setText = async (locationPath: GuiLocation) => {
   }
 };
 
-const setCheckBoxStates = async () => {
+const setCheckBoxStates = async (locationPath: GuiLocation) => {
   const { settings, syncSettings } = await getSettings();
 
   if (syncSettings.enabled) {
@@ -127,6 +137,13 @@ const setCheckBoxStates = async () => {
   } else {
     abfFilterRefinerHide.checked = true;
     abfFilterRefinerGrey.checked = false;
+  }
+  if (locationPath === "dashboard") {
+    if (syncSettings.filterWithRefiner) {
+      abfFilterWithRefiner.checked = true;
+    } else {
+      abfFilterWithRefiner.checked = false;
+    }
   }
 
   versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
@@ -192,6 +209,11 @@ const setRefinerBypass = async (_event: Event) => {
   await setStorageValue({ refinerBypass: abfAllowRefineBypass.checked }, "sync");
   await setStorageValue({ refinerBypass: abfAllowRefineBypass.checked });
   sendMessageToContentScriptPostClick({ type: "refinerBypass", isChecked: abfAllowRefineBypass.checked });
+};
+const setFilterWithRefiner = async (_event: Event) => {
+  await setStorageValue({ filterWithRefiner: abfFilterWithRefiner.checked }, "sync");
+  await setStorageValue({ filterWithRefiner: abfFilterWithRefiner.checked });
+  sendMessageToContentScriptPostClick({ type: "filterWithRefiner", isChecked: abfFilterWithRefiner.checked });
 };
 
 const setDebugMode = async (_event: Event) => {
@@ -342,6 +364,7 @@ abfPersonalBlockButton.addEventListener("click", savePersonalBlock);
 // these are only on the dashboard
 if (guiLocation === "dashboard") {
   deptViewControlButton.addEventListener("click", showDepartmentList);
+  abfFilterWithRefiner.addEventListener("click", setFilterWithRefiner);
 }
 // abfHideAll.addEventListener("click", hideAll)
 
@@ -350,7 +373,7 @@ if (guiLocation === "dashboard") {
   setText(guiLocation);
   setAddonVersion();
   createDepartmentList(guiLocation);
-  setCheckBoxStates();
+  setCheckBoxStates(guiLocation);
   setTextBoxStates();
   setPersonalList();
   console.log("AmazonBrandFilter: %cgui script loaded!", "color: lightgreen");

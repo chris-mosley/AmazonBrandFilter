@@ -187,7 +187,32 @@ const filterBrands = async (settings: StorageSettings) => {
 
   const { syncSettings } = await getSettings();
 
-  const brands = settings.brandsMap;
+  var brands = settings.brandsMap;
+  if (syncSettings.filterWithRefiner) {
+    if (settings.useDebugMode) {
+      console.debug("AmazonBrandFilter: Using refiner to get brands");
+    }
+    const refinerBrands = document.getElementById("brandsRefinements")?.getElementsByClassName("a-spacing-micro");
+    if (refinerBrands) {
+      var refinerKnownBrands: Record<string, boolean> = {};
+      for (const div of refinerBrands) {
+        const brand =
+          (
+            div.getElementsByClassName("a-size-base a-color-base") as HTMLCollectionOf<HTMLDivElement>
+          )[0]?.innerText.toUpperCase() ?? "";
+        if (brand && brands[brand]) {
+          refinerKnownBrands[brand] = true;
+        }
+      }
+      if (refinerKnownBrands != null) {
+        brands = refinerKnownBrands;
+        if (settings.useDebugMode) {
+          console.debug("AmazonBrandFilter: Found brands in refiner: " + Object.keys(refinerKnownBrands).join(","));
+        }
+      }
+    }
+  }
+
   if (Object.keys(brands).length === 0) {
     console.debug("AmazonBrandFilter: No brands found");
     return;
@@ -197,7 +222,14 @@ const filterBrands = async (settings: StorageSettings) => {
   }
 
   if (settings.refinerBypass) {
-    return;
+    const refiner = document.getElementById("brandsRefinements")?.getElementsByTagName("input");
+    if (refiner) {
+      for (const input of refiner) {
+        if (input.checked) {
+          return;
+        }
+      }
+    }
   }
   // if any of the departments are set not to filter we just cancel for now.
   const currentDepts = await (await getStorageValue("currentDepts")).currentDepts;
@@ -327,6 +359,9 @@ const listenForMessages = () => {
         runFilterRefiner(settings);
         break;
       case "refinerMode":
+        runFilterRefiner(settings);
+        break;
+      case "filterWithRefiner":
         runFilterRefiner(settings);
         break;
       case "usePersonalBlock":
