@@ -86,5 +86,25 @@
   "current_departments": {
     "message": "Aktuelle Abteilungen",
     "description": "Aktuelle Abteilungen"
+  },
+  "use_filter_with_refiner": {
+    "message": "Mit Refiner filtern",
+    "description": "label for Filter with Refiner checkbox"
+  },
+  "use_filter_with_refiner_tooltip": {
+    "message": "Basieren Sie den Markenfilter auf den Marken, die im Refiner auf der linken Seite der Seite angezeigt werden.  Dadurch wird die Zahl der falsch-positiven Ergebnisse reduziert, es kann aber auch zu einer Zunahme der falsch-negativen Ergebnisse kommen, wenn Amazon nicht alle Marken auf der Seite anzeigt.",
+    "description": "tooltip for use_filter_with_refiner"
+  },
+  "experimental_features": {
+    "message": "Experimentelle Funktionen",
+    "description": "label for Experimental Features header"
+  },
+  "experimental_features_tooltip": {
+    "message": "Diese Funktionen sind experimentell und funktionieren möglicherweise nicht wie erwartet.  Bitte melden Sie alle auftretenden Probleme.",
+    "description": "tooltip for experimental features"
+  },
+  "dashboard_notice": {
+    "message": "(Neue Funktionen hier!)",
+    "description": "Notice for the dashboard"
   }
 }

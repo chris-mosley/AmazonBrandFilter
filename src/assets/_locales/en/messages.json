@@ -100,7 +100,11 @@
     "description": "label for Experimental Features header"
   },
   "experimental_features_tooltip": {
-    "message": "These features are experimental and may not work as expected.  Use at your own risk.",
+    "message": "These features are experimental and may not work as expected.  Please report any issues you encounter.",
     "description": "tooltip for experimental features"
+  },
+  "dashboard_notice": {
+    "message": "(New features here!)",
+    "description": "Notice for the dashboard"
   }
 }

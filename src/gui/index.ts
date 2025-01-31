@@ -38,7 +38,8 @@ const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 
 const abfFullDeptListDiv = document.getElementById("abf-dashboard-depts")! as HTMLTextAreaElement;
 const deptViewControlButton = document.getElementById("abf-dept-view-control")! as HTMLButtonElement;
-// labels
+
+// text
 const abfEnabledText = document.getElementById("abf-enabled-text")! as HTMLInputElement;
 const abfFilterRefinerText = document.getElementById("abf-filter-refiner-text")! as HTMLInputElement;
 const abfFilterRefinerHideText = document.getElementById("abf-filter-refiner-hide-text")! as HTMLInputElement;
@@ -60,6 +61,7 @@ const dashboard = document.getElementById("popup-dashboard")! as HTMLSpanElement
 const abfCurrentDepartments = document.getElementById("abf-current-depts-header")! as HTMLSpanElement;
 const abfFilterWithRefinerText = document.getElementById("abf-use-filter-with-refiner-text")! as HTMLInputElement;
 const abfExperimentalFeatures = document.getElementById("abf-experimental-features")! as HTMLSpanElement;
+const dashboardNotice = document.getElementById("dashboard-notice")! as HTMLInputElement;
 
 const setText = async (locationPath: GuiLocation) => {
   const { settings, syncSettings } = await getSettings();
@@ -106,6 +108,7 @@ const setText = async (locationPath: GuiLocation) => {
     }
   } else {
     dashboard.innerText = await getMessage("popup_dashboard");
+    dashboardNotice.innerText = await getMessage("dashboard_notice");
     abfCurrentDepartments.innerText = await getMessage("current_departments");
   }
 };
