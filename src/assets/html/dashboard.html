@@ -64,15 +64,21 @@
           <input type="button" id="abf-dept-view-control" class="abf-dept-view-control-button"/>
         </span>
       </div>
-      <div id="abf-dashboard-depts">
-      </div>
-      <hr />
-      <div id="abf-dashboard-experimental">
-        <div>
+      <div id="abf-dashboard-depts"></div>
+      
+      <div class="spaced">
+        <div id="abf-experimental-features"></div>
+        <hr class="spaced"/>
+        
+        <div class="spaced">
+          <div class="double-spaced"></div>
           <input type="checkbox" id="abf-use-filter-with-refiner" option="abf-use-filter-with-refiner" />
           <label for="abf-use-filter-with-refiner" id="abf-use-filter-with-refiner-text"></label>
         </div>
+        
+        <hr class="double-spaced"/>
       </div>
+      
       <div class="options-links spaced">
         <a href="https://github.com/chris-mosley/AmazonBrandFilter/issues" id="popup-feedback-text"></a>
         <a href="https://github.com/chris-mosley/AmazonBrandFilterList#missing-a-brand" id="popup-missing-brand-text"></a>
@@ -84,11 +90,6 @@
         <span id="popup-last-run"></span>
         <span id="last-run"></span>
       </div>
-
-      <!-- <div>
-      <input type="button" id="abf-hideall" option="abf-hideall" value="Hide All Results">
-      <input type="button" id="abf-showall" option="abf-showall" value="Show All Results">
-    </div> -->
     </div>
 
     <script src="gui.js"></script>

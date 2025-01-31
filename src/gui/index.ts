@@ -59,6 +59,7 @@ const helptranslate = document.getElementById("popup-help-translate")! as HTMLSp
 const dashboard = document.getElementById("popup-dashboard")! as HTMLSpanElement;
 const abfCurrentDepartments = document.getElementById("abf-current-depts-header")! as HTMLSpanElement;
 const abfFilterWithRefinerText = document.getElementById("abf-use-filter-with-refiner-text")! as HTMLInputElement;
+const abfExperimentalFeatures = document.getElementById("abf-experimental-features")! as HTMLSpanElement;
 
 const setText = async (locationPath: GuiLocation) => {
   const { settings, syncSettings } = await getSettings();
@@ -84,6 +85,8 @@ const setText = async (locationPath: GuiLocation) => {
   if (locationPath === "dashboard") {
     abfFilterWithRefinerText.innerText = await getMessage("use_filter_with_refiner");
     abfFilterWithRefinerText.title = await getMessage("use_filter_with_refiner_tooltip");
+    abfExperimentalFeatures.innerText = await getMessage("experimental_features");
+    abfExperimentalFeatures.title = await getMessage("experimental_features_tooltip");
     if (syncSettings.showAllDepts === null) {
       if (settings.showAllDepts) {
         deptViewControlButton.value = await getMessage("hide_all");
@@ -206,6 +209,11 @@ const setRefinerBypass = async (_event: Event) => {
   await setStorageValue({ refinerBypass: abfAllowRefineBypass.checked }, "sync");
   await setStorageValue({ refinerBypass: abfAllowRefineBypass.checked });
   sendMessageToContentScriptPostClick({ type: "refinerBypass", isChecked: abfAllowRefineBypass.checked });
+};
+const setFilterWithRefiner = async (_event: Event) => {
+  await setStorageValue({ filterWithRefiner: abfFilterWithRefiner.checked }, "sync");
+  await setStorageValue({ filterWithRefiner: abfFilterWithRefiner.checked });
+  sendMessageToContentScriptPostClick({ type: "filterWithRefiner", isChecked: abfFilterWithRefiner.checked });
 };
 
 const setDebugMode = async (_event: Event) => {
@@ -356,6 +364,7 @@ abfPersonalBlockButton.addEventListener("click", savePersonalBlock);
 // these are only on the dashboard
 if (guiLocation === "dashboard") {
   deptViewControlButton.addEventListener("click", showDepartmentList);
+  abfFilterWithRefiner.addEventListener("click", setFilterWithRefiner);
 }
 // abfHideAll.addEventListener("click", hideAll)
 

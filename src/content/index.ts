@@ -189,19 +189,25 @@ const filterBrands = async (settings: StorageSettings) => {
 
   var brands = settings.brandsMap;
   if (syncSettings.filterWithRefiner) {
+    if (settings.useDebugMode) {
+      console.debug("AmazonBrandFilter: Using refiner to get brands");
+    }
     const refinerBrands = document.getElementById("brandsRefinements")?.getElementsByClassName("a-spacing-micro");
     if (refinerBrands) {
       var refinerKnownBrands: Record<string, boolean> = {};
       for (const div of refinerBrands) {
-        const searchTerm = div.textContent?.toUpperCase();
-        if (searchTerm && brands[searchTerm]) {
-          refinerKnownBrands[searchTerm] = true;
+        const brand =
+          (
+            div.getElementsByClassName("a-size-base a-color-base") as HTMLCollectionOf<HTMLDivElement>
+          )[0]?.innerText.toUpperCase() ?? "";
+        if (brand && brands[brand]) {
+          refinerKnownBrands[brand] = true;
         }
       }
       if (refinerKnownBrands != null) {
         brands = refinerKnownBrands;
         if (settings.useDebugMode) {
-          console.debug("Found brands in refiner: " + Object.keys(refinerKnownBrands).join(","));
+          console.debug("AmazonBrandFilter: Found brands in refiner: " + Object.keys(refinerKnownBrands).join(","));
         }
       }
     }
@@ -346,6 +352,9 @@ const listenForMessages = () => {
         runFilterRefiner(settings);
         break;
       case "refinerMode":
+        runFilterRefiner(settings);
+        break;
+      case "filterWithRefiner":
         runFilterRefiner(settings);
         break;
       case "usePersonalBlock":
