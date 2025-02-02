@@ -3,29 +3,57 @@
     "message": "Aktivieren Sie Amazon Brand Filter",
     "description": "Aktivieren Sie Amazon Brand Filter"
   },
+  "popup_enabled_tooltip": {
+    "message": "Wenn aktiviert, filtert die Erweiterung Marken heraus, die Sie nicht sehen möchten. ",
+    "description": "enabled checkbox tooltip"
+  },
   "popup_filter_sidebar": {
     "message": "Seitenleiste filtern",
     "description": "Auch Marken in der Seitenleiste ausblenden"
+  },
+  "popup_filter_sidebar_tooltip": {
+    "message": "Wenn aktiviert, werden Marken in der Seitenleiste, die nicht auf der Liste stehen, ausgeblendet (oder ausgegraut). ",
+    "description": "filter sidebar tooltip"
   },
   "popup_sidebar_hide": {
     "message": "Ausblenden",
     "description": "Gefilterte Elemente in der Seitenleiste ausblenden"
   },
+  "popup_sidebar_hide_tooltip": {
+    "message": "Wenn ausgewählt, werden Marken in der Seitenleiste ausgeblendet, die nicht auf der Liste stehen. ",
+    "description": "sidebar hide tooltip"
+  },
   "popup_sidebar_grey": {
     "message": "Grey Out",
     "description": "Gefilterte Elemente in der Seitenleiste ausgrauen"
+  },
+  "popup_sidebar_grey_tooltip": {
+    "message": "Wenn ausgewählt, wird der Text unbekannter Marken in der Seitenleiste auf Grau gesetzt. ",
+    "description": "sidebar grey tooltip"
   },
   "popup_allow_refine_bypass": {
     "message": "Umgehung der Seitenleiste zulassen",
     "description": "Filterung bei Auswahl einer Marke in der Seitenleiste deaktivieren"
   },
+  "popup_allow_refine_bypass_tooltip": {
+    "message": "Wenn aktiviert, wird durch die Auswahl einer Marke in der Seitenleiste der Filter umgangen und Ergebnisse werden angezeigt, unabhängig davon, ob die Marke auf der Liste steht. ",
+    "description": "Refiner bypass tooltip"
+  },
   "popup_debug": {
     "message": "Debug_Modus",
     "description": "Aktivieren oder Deaktivieren des Debug_Modus"
   },
+  "popup_debug_tooltip": {
+    "message": "Hebt Suchergebnisse in Rot/Grün hervor, um anzuzeigen, was gefiltert würde, ohne sie zu verbergen. Protokolliert außerdem viel mehr in der Konsole.",
+    "description": "debug mode tooltip"
+  },
   "popup_personal_blocklist": {
     "message": "Persönliche Sperrliste",
     "description": "Aktivieren oder Deaktivieren der persönlichen Blockliste"
+  },
+  "popup_personal_blocklist_tooltip": {
+    "message": "Marken, die zu dieser Liste hinzugefügt werden, werden blockiert, unabhängig davon, ob sie auf der bekannten Liste stehen oder nicht. ",
+    "description": "personal blocklist tooltip"
   },
   "popup_save_button": {
     "message": "Speichern Sie",
@@ -37,6 +65,10 @@
   },
   "popup_department_header": {
     "message": "Departments",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
+  "department_header_tooltip": {
+    "message": "Alle jemals gesehenen Abteilungen. Das Deaktivieren einer Abteilung wird das Filtern jedes Mal deaktivieren, wenn diese Abteilung gesehen wird. ",
     "description": "Current Departments, uncheck to disable filtering for a department"
   },
   "popup_list_version": {
@@ -86,6 +118,10 @@
   "current_departments": {
     "message": "Aktuelle Abteilungen",
     "description": "Aktuelle Abteilungen"
+  },
+  "current_departments_tooltip": {
+    "message": "Abteilungen auf der Seite gefunden. Das Deaktivieren einer Abteilung wird das Filtern deaktivieren, sobald diese Abteilung angezeigt wird. ",
+    "description": "Current Departments"
   },
   "use_filter_with_refiner": {
     "message": "Mit Refiner filtern",

@@ -3,29 +3,57 @@
     "message": "Activer le filtre de marque Amazon",
     "description": "Enable Amazon Brand Filter"
   },
+  "popup_enabled_tooltip": {
+    "message": "Si cette option est cochée, l'extension filtrera les marques que vous ne souhaitez pas voir. ",
+    "description": "enabled checkbox tooltip"
+  },
   "popup_filter_sidebar": {
     "message": "Filtrer la barre latérale",
     "description": "Also hide brands in the sidebar"
+  },
+  "popup_filter_sidebar_tooltip": {
+    "message": "Si cette option est cochée, cela masquera (ou grisonnera) les marques dans la barre latérale qui ne figurent pas sur la liste. ",
+    "description": "filter sidebar tooltip"
   },
   "popup_sidebar_hide": {
     "message": "Cacher",
     "description": "Hide filtered items in the sidebar"
   },
+  "popup_sidebar_hide_tooltip": {
+    "message": "Si cette option est sélectionnée, cela masquera les marques dans la barre latérale qui ne figurent pas sur la liste. ",
+    "description": "sidebar hide tooltip"
+  },
   "popup_sidebar_grey": {
     "message": "surligner",
     "description": "Grey out filtered items in the sidebar"
+  },
+  "popup_sidebar_grey_tooltip": {
+    "message": "Si cette option est sélectionnée, cela définira le texte des marques inconnues dans la barre latérale en gris. ",
+    "description": "sidebar grey tooltip"
   },
   "popup_allow_refine_bypass": {
     "message": "Autoriser le contournement de la barre latérale",
     "description": "Disable filtering when you select a brand in the sidebar"
   },
+  "popup_allow_refine_bypass_tooltip": {
+    "message": "Si coché, la sélection d'une marque dans la barre latérale contournera le filtre et affichera les résultats, que la marque figure ou non sur la liste. ",
+    "description": "Refiner bypass tooltip"
+  },
   "popup_debug": {
     "message": "Mode débogage",
     "description": "Enable or disable debug mode"
   },
+  "popup_debug_tooltip": {
+    "message": "Mettra en surbrillance les résultats de recherche en rouge/vert pour montrer ce qui serait filtré sans les masquer. Enregistre également beaucoup plus dans la console. ",
+    "description": "debug mode tooltip"
+  },
   "popup_personal_blocklist": {
     "message": "Liste de marques filtrées",
     "description": "Enable or disable personal blocklist"
+  },
+  "popup_personal_blocklist_tooltip": {
+    "message": "Les marques ajoutées à cette liste seront bloquées, qu'elles figurent ou non sur la liste connue. ",
+    "description": "personal blocklist tooltip"
   },
   "save_button": {
     "message": "Sauvegarder",
@@ -37,6 +65,10 @@
   },
   "department_header": {
     "message": "Départements: ",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
+  "department_header_tooltip": {
+    "message": "Tous les départements jamais vus. Désélectionner un département désactivera le filtrage chaque fois que ce département est vu. ",
     "description": "Current Departments, uncheck to disable filtering for a department"
   },
   "brand_list_version": {
@@ -85,6 +117,10 @@
   },
   "current_departments": {
     "message": "Départements actuels",
+    "description": "Current Departments"
+  },
+  "current_departments_tooltip": {
+    "message": "Départements trouvés sur la page. Désélectionner un département désactivera le filtrage chaque fois que ce département est détecté. ",
     "description": "Current Departments"
   },
   "use_filter_with_refiner": {

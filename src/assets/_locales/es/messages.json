@@ -3,36 +3,68 @@
     "message": "Activar Amazon Brand Filter",
     "description": "Activar el filtro de marcas de Amazon"
   },
+  "popup_enabled_tooltip": {
+    "message": "Si está marcado, la extensión filtrará las marcas que no deseas ver. ",
+    "description": "enabled checkbox tooltip"
+  },
   "popup_filter_sidebar": {
     "message": "Filtrar barra lateral",
     "description": "También ocultar marcas en la barra lateral"
+  },
+  "popup_filter_sidebar_tooltip": {
+    "message": "Si está marcado, esto ocultará (o atenuará) las marcas en la barra lateral que no están en la lista. ",
+    "description": "filter sidebar tooltip"
   },
   "popup_sidebar_hide": {
     "message": "Ocultar",
     "description": "Ocultar los elementos filtrados en la barra lateral"
   },
+  "popup_sidebar_hide_tooltip": {
+    "message": "Si se selecciona, esto ocultará las marcas en la barra lateral que no están en la lista. ",
+    "description": "sidebar hide tooltip"
+  },
   "popup_sidebar_grey": {
     "message": "Gris Fuera",
     "description": "Filtrar los elementos de la barra lateral"
+  },
+  "popup_sidebar_grey_tooltip": {
+    "message": "Si se selecciona, esto establecerá el texto de marcas desconocidas en la barra lateral a gris. ",
+    "description": "sidebar grey tooltip"
   },
   "popup_allow_refine_bypass": {
     "message": "Permitir el desvío de la barra lateral",
     "description": "Desactivar el filtrado al seleccionar una marca en la barra lateral"
   },
+  "popup_allow_refine_bypass_tooltip": {
+    "message": "Si está marcado, al seleccionar una marca en la barra lateral se omitirá el filtro y se mostrarán los resultados independientemente de si la marca está en la lista.",
+    "description": "Refiner bypass tooltip"
+  },
   "popup_debug": {
     "message": "Modo depuración",
     "description": "Activar o desactivar el modo de depuración"
+  },
+  "popup_debug_tooltip": {
+    "message": "Resaltará los resultados de búsqueda en rojo/verde para mostrar lo que sería filtrado sin ocultarlos. También registra mucho más en la consola. ",
+    "description": "debug mode tooltip"
   },
   "popup_personal_blocklist": {
     "message": "Lista de bloqueo personal",
     "description": "Activar o desactivar la lista de bloqueo personal"
   },
+  "popup_personal_blocklist_tooltip": {
+    "message": "Las marcas añadidas a esta lista serán bloqueadas independientemente de si están en la lista conocida o no. ",
+    "description": "personal blocklist tooltip"
+  },
   "popup_save_button": {
     "message": "Ahorrar",
     "description": "botón guardar"
   },
-  "popup_department_header": {
+  "department_header": {
     "message": "Departments",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
+  "department_header_tooltip": {
+    "message": "Todos los departamentos vistos alguna vez. Desmarcar un departamento deshabilitará el filtrado cada vez que se vea ese departamento. ",
     "description": "Current Departments, uncheck to disable filtering for a department"
   },
   "popup_save_confirm": {
@@ -86,6 +118,10 @@
   "current_departments": {
     "message": "Departamentos actuales",
     "description": "Departamentos actuales"
+  },
+  "current_departments_tooltip": {
+    "message": "Departamentos encontrados en la página. Desmarcar un departamento deshabilitará el filtrado cada vez que se vea ese departamento. ",
+    "description": "Current Departments"
   },
   "use_filter_with_refiner": {
     "message": "Filtrar con refinador",
