@@ -48,7 +48,6 @@ const abfAllowRefineBypassText = document.getElementById("abf-allow-refine-bypas
 const abfDebugModeText = document.getElementById("abf-debug-mode-text")! as HTMLInputElement;
 const abfPersonalBlockEnabledText = document.getElementById("abf-personal-block-enabled-text")! as HTMLInputElement;
 const abfCurrentDeptsDiv = document.getElementById("abf-current-depts")! as HTMLInputElement;
-const abfDepartmentHeaderText = document.getElementById("department-header-text")! as HTMLInputElement;
 const abfDepartmentsText = document.getElementById("department-list-text")! as HTMLInputElement;
 const abfPersonalBlockText = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
 const brandListVersionText = document.getElementById("brand-version-text")! as HTMLSpanElement;
@@ -67,13 +66,20 @@ const setText = async (locationPath: GuiLocation) => {
   const { settings, syncSettings } = await getSettings();
   // these have to be snake_case because chrome doesnt support hyphens in i18n
   abfEnabledText.innerText = await getMessage("popup_enabled");
+  abfEnabledText.title = await getMessage("popup_enabled_tooltip");
   abfFilterRefinerText.innerText = await getMessage("popup_filter_sidebar");
+  abfFilterRefinerText.title = await getMessage("popup_filter_sidebar_tooltip");
   abfFilterRefinerHideText.innerText = await getMessage("popup_sidebar_hide");
+  abfFilterRefinerHideText.title = await getMessage("popup_sidebar_hide_tooltip");
   abfFilterRefinerGreyText.innerText = await getMessage("popup_sidebar_grey");
+  abfFilterRefinerGreyText.title = await getMessage("popup_sidebar_grey_tooltip");
   abfAllowRefineBypassText.innerText = await getMessage("popup_allow_refine_bypass");
+  abfAllowRefineBypassText.title = await getMessage("popup_allow_refine_bypass_tooltip");
 
   abfDebugModeText.innerText = await getMessage("popup_debug");
+  abfDebugModeText.title = await getMessage("popup_debug_tooltip");
   abfPersonalBlockEnabledText.innerText = await getMessage("popup_personal_blocklist");
+  abfPersonalBlockEnabledText.title = await getMessage("popup_personal_blocklist_tooltip");
   abfPersonalBlockButton.value = await getMessage("save_button");
   abfPersonalBlockText.innerText = await getMessage("save_confirm");
 
@@ -84,6 +90,7 @@ const setText = async (locationPath: GuiLocation) => {
   lastRunText.innerText = await getMessage("popup_last_run");
   helptranslate.innerText = await getMessage("popup_help_translate");
   abfDepartmentsText.innerText = await getMessage("department_header");
+  abfDepartmentsText.title = await getMessage("department_header_tooltip");
   if (locationPath === "dashboard") {
     abfFilterWithRefinerText.innerText = await getMessage("use_filter_with_refiner");
     abfFilterWithRefinerText.title = await getMessage("use_filter_with_refiner_tooltip");
@@ -96,7 +103,6 @@ const setText = async (locationPath: GuiLocation) => {
       } else {
         deptViewControlButton.value = await getMessage("show_all");
         abfFullDeptListDiv.style.display = "none";
-        abfDepartmentHeaderText.innerText = await getMessage("department_header");
       }
     }
     if (syncSettings.showAllDepts) {
@@ -110,6 +116,7 @@ const setText = async (locationPath: GuiLocation) => {
     dashboard.innerText = await getMessage("popup_dashboard");
     dashboardNotice.innerText = await getMessage("dashboard_notice");
     abfCurrentDepartments.innerText = await getMessage("current_departments");
+    abfCurrentDepartments.title = await getMessage("current_departments_tooltip");
   }
 };
 

@@ -3,29 +3,57 @@
     "message": "Enable Amazon Brand Filter",
     "description": "Enable Amazon Brand Filter"
   },
+  "popup_enabled_tooltip": {
+    "message": "If checked, the extension will filter out brands you don't want to see",
+    "description": "enabled checkbox tooltip"
+  },
   "popup_filter_sidebar": {
     "message": "Filter Sidebar",
     "description": "Also hide brands in the sidebar"
+  },
+  "popup_filter_sidebar_tooltip": {
+    "message": "If checked this will hide (or grey out) brands in the sidebar that are not on the list",
+    "description": "filter sidebar tooltip"
   },
   "popup_sidebar_hide": {
     "message": "Hide",
     "description": "Hide filtered items in the sidebar"
   },
+  "popup_sidebar_hide_tooltip": {
+    "message": "If selected this will hide brands in the sidebar that are not on the list",
+    "description": "sidebar hide tooltip"
+  },
   "popup_sidebar_grey": {
     "message": "Grey Out",
     "description": "Grey out filtered items in the sidebar"
+  },
+  "popup_sidebar_grey_tooltip": {
+    "message": "If selected this will set the text of unknown brands in the sidebar to grey",
+    "description": "sidebar grey tooltip"
   },
   "popup_allow_refine_bypass": {
     "message": "Allow Sidebar Bypass",
     "description": "Disable filtering when you select a brand in the sidebar"
   },
+  "popup_allow_refine_bypass_tooltip": {
+    "message": "If checked then selecting a brand in the sidebar will bypass the filter and show results regardless of if the brand is on the list",
+    "description": "Refiner bypass tooltip"
+  },
   "popup_debug": {
     "message": "Debug Mode",
     "description": "Enable or disable debug mode"
   },
+  "popup_debug_tooltip": {
+    "message": "Will highlight search results in red/green to show what would be filtered without hiding them.  Also logs much more to the console.",
+    "description": "debug mode tooltip"
+  },
   "popup_personal_blocklist": {
     "message": "Personal Blocklist",
     "description": "Enable or disable personal blocklist"
+  },
+  "popup_personal_blocklist_tooltip": {
+    "message": "Brands added to this list will be blocked regardless of if they are on the known list or not.",
+    "description": "personal blocklist tooltip"
   },
   "save_button": {
     "message": "Save",
@@ -37,6 +65,10 @@
   },
   "department_header": {
     "message": "Departments: ",
+    "description": "Current Departments, uncheck to disable filtering for a department"
+  },
+  "department_header_tooltip": {
+    "message": "All departments ever seen.  Unchecking a department will disable filtering any time that department is seen.",
     "description": "Current Departments, uncheck to disable filtering for a department"
   },
   "brand_list_version": {
@@ -85,6 +117,10 @@
   },
   "current_departments": {
     "message": "Current Departments",
+    "description": "Current Departments"
+  },
+  "current_departments_tooltip": {
+    "message": "Departments found on page.  Unchecking a department will disable filtering any time that department is seen.",
     "description": "Current Departments"
   },
   "use_filter_with_refiner": {
