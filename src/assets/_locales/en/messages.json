@@ -142,5 +142,21 @@
   "dashboard_notice": {
     "message": "(New features here!)",
     "description": "Notice for the dashboard"
+  },
+  "known_brands_list_text": {
+    "message": "Known Brands: ",
+    "description": "Known Brands header"
+  },
+  "known_brands_list_text_tooltip": {
+    "message": "Known Brands: ",
+    "description": "All brands known by AmazonBrandFilter"
+  },
+  "seen_brands_list_text": {
+    "message": "Seen Brands: ",
+    "description": "Known Brands header"
+  },
+  "seen_brands_list_text_tooltip": {
+    "message": "Every brand ever seen. While searching.",
+    "description": "Known Brands header"
   }
 }

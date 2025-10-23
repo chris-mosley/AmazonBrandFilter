@@ -11,6 +11,8 @@ export const defaultSyncStorageValue: SyncStorageSettings = {
   enabled: true,
   knownDepts: {},
   deptCount: 0,
+  seenBrands: {},
+  seenBrandCount: 0,
   showAllDepts: false,
   filterRefiner: false,
   filterWithRefiner: false,
@@ -21,6 +23,8 @@ export const defaultSyncStorageValue: SyncStorageSettings = {
   personalBlockMap: {},
   lastMapRun: null,
   deptFilter: false,
+  showKnownBrands: false,
+  showSeenBrands: false,
 };
 
 export const defaultLocalStorageValue: StorageSettings = {

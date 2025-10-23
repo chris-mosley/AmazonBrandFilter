@@ -33,7 +33,7 @@ export const getDepartments = (): string[] => {
         if (div.className.match(".*indent.*")) {
           continue;
         }
-        depts.push(div.innerText);
+        depts.push(div.innerText.trimStart().trimEnd());
       }
       return depts;
     }
@@ -50,7 +50,7 @@ export const getDepartments = (): string[] => {
       }
 
       for (const div of filterBarDeptElements.getElementsByClassName(
-        "a-size-small a-color-base puis-bold-weight-text"
+        "a-size-base a-color-base a-text-bold"
       ) as HTMLCollectionOf<HTMLDivElement>) {
         depts.push(div.innerText);
       }
@@ -76,6 +76,25 @@ export const getDepartments = (): string[] => {
   console.log("AmazonBrandFilter: Departments not found");
   depts.push("Unknown");
   return depts;
+};
+
+export const getRefinerBrands = (): string[] => {
+  // i hate this.
+  const refinerDivs = document
+    .getElementById("brandsRefinements")
+    ?.getElementsByClassName("a-unordered-list a-nostyle a-vertical a-spacing-medium")[0];
+  if (refinerDivs === null) {
+    return [];
+  }
+
+  const refinerBrands: string[] = [];
+  for (const div of refinerDivs?.children as HTMLCollectionOf<HTMLDivElement>) {
+    if (div.innerText === "Brand") {
+      continue;
+    }
+    refinerBrands.push(div.innerText);
+  }
+  return refinerBrands;
 };
 
 export const unHideDivs = () => {

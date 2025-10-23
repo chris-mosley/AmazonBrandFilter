@@ -5,8 +5,8 @@ import {
   getStorageValue,
   setStorageValue,
 } from "utils/browser-helpers";
-import { getDepartments, getItemDivs, unHideDivs } from "utils/helpers";
-import { PopupMessage, StorageSettings } from "utils/types";
+import { getDepartments, getItemDivs, unHideDivs, getRefinerBrands } from "utils/helpers";
+import { PopupMessage, SeenBrand, StorageSettings } from "utils/types";
 
 const debugRed = "#ffbbbb";
 const debugGreen = "#bbffbb";
@@ -154,10 +154,11 @@ const updateDepartmentList = async () => {
   const syncKnownDepts = await getStorageValue("knownDepts", "sync");
   var currentDepts = <Record<string, boolean>>{};
   for (const dept of departmentList) {
-    if (syncKnownDepts.knownDepts[dept] === false) {
-      currentDepts[dept] = false;
+    var deptName = dept.trimEnd().trimStart();
+    if (syncKnownDepts.knownDepts[deptName] === false) {
+      currentDepts[deptName] = false;
     } else {
-      currentDepts[dept] = true;
+      currentDepts[deptName] = true;
     }
   }
   await setStorageValue({ currentDepts: currentDepts }, "local");
@@ -177,6 +178,34 @@ const updateDepartmentList = async () => {
     await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "sync");
     await setStorageValue({ deptCount: knownDeptCount }, "local");
     await setStorageValue({ deptCount: knownDeptCount }, "sync");
+  }
+};
+
+const updateSeenBrands = async () => {
+  const refinerBrands = getRefinerBrands();
+  if (refinerBrands.length === 0) {
+    return;
+  }
+  const seenBrands = await (await getStorageValue("seenBrands", "sync")).seenBrands;
+  var updateSeenBrandsList = false;
+  for (const brand of refinerBrands) {
+    if (brand === "") {
+      continue;
+    }
+    if (seenBrands[brand] === undefined) {
+      const newBrand: SeenBrand = {
+        hide: false,
+      };
+      console.log("AmazonBrandFilter: Adding brand to seenBrands - " + brand);
+      seenBrands[brand] = newBrand;
+    }
+  }
+  if (updateSeenBrandsList) {
+    const seenBrandCount = Object.keys(seenBrands).length;
+    await setStorageValue({ seenBrands: seenBrands }, "local");
+    await setStorageValue({ seenBrands: seenBrands }, "sync");
+    await setStorageValue({ seenBrandCount: seenBrandCount }, "local");
+    await setStorageValue({ seenBrandCount: seenBrandCount }, "sync");
   }
 };
 
@@ -424,6 +453,7 @@ const startObserver = async () => {
 
 (async () => {
   updateDepartmentList();
+  updateSeenBrands();
   unHideDivs();
   await ensureSettingsExist();
   runFilter();
