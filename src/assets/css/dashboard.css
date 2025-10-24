@@ -122,6 +122,15 @@ section.clear-options > select,
   display: none;
 }
 
+#abf-save-search-depth-button {
+  float:right;
+}
+
+#abf-search-depth{
+  width: 4em;
+  float:inline-end;
+}
+
 #abf-dept-view-control {
   position: right;
   float: right;

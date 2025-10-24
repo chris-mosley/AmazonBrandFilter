@@ -5,7 +5,7 @@ import {
   getStorageValue,
   setStorageValue,
 } from "utils/browser-helpers";
-import { getDepartments, getItemDivs, unHideDivs, getRefinerBrands } from "utils/helpers";
+import { getItemDivs, unHideDivs, getRefinerBrands } from "utils/helpers";
 import { PopupMessage, SeenBrand, StorageSettings } from "utils/types";
 
 const debugRed = "#ffbbbb";
@@ -20,8 +20,9 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
   }
 
   // check to see if each word is in the map. if we dont stop then we hide it.
+  const searchDepth = syncSettings.searchDepth;
   const fullText = shortText[0]?.innerText.toUpperCase() ?? "";
-  const wordList = fullText.replace(", ", " ").split(" ").slice(0, 8);
+  const wordList = fullText.replace(", ", " ").split(" ").slice(0, searchDepth);
   for (let w = 0; w < settings.maxWordCount + 3; w++) {
     for (let x = 0; x < wordList.length; x++) {
       const searchTerm = wordList.slice(x, w).join(" ");
@@ -143,41 +144,6 @@ const runFilterRefiner = async (settings: StorageSettings) => {
         div.style.backgroundColor = "white";
       }
     }
-  }
-};
-
-const updateDepartmentList = async () => {
-  const departmentList = getDepartments();
-  if (!departmentList) {
-    return;
-  }
-  const syncKnownDepts = await getStorageValue("knownDepts", "sync");
-  var currentDepts = <Record<string, boolean>>{};
-  for (const dept of departmentList) {
-    var deptName = dept.trimEnd().trimStart();
-    if (syncKnownDepts.knownDepts[deptName] === false) {
-      currentDepts[deptName] = false;
-    } else {
-      currentDepts[deptName] = true;
-    }
-  }
-  await setStorageValue({ currentDepts: currentDepts }, "local");
-
-  var updateDepartmentList = false;
-
-  for (const dept of departmentList) {
-    if (syncKnownDepts.knownDepts[dept] === undefined) {
-      syncKnownDepts.knownDepts[dept] = true;
-      updateDepartmentList = true;
-    }
-  }
-  // only update if we found something new.  I suspect there may be optimization for this in the future rather than setting the entire list when we update it.
-  if (updateDepartmentList) {
-    const knownDeptCount = Object.keys(syncKnownDepts.knownDepts).length;
-    await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "local");
-    await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "sync");
-    await setStorageValue({ deptCount: knownDeptCount }, "local");
-    await setStorageValue({ deptCount: knownDeptCount }, "sync");
   }
 };
 
@@ -452,7 +418,6 @@ const startObserver = async () => {
 };
 
 (async () => {
-  updateDepartmentList();
   updateSeenBrands();
   unHideDivs();
   await ensureSettingsExist();

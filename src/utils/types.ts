@@ -8,6 +8,7 @@ export interface StorageSettings {
   brandsVersion: number | null;
   brandsCount: number | null;
   brandsMap: Record<string, boolean>;
+  searchDepth: number;
   seenBrands: Record<string, SeenBrand>;
   seenBrandCount: number | null;
   deptMap: Record<string, boolean>;
