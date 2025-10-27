@@ -114,7 +114,7 @@ const runFilterRefiner = async (settings: StorageSettings) => {
     return;
   }
 
-  const divs = refiner.getElementsByClassName("a-spacing-micro") as HTMLCollectionOf<HTMLDivElement>;
+  const divs = refiner.getElementsByClassName("a-list-item") as HTMLCollectionOf<HTMLDivElement>;
   for (const div of divs) {
     const brand =
       (
@@ -159,15 +159,18 @@ const updateSeenBrands = async () => {
       continue;
     }
     if (seenBrands[brand] === undefined) {
+      // eventually I want to be able to add individual filters and the ability to create new brands tickets with these
       const newBrand: SeenBrand = {
         hide: false,
       };
       console.log("AmazonBrandFilter: Adding brand to seenBrands - " + brand);
       seenBrands[brand] = newBrand;
+      updateSeenBrandsList = true;
     }
   }
   if (updateSeenBrandsList) {
     const seenBrandCount = Object.keys(seenBrands).length;
+    console.debug(`AmazonBrandFilter: Updated seenBrands count: ${seenBrandCount}`);
     await setStorageValue({ seenBrands: seenBrands }, "local");
     await setStorageValue({ seenBrands: seenBrands }, "sync");
     await setStorageValue({ seenBrandCount: seenBrandCount }, "local");

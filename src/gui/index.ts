@@ -34,6 +34,7 @@ const abfFilterWithRefiner = document.getElementById("abf-use-filter-with-refine
 // numbers
 const versionNumber = document.getElementById("version-number")! as HTMLSpanElement;
 const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
+const seenBrandCount = document.getElementById("seen-brand-count")! as HTMLSpanElement;
 const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 const abfSearchDepth = document.getElementById("abf-search-depth")! as HTMLInputElement;
 // buttons
@@ -105,6 +106,10 @@ const setText = async (locationPath: GuiLocation) => {
     abfSearchDepthText.innerText = await getMessage("search_depth");
     abfSearchDepthText.title = await getMessage("search_depth_tooltip");
     dashboardSeenBrandListText.innerText = await getMessage("seen_brands_list_text");
+    seenBrandCount.innerText = settings.seenBrandCount?.toString() ?? "";
+    abfSearchDepth.value = syncSettings.searchDepth.toString();
+    abfSearchDepthSavedConfirm.innerText = await getMessage("save_confirm");
+    abfSearchDepthSavedConfirm.style.display = "none";
 
     if (syncSettings.showKnownBrands === null) {
       if (settings.showKnownBrands) {
@@ -212,7 +217,6 @@ const setTextBoxStates = async () => {
     abfPersonalBlockTextBox.style.display = "block";
     abfPersonalBlockButton.style.display = "block";
   }
-  abfSearchDepth.value = syncSettings.searchDepth.toString();
 };
 
 const enableDisable = async (_event: Event) => {
@@ -320,33 +324,33 @@ const showKnownBrands = async (_event: Event) => {
   if (abfKnownBrandsListDiv.style.display === "none") {
     abfKnownBrandsListDiv.style.display = "block";
     knownBrandViewControlButton.value = await getMessage("hide_all");
-    setStorageValue({ showAllDepts: true }, "local");
-    setStorageValue({ showAllDepts: true }, "sync");
+    setStorageValue({ showKnownBrands: true }, "local");
+    setStorageValue({ showKnownBrands: true }, "sync");
   } else {
     abfKnownBrandsListDiv.style.display = "none";
     knownBrandViewControlButton.value = await getMessage("show_all");
-    setStorageValue({ showAllDepts: false }, "local");
-    setStorageValue({ showAllDepts: false }, "sync");
+    setStorageValue({ showKnownBrands: false }, "local");
+    setStorageValue({ showKnownBrands: false }, "sync");
   }
 };
 
 const showSeenBrands = async (_event: Event) => {
-  if (abfKnownBrandsListDiv.style.display === "none") {
+  if (abfSeenBrandsListDiv.style.display === "none") {
     abfSeenBrandsListDiv.style.display = "block";
     seenBrandViewControlButton.value = await getMessage("hide_all");
-    setStorageValue({ showAllDepts: true }, "local");
-    setStorageValue({ showAllDepts: true }, "sync");
+    setStorageValue({ showSeenBrands: true }, "local");
+    setStorageValue({ showSeenBrands: true }, "sync");
   } else {
     abfSeenBrandsListDiv.style.display = "none";
     seenBrandViewControlButton.value = await getMessage("show_all");
-    setStorageValue({ showAllDepts: false }, "local");
-    setStorageValue({ showAllDepts: false }, "sync");
+    setStorageValue({ showSeenBrands: false }, "local");
+    setStorageValue({ showSeenBrands: false }, "sync");
   }
 };
 
 // i think i want to create a unified function here to display the different lists with checkboxes but i want to know all the actions i want to perform before i do that
 const createKnownBrandList = async () => {
-  console.log("AmazonBrandFilter: %createKnownBrandList", "color: yellow");
+  console.log("AmazonBrandFilter: %cCreateKnownBrandList", "color: yellow");
   let result = await getStorageValue("brandsMap");
 
   if (Object.keys(result.brandsMap).length === 0) {
@@ -371,7 +375,7 @@ const createKnownBrandList = async () => {
 };
 
 const createSeenBrandList = async () => {
-  console.log("AmazonBrandFilter: %createSeenBrandList", "color: yellow");
+  console.log("AmazonBrandFilter: %cCreateSeenBrandList", "color: yellow");
   let result = await getStorageValue("seenBrands");
 
   if (Object.keys(result.seenBrands).length === 0) {
@@ -388,10 +392,7 @@ const createSeenBrandList = async () => {
   for (const key of textValue) {
     const brandDiv = document.createElement("div");
     brandDiv.innerText = key;
-    // const deptEntryLabel = document.createElement("label");
-    // deptEntryLabel.htmlFor = deptCheckbox.id;
-    // deptEntryLabel.innerText = key;
-    abfKnownBrandsListDiv.appendChild(brandDiv);
+    abfSeenBrandsListDiv.appendChild(brandDiv);
   }
 };
 
