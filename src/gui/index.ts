@@ -28,18 +28,25 @@ const abfPersonalBlockTextBox = document.getElementById("abf-personal-block-text
 const abfPersonalBlockButton = document.getElementById("abf-personal-block-button")! as HTMLButtonElement;
 const abfVersion = document.getElementById("abf-version")! as HTMLSpanElement;
 const abfPersonalBlockSavedConfirm = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
+const abfSearchDepthSavedConfirm = document.getElementById("abf-search-depth-saved-confirm")! as HTMLSpanElement;
 const abfFilterWithRefiner = document.getElementById("abf-use-filter-with-refiner")! as HTMLInputElement;
 
 // numbers
 const versionNumber = document.getElementById("version-number")! as HTMLSpanElement;
 const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
-const deptCount = document.getElementById("dept-count")! as HTMLSpanElement;
+const seenBrandCount = document.getElementById("seen-brand-count")! as HTMLSpanElement;
 const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
+const abfSearchDepth = document.getElementById("abf-search-depth")! as HTMLInputElement;
+// buttons
 
-const abfFullDeptListDiv = document.getElementById("abf-dashboard-depts")! as HTMLTextAreaElement;
-const deptViewControlButton = document.getElementById("abf-dept-view-control")! as HTMLButtonElement;
-
+const knownBrandViewControlButton = document.getElementById("abf-known-brand-view-control")! as HTMLButtonElement;
+const seenBrandViewControlButton = document.getElementById("abf-seen-brand-view-control")! as HTMLButtonElement;
+const abfSaveSearchDepthButton = document.getElementById("abf-save-search-depth-button")! as HTMLButtonElement;
 // text
+const abfKnownBrandsListDiv = document.getElementById("abf-dashboard-known-brands")! as HTMLTextAreaElement;
+const abfSeenBrandsListDiv = document.getElementById("abf-dashboard-seen-brands")! as HTMLTextAreaElement;
+const abfSearchDepthText = document.getElementById("abf-search-depth-text")! as HTMLTextAreaElement;
+
 const abfEnabledText = document.getElementById("abf-enabled-text")! as HTMLInputElement;
 const abfFilterRefinerText = document.getElementById("abf-filter-refiner-text")! as HTMLInputElement;
 const abfFilterRefinerHideText = document.getElementById("abf-filter-refiner-hide-text")! as HTMLInputElement;
@@ -47,8 +54,7 @@ const abfFilterRefinerGreyText = document.getElementById("abf-filter-refiner-gre
 const abfAllowRefineBypassText = document.getElementById("abf-allow-refine-bypass-text")! as HTMLInputElement;
 const abfDebugModeText = document.getElementById("abf-debug-mode-text")! as HTMLInputElement;
 const abfPersonalBlockEnabledText = document.getElementById("abf-personal-block-enabled-text")! as HTMLInputElement;
-const abfCurrentDeptsDiv = document.getElementById("abf-current-depts")! as HTMLInputElement;
-const abfDepartmentsText = document.getElementById("department-list-text")! as HTMLInputElement;
+
 const abfPersonalBlockText = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
 const brandListVersionText = document.getElementById("brand-version-text")! as HTMLSpanElement;
 const brandCountText = document.getElementById("brand-count-text")! as HTMLSpanElement;
@@ -57,11 +63,12 @@ const missingBrandText = document.getElementById("popup-missing-brand-text")! as
 const lastRunText = document.getElementById("last-run")! as HTMLSpanElement;
 const helptranslate = document.getElementById("popup-help-translate")! as HTMLSpanElement;
 const dashboard = document.getElementById("popup-dashboard")! as HTMLSpanElement;
-const abfCurrentDepartments = document.getElementById("abf-current-depts-header")! as HTMLSpanElement;
+
 const abfFilterWithRefinerText = document.getElementById("abf-use-filter-with-refiner-text")! as HTMLInputElement;
 const abfExperimentalFeatures = document.getElementById("abf-experimental-features")! as HTMLSpanElement;
 const dashboardNotice = document.getElementById("dashboard-notice")! as HTMLInputElement;
-
+const dashboardKnownBrandListText = document.getElementById("known-brands-list-text")! as HTMLInputElement;
+const dashboardSeenBrandListText = document.getElementById("seen-brands-list-text")! as HTMLInputElement;
 const setText = async (locationPath: GuiLocation) => {
   const { settings, syncSettings } = await getSettings();
   // these have to be snake_case because chrome doesnt support hyphens in i18n
@@ -84,39 +91,64 @@ const setText = async (locationPath: GuiLocation) => {
   abfPersonalBlockText.innerText = await getMessage("save_confirm");
 
   brandListVersionText.innerText = await getMessage("brand_list_version");
-  brandCountText.innerText = await getMessage("brand_list_count");
+
   feedbackText.innerText = await getMessage("popup_feedback_link");
   missingBrandText.innerText = await getMessage("popup_missing_brand");
   lastRunText.innerText = await getMessage("popup_last_run");
   helptranslate.innerText = await getMessage("popup_help_translate");
-  abfDepartmentsText.innerText = await getMessage("department_header");
-  abfDepartmentsText.title = await getMessage("department_header_tooltip");
+
   if (locationPath === "dashboard") {
     abfFilterWithRefinerText.innerText = await getMessage("use_filter_with_refiner");
     abfFilterWithRefinerText.title = await getMessage("use_filter_with_refiner_tooltip");
     abfExperimentalFeatures.innerText = await getMessage("experimental_features");
     abfExperimentalFeatures.title = await getMessage("experimental_features_tooltip");
-    if (syncSettings.showAllDepts === null) {
-      if (settings.showAllDepts) {
-        deptViewControlButton.value = await getMessage("hide_all");
-        abfFullDeptListDiv.style.display = "block";
+    dashboardKnownBrandListText.innerText = await getMessage("known_brands_list_text");
+    abfSearchDepthText.innerText = await getMessage("search_depth");
+    abfSearchDepthText.title = await getMessage("search_depth_tooltip");
+    dashboardSeenBrandListText.innerText = await getMessage("seen_brands_list_text");
+    seenBrandCount.innerText = settings.seenBrandCount?.toString() ?? "";
+    abfSearchDepth.value = syncSettings.searchDepth.toString();
+    abfSearchDepthSavedConfirm.innerText = await getMessage("save_confirm");
+    abfSearchDepthSavedConfirm.style.display = "none";
+
+    if (syncSettings.showKnownBrands === null) {
+      if (settings.showKnownBrands) {
+        knownBrandViewControlButton.value = await getMessage("hide_all");
+        abfKnownBrandsListDiv.style.display = "block";
       } else {
-        deptViewControlButton.value = await getMessage("show_all");
-        abfFullDeptListDiv.style.display = "none";
+        knownBrandViewControlButton.value = await getMessage("show_all");
+        abfKnownBrandsListDiv.style.display = "none";
+      }
+    } else {
+      if (syncSettings.showKnownBrands) {
+        knownBrandViewControlButton.value = await getMessage("hide_all");
+        abfKnownBrandsListDiv.style.display = "block";
+      } else {
+        knownBrandViewControlButton.value = await getMessage("show_all");
+        abfKnownBrandsListDiv.style.display = "none";
       }
     }
-    if (syncSettings.showAllDepts) {
-      deptViewControlButton.value = await getMessage("hide_all");
-      abfFullDeptListDiv.style.display = "block";
+
+    if (syncSettings.showSeenBrands === null) {
+      if (settings.showSeenBrands) {
+        seenBrandViewControlButton.value = await getMessage("hide_all");
+        abfSeenBrandsListDiv.style.display = "block";
+      } else {
+        abfSeenBrandsListDiv.style.display = "none";
+      }
     } else {
-      deptViewControlButton.value = await getMessage("show_all");
-      abfFullDeptListDiv.style.display = "none";
+      if (syncSettings.showSeenBrands) {
+        seenBrandViewControlButton.value = await getMessage("hide_all");
+        abfSeenBrandsListDiv.style.display = "block";
+      } else {
+        seenBrandViewControlButton.value = await getMessage("show_all");
+        abfSeenBrandsListDiv.style.display = "none";
+      }
     }
   } else {
+    brandCountText.innerText = await getMessage("brand_list_count");
     dashboard.innerText = await getMessage("popup_dashboard");
     dashboardNotice.innerText = await getMessage("dashboard_notice");
-    abfCurrentDepartments.innerText = await getMessage("current_departments");
-    abfCurrentDepartments.title = await getMessage("current_departments_tooltip");
   }
 };
 
@@ -158,7 +190,6 @@ const setCheckBoxStates = async (locationPath: GuiLocation) => {
 
   versionNumber.innerText = settings.brandsVersion?.toString() ?? "";
   brandCount.innerText = settings.brandsCount?.toString() ?? "";
-  deptCount.innerText = settings.deptCount?.toString() ?? "";
 
   if (syncSettings.lastMapRun) {
     lastRun.innerText = `${syncSettings.lastMapRun}ms`;
@@ -240,18 +271,6 @@ const setPersonalBlockEnabled = async (_event: Event) => {
   sendMessageToContentScriptPostClick({ type: "usePersonalBlock", isChecked: abfPersonalBlockEnabled.checked });
 };
 
-const saveDepartmentFilter = async (dept: string, enabled: boolean) => {
-  const knownDepts = await getStorageValue("knownDepts", "sync");
-  knownDepts.knownDepts[dept] = enabled;
-  setStorageValue(knownDepts, "local");
-  setStorageValue(knownDepts, "sync");
-};
-
-const processDepartmentFilter = async (dept: string, enabled: boolean) => {
-  await saveDepartmentFilter(dept, enabled);
-  sendMessageToContentScriptPostClick({ type: "deptFilter", isChecked: enabled });
-};
-
 const savePersonalBlock = async () => {
   const userInput = getSanitizedUserInput(abfPersonalBlockTextBox.value);
   const personalBlockMap: Record<string, boolean> = {};
@@ -287,68 +306,93 @@ const setPersonalList = async () => {
   abfPersonalBlockTextBox.rows = textHeight;
 };
 
-const showDepartmentList = async (_event: Event) => {
-  if (abfFullDeptListDiv.style.display === "none") {
-    abfFullDeptListDiv.style.display = "block";
-    deptViewControlButton.value = await getMessage("hide_all");
-    setStorageValue({ showAllDepts: true }, "local");
-    setStorageValue({ showAllDepts: true }, "sync");
-  } else {
-    abfFullDeptListDiv.style.display = "none";
-    deptViewControlButton.value = await getMessage("show_all");
-    setStorageValue({ showAllDepts: false }, "local");
-    setStorageValue({ showAllDepts: false }, "sync");
+const saveSearchDepth = async (_event: Event) => {
+  const inputValue = abfSearchDepth.value;
+
+  const newDepth = Number(inputValue);
+
+  if (Number.isInteger(newDepth) && newDepth > -1) {
+    await setStorageValue({ searchDepth: newDepth }, "sync");
+    await setStorageValue({ searchDepth: newDepth });
+    abfSearchDepthSavedConfirm.style.display = "block";
+    // use the same isChecked value as the personalBlockEnabled checkbox
+    sendMessageToContentScriptPostClick({ type: "personalBlockMap", isChecked: abfPersonalBlockEnabled.checked });
   }
 };
 
-const createDepartmentList = async (guiLocation: GuiLocation) => {
-  console.log("AmazonBrandFilter: %cshowDepartmentList", "color: yellow");
-  let result = await getStorageValue("knownDepts", "sync");
-
-  if (Object.keys(result.knownDepts).length === 0) {
-    console.log("showDepartmentList: no knownDepts found in sync storage");
-    return;
-  }
-  if (!result.knownDepts) {
-    console.log("showDepartmentList: knownDeptsMap is empty");
-    return;
-  }
-  console.debug(`showDepartmentList: ${Object.keys(result.knownDepts).length} departments found in sync storage`);
-  var textValue = null;
-  if (guiLocation === "dashboard") {
-    textValue = Object.keys(result.knownDepts).sort();
+const showKnownBrands = async (_event: Event) => {
+  if (abfKnownBrandsListDiv.style.display === "none") {
+    abfKnownBrandsListDiv.style.display = "block";
+    knownBrandViewControlButton.value = await getMessage("hide_all");
+    setStorageValue({ showKnownBrands: true }, "local");
+    setStorageValue({ showKnownBrands: true }, "sync");
   } else {
-    var currentDepts = await (await getStorageValue("currentDepts", "local")).currentDepts;
-    textValue = Object.keys(currentDepts).sort();
-    if (textValue === undefined) {
-      textValue = await getMessage("dept_unknown");
-    }
+    abfKnownBrandsListDiv.style.display = "none";
+    knownBrandViewControlButton.value = await getMessage("show_all");
+    setStorageValue({ showKnownBrands: false }, "local");
+    setStorageValue({ showKnownBrands: false }, "sync");
   }
+};
+
+const showSeenBrands = async (_event: Event) => {
+  if (abfSeenBrandsListDiv.style.display === "none") {
+    abfSeenBrandsListDiv.style.display = "block";
+    seenBrandViewControlButton.value = await getMessage("hide_all");
+    setStorageValue({ showSeenBrands: true }, "local");
+    setStorageValue({ showSeenBrands: true }, "sync");
+  } else {
+    abfSeenBrandsListDiv.style.display = "none";
+    seenBrandViewControlButton.value = await getMessage("show_all");
+    setStorageValue({ showSeenBrands: false }, "local");
+    setStorageValue({ showSeenBrands: false }, "sync");
+  }
+};
+
+// i think i want to create a unified function here to display the different lists with checkboxes but i want to know all the actions i want to perform before i do that
+const createKnownBrandList = async () => {
+  console.log("AmazonBrandFilter: %cCreateKnownBrandList", "color: yellow");
+  let result = await getStorageValue("brandsMap");
+
+  if (Object.keys(result.brandsMap).length === 0) {
+    console.log("createKnownBrandList: no knownDepts found in sync storage");
+    return;
+  }
+  if (!result.brandsMap) {
+    console.log("createKnownBrandList: brandMap is empty");
+    return;
+  }
+  console.debug(`createKnownBrandList: ${Object.keys(result.brandsMap).length} brands found in brandMap storage`);
+  const textValue = Object.keys(result.brandsMap).sort();
 
   for (const key of textValue) {
-    const deptDiv = document.createElement("div");
-    const deptCheckbox = document.createElement("input");
-    deptCheckbox.type = "checkbox";
-    deptCheckbox.id = `abf-dept-checkbox-${key.replace(" ", "-")}`;
-    if (result.knownDepts[key]) {
-      deptCheckbox.checked = true;
-    } else {
-      deptCheckbox.checked = false;
-    }
-    deptCheckbox.addEventListener("click", () => {
-      processDepartmentFilter(key, deptCheckbox.checked);
-    });
-    const deptEntryLabel = document.createElement("label");
-    deptEntryLabel.htmlFor = deptCheckbox.id;
-    deptEntryLabel.innerText = key;
+    const brandDiv = document.createElement("div");
+    brandDiv.innerText = key;
+    // const deptEntryLabel = document.createElement("label");
+    // deptEntryLabel.htmlFor = deptCheckbox.id;
+    // deptEntryLabel.innerText = key;
+    abfKnownBrandsListDiv.appendChild(brandDiv);
+  }
+};
 
-    deptDiv.appendChild(deptCheckbox);
-    deptDiv.appendChild(deptEntryLabel);
-    if (guiLocation === "popup") {
-      abfCurrentDeptsDiv.appendChild(deptDiv);
-    } else {
-      abfFullDeptListDiv.appendChild(deptDiv);
-    }
+const createSeenBrandList = async () => {
+  console.log("AmazonBrandFilter: %cCreateSeenBrandList", "color: yellow");
+  let result = await getStorageValue("seenBrands");
+
+  if (Object.keys(result.seenBrands).length === 0) {
+    console.log("createSeenBrandList: no seenBrands found in sync storage");
+    return;
+  }
+  if (!result.seenBrands) {
+    console.log("createSeenBrandList: seenBrands is empty");
+    return;
+  }
+  console.debug(`createSeenBrandList: ${Object.keys(result.seenBrands).length} brands found in seenBrands storage`);
+  const textValue = Object.keys(result.seenBrands).sort();
+
+  for (const key of textValue) {
+    const brandDiv = document.createElement("div");
+    brandDiv.innerText = key;
+    abfSeenBrandsListDiv.appendChild(brandDiv);
   }
 };
 
@@ -373,8 +417,12 @@ abfPersonalBlockButton.addEventListener("click", savePersonalBlock);
 
 // these are only on the dashboard
 if (guiLocation === "dashboard") {
-  deptViewControlButton.addEventListener("click", showDepartmentList);
   abfFilterWithRefiner.addEventListener("click", setFilterWithRefiner);
+  knownBrandViewControlButton.addEventListener("click", showKnownBrands);
+  seenBrandViewControlButton.addEventListener("click", showSeenBrands);
+  createKnownBrandList();
+  createSeenBrandList();
+  abfSaveSearchDepthButton.addEventListener("click", saveSearchDepth);
 }
 // abfHideAll.addEventListener("click", hideAll)
 
@@ -382,9 +430,9 @@ if (guiLocation === "dashboard") {
   await ensureSettingsExist();
   setText(guiLocation);
   setAddonVersion();
-  createDepartmentList(guiLocation);
   setCheckBoxStates(guiLocation);
   setTextBoxStates();
   setPersonalList();
+
   console.log("AmazonBrandFilter: %cgui script loaded!", "color: lightgreen");
 })();

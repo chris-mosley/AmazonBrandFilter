@@ -142,5 +142,30 @@
   "dashboard_notice": {
     "message": "(Neue Funktionen hier!)",
     "description": "Notice for the dashboard"
+  },
+  "known_brands_list_text": {
+    "message": "Bekannte Marken: ",
+    "description": "Known Brands header"
+  },
+  "known_brands_list_text_tooltip": {
+    "message": "Bekannte Marken: ",
+    "description": "All brands known by AmazonBrandFilter"
+  },
+
+  "search_depth": {
+    "message": "Suchtiefe: ",
+    "description": "Searth Depth label"
+  },
+  "search_depth_tooltip": {
+    "message": "Steuert, wie viele Wörter im Produkttitel durchsucht werden. Eine höhere Zahl erfasst mehr Marken, kann aber auch die Anzahl der Fehlalarme erhöhen, während eine niedrige Zahl einige Marken übersehen kann.",
+    "description": "Searth Depth tooltip"
+  },
+  "seen_brands_list_text": {
+    "message": "Gesehene Marken: ",
+    "description": "Known Brands header"
+  },
+  "seen_brands_list_text_tooltip": {
+    "message": "Jede Marke, die je gesehen wurde. Während der Suche.",
+    "description": "Known Brands header"
   }
 }

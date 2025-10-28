@@ -5,8 +5,8 @@ import {
   getStorageValue,
   setStorageValue,
 } from "utils/browser-helpers";
-import { getDepartments, getItemDivs, unHideDivs } from "utils/helpers";
-import { PopupMessage, StorageSettings } from "utils/types";
+import { getItemDivs, unHideDivs, getRefinerBrands } from "utils/helpers";
+import { PopupMessage, SeenBrand, StorageSettings } from "utils/types";
 
 const debugRed = "#ffbbbb";
 const debugGreen = "#bbffbb";
@@ -20,8 +20,9 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
   }
 
   // check to see if each word is in the map. if we dont stop then we hide it.
+  const searchDepth = syncSettings.searchDepth;
   const fullText = shortText[0]?.innerText.toUpperCase() ?? "";
-  const wordList = fullText.replace(", ", " ").split(" ").slice(0, 8);
+  const wordList = fullText.replace(", ", " ").split(" ").slice(0, searchDepth);
   for (let w = 0; w < settings.maxWordCount + 3; w++) {
     for (let x = 0; x < wordList.length; x++) {
       const searchTerm = wordList.slice(x, w).join(" ");
@@ -113,7 +114,7 @@ const runFilterRefiner = async (settings: StorageSettings) => {
     return;
   }
 
-  const divs = refiner.getElementsByClassName("a-spacing-micro") as HTMLCollectionOf<HTMLDivElement>;
+  const divs = refiner.getElementsByClassName("a-list-item") as HTMLCollectionOf<HTMLDivElement>;
   for (const div of divs) {
     const brand =
       (
@@ -146,37 +147,34 @@ const runFilterRefiner = async (settings: StorageSettings) => {
   }
 };
 
-const updateDepartmentList = async () => {
-  const departmentList = getDepartments();
-  if (!departmentList) {
+const updateSeenBrands = async () => {
+  const refinerBrands = getRefinerBrands();
+  if (refinerBrands.length === 0) {
     return;
   }
-  const syncKnownDepts = await getStorageValue("knownDepts", "sync");
-  var currentDepts = <Record<string, boolean>>{};
-  for (const dept of departmentList) {
-    if (syncKnownDepts.knownDepts[dept] === false) {
-      currentDepts[dept] = false;
-    } else {
-      currentDepts[dept] = true;
+  const seenBrands = await (await getStorageValue("seenBrands", "sync")).seenBrands;
+  var updateSeenBrandsList = false;
+  for (const brand of refinerBrands) {
+    if (brand === "") {
+      continue;
+    }
+    if (seenBrands[brand] === undefined) {
+      // eventually I want to be able to add individual filters and the ability to create new brands tickets with these
+      const newBrand: SeenBrand = {
+        hide: false,
+      };
+      console.log("AmazonBrandFilter: Adding brand to seenBrands - " + brand);
+      seenBrands[brand] = newBrand;
+      updateSeenBrandsList = true;
     }
   }
-  await setStorageValue({ currentDepts: currentDepts }, "local");
-
-  var updateDepartmentList = false;
-
-  for (const dept of departmentList) {
-    if (syncKnownDepts.knownDepts[dept] === undefined) {
-      syncKnownDepts.knownDepts[dept] = true;
-      updateDepartmentList = true;
-    }
-  }
-  // only update if we found something new.  I suspect there may be optimization for this in the future rather than setting the entire list when we update it.
-  if (updateDepartmentList) {
-    const knownDeptCount = Object.keys(syncKnownDepts.knownDepts).length;
-    await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "local");
-    await setStorageValue({ knownDepts: syncKnownDepts.knownDepts }, "sync");
-    await setStorageValue({ deptCount: knownDeptCount }, "local");
-    await setStorageValue({ deptCount: knownDeptCount }, "sync");
+  if (updateSeenBrandsList) {
+    const seenBrandCount = Object.keys(seenBrands).length;
+    console.debug(`AmazonBrandFilter: Updated seenBrands count: ${seenBrandCount}`);
+    await setStorageValue({ seenBrands: seenBrands }, "local");
+    await setStorageValue({ seenBrands: seenBrands }, "sync");
+    await setStorageValue({ seenBrandCount: seenBrandCount }, "local");
+    await setStorageValue({ seenBrandCount: seenBrandCount }, "sync");
   }
 };
 
@@ -423,7 +421,7 @@ const startObserver = async () => {
 };
 
 (async () => {
-  updateDepartmentList();
+  updateSeenBrands();
   unHideDivs();
   await ensureSettingsExist();
   runFilter();

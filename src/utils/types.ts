@@ -8,6 +8,9 @@ export interface StorageSettings {
   brandsVersion: number | null;
   brandsCount: number | null;
   brandsMap: Record<string, boolean>;
+  searchDepth: number;
+  seenBrands: Record<string, SeenBrand>;
+  seenBrandCount: number | null;
   deptMap: Record<string, boolean>;
   currentDepts: Record<string, boolean>;
   knownDepts: Record<string, boolean>;
@@ -24,7 +27,13 @@ export interface StorageSettings {
   useDebugMode: boolean;
   lastMapRun: number | null;
   filterWithRefiner: boolean;
+  showKnownBrands: boolean;
+  showSeenBrands: boolean;
 }
+
+export type SeenBrand = {
+  hide: boolean;
+};
 
 export type SyncStorageSettings = Omit<
   StorageSettings,

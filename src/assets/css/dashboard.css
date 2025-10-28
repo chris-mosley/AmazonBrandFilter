@@ -117,15 +117,41 @@ section.clear-options > select,
 }
 
 #abf-personal-block-button {
-  position: right;
   float: right;
   display: none;
+}
+
+#abf-save-search-depth-button {
+  float:right;
+}
+
+.abf-search-depth-saved-confirm {
+  display: none;
+  float: right;
+  margin-right: .5em;
+}
+
+
+#abf-search-depth{
+  width: 4em;
 }
 
 #abf-dept-view-control {
   position: right;
   float: right;
 }
+
+#abf-known-brand-view-control {
+  position: right;
+  float: right;
+}
+
+
+#abf-seen-brand-view-control {
+  position: right;
+  float: right;
+}
+
 
 .abf-personal-block-saved-confirm {
   display: none;

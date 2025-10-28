@@ -19,63 +19,38 @@ export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
   return divs as HTMLCollectionOf<HTMLDivElement>;
 };
 
-export const getDepartments = (): string[] => {
-  var divs = document.getElementById("departments");
+export const getRefinerBrands = (): string[] => {
+  // i hate this.
+  const visibleRefinerDivs = document
+    .getElementById("brandsRefinements")
+    ?.getElementsByClassName("a-unordered-list a-nostyle a-vertical a-spacing-medium")[0];
 
-  var depts: string[] = [];
-  if (divs !== null) {
-    const deptElements = divs.getElementsByClassName("a-spacing-micro");
-
-    // if we cant find the deparments, we hope we're in the mobile version and try to find from the filter tabs
-    if (deptElements.length !== 0) {
-      for (const div of deptElements as HTMLCollectionOf<HTMLDivElement>) {
-        // so we just get the top level departments
-        if (div.className.match(".*indent.*")) {
-          continue;
-        }
-        depts.push(div.innerText);
-      }
-      return depts;
-    }
+  const hiddenRefinerDivs = document
+    .getElementById("brandsRefinements")
+    ?.getElementsByClassName("a-unordered-list a-nostyle a-vertical a-spacing-none")[0];
+  if (visibleRefinerDivs === null && hiddenRefinerDivs === null) {
+    return [];
   }
-  const filterTabs = document.getElementsByClassName("a-section s-vtabs-contents-container");
-  if (filterTabs.length > 0) {
-    for (const tab of filterTabs as HTMLCollectionOf<HTMLDivElement>) {
-      if (tab.children.namedItem("departments") === null) {
+
+  const refinerBrands: string[] = [];
+  if (visibleRefinerDivs?.children[0] !== undefined) {
+    for (const div of visibleRefinerDivs?.children as HTMLCollectionOf<HTMLDivElement>) {
+      console.debug("AmazonBrandFilter: getRefinerBrands - visible - found div: " + div.innerText);
+      if (div.innerText === "Brand" || div.innerText === "Brands" || div.innerText === "See more") {
         continue;
       }
-      const filterBarDeptElements = tab.children.namedItem("departments");
-      if (filterBarDeptElements === null) {
-        continue;
-      }
-
-      for (const div of filterBarDeptElements.getElementsByClassName(
-        "a-size-small a-color-base puis-bold-weight-text"
-      ) as HTMLCollectionOf<HTMLDivElement>) {
-        depts.push(div.innerText);
-      }
-      return depts;
+      refinerBrands.push(div.innerText.trimStart().trimEnd());
+      console.debug("AmazonBrandFilter: getRefinerBrands pushing brand: " + div.innerText.trimStart().trimEnd());
     }
   }
-  //data-a-expander-name="sf-departments"
-  const filterElements = document.querySelector('[data-a-expander-name="sf-departments"]');
-  if (filterElements !== null) {
-    const filterBarDeptElements = filterElements.getElementsByClassName(
-      "a-section a-spacing-mini a-text-left sf-refinement-heading"
-    );
-    if (filterBarDeptElements.length > 0) {
-      for (const div of filterBarDeptElements as HTMLCollectionOf<HTMLDivElement>) {
-        for (const child of div.children as HTMLCollectionOf<HTMLDivElement>) {
-          depts.push(child.innerText);
-        }
-      }
-      return depts;
+  for (const div of hiddenRefinerDivs?.children as HTMLCollectionOf<HTMLDivElement>) {
+    if (div.innerText === "Brand" || div.innerText === "Brands" || div.innerText === "See more") {
+      continue;
     }
+    refinerBrands.push(div.innerText.trimStart().trimEnd());
+    console.debug("AmazonBrandFilter: getRefinerBrands pushing brand: " + div.innerText.trimStart().trimEnd());
   }
-
-  console.log("AmazonBrandFilter: Departments not found");
-  depts.push("Unknown");
-  return depts;
+  return refinerBrands;
 };
 
 export const unHideDivs = () => {
