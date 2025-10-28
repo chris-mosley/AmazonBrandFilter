@@ -151,7 +151,6 @@
     "message": "Known Brands: ",
     "description": "All brands known by AmazonBrandFilter"
   },
-
   "search_depth": {
     "message": "Search Depth: ",
     "description": "Searth Depth label"
@@ -162,10 +161,10 @@
   },
   "seen_brands_list_text": {
     "message": "Seen Brands: ",
-    "description": "Known Brands header"
+    "description": "Seen Brands header"
   },
   "seen_brands_list_text_tooltip": {
     "message": "Every brand ever seen. While searching.",
-    "description": "Known Brands header"
+    "description": "Seen Brands tooltip"
   }
 }

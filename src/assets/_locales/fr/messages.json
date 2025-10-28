@@ -142,5 +142,29 @@
   "dashboard_notice": {
     "message": "(Nouvelles fonctionnalités ici !)",
     "description": "Notice for the dashboard"
+  },
+  "known_brands_list_text": {
+    "message": "Marques connues: ",
+    "description": "Known Brands header"
+  },
+  "known_brands_list_text_tooltip": {
+    "message": "Marques connues: ",
+    "description": "All brands known by AmazonBrandFilter"
+  },
+  "search_depth": {
+    "message": "Profondeur de recherche: ",
+    "description": "Searth Depth label"
+  },
+  "search_depth_tooltip": {
+    "message": "Contrôle le nombre de mots du titre du produit qui sont recherchés. Un nombre plus élevé permettra de détecter plus de marques, mais peut également augmenter les faux positifs, tandis qu'un nombre faible peut manquer certaines marques.",
+    "description": "Searth Depth tooltip"
+  },
+  "seen_brands_list_text": {
+    "message": "Marques Vues: ",
+    "description": "Seen Brands header"
+  },
+  "seen_brands_list_text_tooltip": {
+    "message": "Toutes les marques jamais vues. Pendant la recherche.",
+    "description": "Seen Brands tooltip"
   }
 }
