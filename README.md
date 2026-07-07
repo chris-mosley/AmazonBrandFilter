@@ -8,6 +8,7 @@
 - [Why?](#why)
 - [Missing a Brand?](#missing-brand)
 - [What's Coming?](#upcoming)
+- [Donate](#donate)
 
 ## What is it?
 
