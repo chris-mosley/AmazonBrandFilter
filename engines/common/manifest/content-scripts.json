@@ -6,16 +6,20 @@
         "*://*.amazon.ca/*",
         "*://*.amazon.cn/*",
         "*://*.amazon.co.jp/*",
-        "*://*.amazon.com/*",
-        "*://*.amazon.com.au/*",
-        "*://*.amazon.com.mx/*",
         "*://*.amazon.co.uk/*",
+        "*://*.amazon.com.au/*",
+        "*://*.amazon.com.be/*",
+        "*://*.amazon.com.mx/*",
+        "*://*.amazon.com.tr/*",
         "*://*.amazon.de/*",
         "*://*.amazon.es/*",
         "*://*.amazon.fr/*",
+        "*://*.amazon.ie/*",
         "*://*.amazon.in/*",
         "*://*.amazon.it/*",
-        "*://*.amazon.nl/*"
+        "*://*.amazon.nl/*",
+        "*://*.amazon.pl/*",
+        "*://*.amazon.se/*"
       ],
       "js": ["content.js"]
     }
