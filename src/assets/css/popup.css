@@ -4,13 +4,13 @@
   box-sizing: border-box;
 }
 
-body {
+/* body {
   width: 25rem;
   font-family: "Open Sans Light", sans-serif;
   font-size: 16px;
   font-weight: normal;
   padding: 0.6rem;
-}
+} */
 
 label,
 input[type="checkbox"],

@@ -10,7 +10,7 @@ import {
 } from "utils/browser-helpers";
 import { getSanitizedUserInput } from "utils/helpers";
 import { PopupMessage, GuiLocation } from "utils/types";
-
+// import "./dist/scss/bootstrap.scss";
 var guiLocation: GuiLocation = "popup";
 if (location.pathname === "/dashboard.html") {
   guiLocation = "dashboard";
@@ -363,14 +363,19 @@ const createKnownBrandList = async () => {
   }
   console.debug(`createKnownBrandList: ${Object.keys(result.brandsMap).length} brands found in brandMap storage`);
   const textValue = Object.keys(result.brandsMap).sort();
-
+  const brandsTable = document.createElement("table");
+  brandsTable.className = "table";
+  const brandsTableHead = brandsTable.appendChild(document.createElement("thead"));
+  const header = brandsTableHead.appendChild(document.createElement("th"));
+  header.innerText = "brands";
+  const brandsTableBody = brandsTable.appendChild(document.createElement("tbody"));
   for (const key of textValue) {
-    const brandDiv = document.createElement("div");
+    const brandDiv = brandsTableBody.appendChild(document.createElement("tr"));
     brandDiv.innerText = key;
     // const deptEntryLabel = document.createElement("label");
     // deptEntryLabel.htmlFor = deptCheckbox.id;
     // deptEntryLabel.innerText = key;
-    abfKnownBrandsListDiv.appendChild(brandDiv);
+    abfKnownBrandsListDiv.appendChild(brandsTable);
   }
 };
 
@@ -390,9 +395,9 @@ const createSeenBrandList = async () => {
   const textValue = Object.keys(result.seenBrands).sort();
 
   for (const key of textValue) {
-    const brandDiv = document.createElement("div");
-    brandDiv.innerText = key;
-    abfSeenBrandsListDiv.appendChild(brandDiv);
+    const brandRow = document.createElement("tr");
+    brandRow.innerText = key;
+    abfSeenBrandsListDiv.appendChild(brandRow);
   }
 };
 
