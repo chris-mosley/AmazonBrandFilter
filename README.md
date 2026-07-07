@@ -59,3 +59,6 @@ In no particular order these are the things I would like to add eventually
 - Caret or something on the page to indicate that things have been hidden
 - A way for users to report a missing brand from within the add-on popup
 - Along with localiztion I'm considering having different lists based on locale. I'm not sure it will be necessary yet.
+
+## Donate
+<a href="https://buymeacoffee.com/chris.mosley" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/black_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
