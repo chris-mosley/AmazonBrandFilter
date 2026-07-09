@@ -15,7 +15,7 @@ export const sleep = (ms: number) => {
 };
 
 export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
-  const divs = document.getElementsByClassName("s-result-item");
+  const divs = document.getElementsByClassName("s-card-container");
   return divs as HTMLCollectionOf<HTMLDivElement>;
 };
 
@@ -56,7 +56,8 @@ export const getRefinerBrands = (): string[] => {
 export const unHideDivs = () => {
   const divs = getItemDivs();
   for (const div of divs) {
-    div.style.display = "block";
+    div.parentElement?.parentElement?.parentElement?.parentElement?.style.setProperty("display", "block", "important");
+    console.log("AmazonBrandFilter: unHideDivs - un-hiding div: " + div.parentElement?.parentElement?.parentElement);
   }
 };
 

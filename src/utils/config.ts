@@ -9,6 +9,7 @@ export const defaultSyncStorageValue: SyncStorageSettings = {
   isFirstRun: false,
   deptMap: {},
   enabled: true,
+  filterMode: "hide",
   knownDepts: {},
   deptCount: 0,
   seenBrands: {},
