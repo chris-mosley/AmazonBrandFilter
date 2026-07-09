@@ -130,26 +130,9 @@ const addDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
 };
 
 const removeDebugLabel = (div: HTMLDivElement) => {
-  console.log("attempting to remove abf label");
-  div.closest<HTMLDivElement>("ABF-DebugLabel")?.remove();
-  console.log("Removed debug label: ", div.closest<HTMLDivElement>("ABF-DebugLabel"));
+  div.getElementsByClassName("ABF-DebugLabel")[0]?.remove();
 };
-// const removeDebugLabels = (div: HTMLDivElement) => {
-//   const abfLabels=(div.parentElement?.parentElement?.getElementsByClassName("ABF-DebugLabel") as HTMLCollectionOf<HTMLDivElement>)
-//    for (let abfLabel of abfLabels){
-//     abfLabel.remove();
-//     console.log("Removed debug label: ", abfLabel);
-//    }
 
-//   };
-// const removeAllDebugLabels = () => {
-//   const abfLabels=(document.getElementsByClassName("ABF-DebugLabel") as HTMLCollectionOf<HTMLDivElement>)
-//     for (let abfLabel of abfLabels){
-//     abfLabel.remove();
-//     console.log("Removed debug label: ", abfLabel);
-//     }
-
-//   };
 const runFilterRefiner = async (settings: StorageSettings) => {
   if (!settings.enabled || !settings.filterRefiner) {
     return;
