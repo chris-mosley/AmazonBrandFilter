@@ -35,34 +35,46 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
           // block if found in personal block list
           if (syncSettings.personalBlockMap && syncSettings.personalBlockMap[searchTerm]) {
             if (settings.useDebugMode) {
-              div.style.display = "block";
-              div.style.backgroundColor = debugYellow;
+              unHideItem(div);
+              setBackgroundColor(div, debugYellow);
               addDebugLabel(div, searchTerm);
             } else {
-              div.style.display = "none";
-              div.style.backgroundColor = "white";
+              if (settings.filterMode === "hide") {
+                hideItem(div);
+              } else {
+                setBackgroundColor(div, debugRed);
+              }
             }
+
             return;
           } else {
             // if personal block is not enabled then we want to show the item again
-            div.style.display = "block";
             if (settings.useDebugMode) {
-              div.style.backgroundColor = debugGreen;
+              setBackgroundColor(div, debugGreen);
               addDebugLabel(div, searchTerm);
             } else {
               removeDebugLabel(div);
+              if (settings.filterMode === "hide") {
+                hideItem(div);
+              } else {
+                setBackgroundColor(div, debugGreen);
+              }
             }
             return;
           }
         } else {
           // if personal block is not enabled then we want to show the item again
-          div.style.display = "block";
+          unHideItem(div);
+          // div.style.display = "block";
           if (settings.useDebugMode) {
-            div.style.backgroundColor = debugGreen;
+            setBackgroundColor(div, debugGreen);
             addDebugLabel(div, searchTerm);
+          } else if (settings.filterMode === "color") {
+            removeDebugLabel(div);
+            setBackgroundColor(div, debugGreen);
           } else {
             removeDebugLabel(div);
-            div.style.backgroundColor = "white";
+            removeBackgoundColor(div);
           }
           return;
         }
@@ -71,7 +83,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
           addDebugLabel(div, searchTerm);
         } else {
           removeDebugLabel(div);
-          div.style.backgroundColor = "white";
+          removeBackgoundColor(div);
         }
         return;
       }
@@ -79,12 +91,31 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
   }
 
   if (settings.useDebugMode) {
-    div.style.display = "block";
-    div.style.backgroundColor = debugRed;
+    unHideItem(div);
+    setBackgroundColor(div, debugRed);
+  } else if (settings.filterMode === "color") {
+    unHideItem(div);
+    setBackgroundColor(div, debugRed);
   } else {
-    div.style.display = "none";
-    div.style.backgroundColor = "white";
+    hideItem(div);
+    removeBackgoundColor(div);
   }
+};
+
+export const hideItem = (div: HTMLDivElement) => {
+  div.closest<HTMLDivElement>("[data-component-type='s-search-result']")?.style.setProperty("display", "none");
+};
+
+export const unHideItem = (div: HTMLDivElement) => {
+  div.closest<HTMLDivElement>("[data-component-type='s-search-result']")?.style.setProperty("display", "block");
+};
+
+const setBackgroundColor = (div: HTMLDivElement, color: string) => {
+  div.style.backgroundColor = color;
+};
+
+const removeBackgoundColor = (div: HTMLDivElement) => {
+  div.style.backgroundColor = "white";
 };
 
 const addDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
@@ -97,11 +128,11 @@ const addDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
     div.insertAdjacentElement("afterbegin", abflabel);
   }
 };
+
 const removeDebugLabel = (div: HTMLDivElement) => {
-  if (div.getElementsByClassName("ABF-DebugLabel").length > 0) {
-    div.getElementsByClassName("ABF-DebugLabel")[0]!.remove();
-  }
+  div.getElementsByClassName("ABF-DebugLabel")[0]?.remove();
 };
+
 const runFilterRefiner = async (settings: StorageSettings) => {
   if (!settings.enabled || !settings.filterRefiner) {
     return;
@@ -131,7 +162,8 @@ const runFilterRefiner = async (settings: StorageSettings) => {
           .getElementsByClassName("a-size-base a-color-base")[0]
           ?.setAttribute("style", "display: inlne-block; color: grey !important;");
       } else {
-        div.style.display = "none";
+        // div.style.display = "none";
+        hideItem(div);
         div
           .getElementsByClassName("a-size-base a-color-base")[0]
           ?.setAttribute("style", "display: inline-block; color: black !important;");
@@ -251,7 +283,8 @@ const filterBrands = async (settings: StorageSettings) => {
               div.style.display = "block";
               div.style.backgroundColor = "yellow";
             } else {
-              div.style.display = "none";
+              // div.style.display = "none";
+              hideItem(div);
             }
             continue;
           } else {
@@ -350,6 +383,9 @@ const listenForMessages = () => {
         }
         break;
       case "useDebugMode":
+        filterBrands(settings);
+        break;
+      case "filterMode":
         filterBrands(settings);
         break;
       case "filterRefiner":
