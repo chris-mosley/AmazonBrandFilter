@@ -162,17 +162,30 @@ const runFilterRefiner = async (settings: StorageSettings) => {
           .getElementsByClassName("a-size-base a-color-base")[0]
           ?.setAttribute("style", "display: inlne-block; color: grey !important;");
       } else {
-        div.setAttribute("style", "display: none;");
+        div.style.display = "none";
       }
 
       if (settings.useDebugMode) {
-        div.style.display = "inline-block";
+        div.style.display = "block";
+        div.getElementsByClassName("a-size-base a-color-base")[0]?.setAttribute("style", "display: inlne-block;");
         setBackgroundColor(div, debugRed);
       } else {
         setBackgroundColor(div, "white");
       }
     }
   }
+};
+
+const resetBrandsRefiner = () => {
+  const divs = [
+    ...(document.getElementById("brandsRefinements")?.getElementsByClassName("a-list-item") ?? []),
+  ] as HTMLDivElement[];
+  divs.forEach((div) => {
+    setBackgroundColor(div, "white");
+    div.style.display = "block";
+    div.getElementsByClassName("a-size-base a-color-base")[0]?.setAttribute("style", "display: inlne-block;");
+    div.style.display = "block";
+  });
 };
 
 const updateSeenBrands = async () => {
@@ -319,21 +332,7 @@ const filterBrands = async (settings: StorageSettings) => {
     }
     await descriptionSearch(settings, div);
   }
-
-  if (settings.filterRefiner) {
-    runFilterRefiner(settings);
-  }
-};
-
-const resetBrandsRefiner = () => {
-  const divs = [
-    ...(document.getElementById("brandsRefinements")?.getElementsByClassName("a-spacing-micro") ?? []),
-  ] as HTMLDivElement[];
-  divs.forEach((div) => {
-    div.style.backgroundColor = "white";
-    div.getElementsByClassName("a-size-base a-color-base")[0]?.setAttribute("style", "");
-    div.style.display = "block";
-  });
+  runFilterRefiner(settings);
 };
 
 const resetBrandsSearchResults = () => {
