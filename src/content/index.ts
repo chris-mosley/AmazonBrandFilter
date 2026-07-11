@@ -162,18 +162,14 @@ const runFilterRefiner = async (settings: StorageSettings) => {
           .getElementsByClassName("a-size-base a-color-base")[0]
           ?.setAttribute("style", "display: inlne-block; color: grey !important;");
       } else {
-        // div.style.display = "none";
-        hideItem(div);
-        div
-          .getElementsByClassName("a-size-base a-color-base")[0]
-          ?.setAttribute("style", "display: inline-block; color: black !important;");
+        div.setAttribute("style", "display: none;");
       }
 
       if (settings.useDebugMode) {
         div.style.display = "inline-block";
-        div.style.backgroundColor = debugRed;
+        setBackgroundColor(div, debugRed);
       } else {
-        div.style.backgroundColor = "white";
+        setBackgroundColor(div, "white");
       }
     }
   }
@@ -283,12 +279,12 @@ const filterBrands = async (settings: StorageSettings) => {
               div.style.display = "block";
               div.style.backgroundColor = "yellow";
             } else {
-              // div.style.display = "none";
               hideItem(div);
             }
             continue;
           } else {
-            div.style.display = "block";
+            // div.style.display = "block";
+            unHideItem(div);
             if (settings.useDebugMode) {
               div.style.backgroundColor = debugGreen;
             } else {
@@ -297,21 +293,24 @@ const filterBrands = async (settings: StorageSettings) => {
             continue;
           }
         } else {
-          div.style.display = "block";
+          // div.style.display = "block";
+          unHideItem(div);
           if (settings.useDebugMode) {
             div.style.backgroundColor = debugGreen;
           } else {
-            div.style.backgroundColor = "white";
+            // div.style.backgroundColor = "white";
+            setBackgroundColor(div, "white");
           }
           continue;
         }
       } else {
         if (settings.useDebugMode) {
           div.style.display = "block";
-          div.style.backgroundColor = debugRed;
+          unHideItem(div);
+          setBackgroundColor(div, debugRed);
         } else {
-          div.style.display = "none";
-          div.style.backgroundColor = "white";
+          hideItem(div);
+          setBackgroundColor(div, "white");
         }
         continue;
       }
@@ -335,9 +334,7 @@ const resetBrandsRefiner = () => {
   ] as HTMLDivElement[];
   divs.forEach((div) => {
     div.style.backgroundColor = "white";
-    div
-      .getElementsByClassName("a-size-base a-color-base")[0]
-      ?.setAttribute("style", "display: block; color: black !important;");
+    div.getElementsByClassName("a-size-base a-color-base")[0]?.setAttribute("style", "");
     div.style.display = "block";
   });
 };
