@@ -283,7 +283,6 @@ const filterBrands = async (settings: StorageSettings) => {
             }
             continue;
           } else {
-            // div.style.display = "block";
             unHideItem(div);
             if (settings.useDebugMode) {
               div.style.backgroundColor = debugGreen;
@@ -293,12 +292,10 @@ const filterBrands = async (settings: StorageSettings) => {
             continue;
           }
         } else {
-          // div.style.display = "block";
           unHideItem(div);
           if (settings.useDebugMode) {
             div.style.backgroundColor = debugGreen;
           } else {
-            // div.style.backgroundColor = "white";
             setBackgroundColor(div, "white");
           }
           continue;
