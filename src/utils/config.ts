@@ -14,7 +14,7 @@ export const defaultSyncStorageValue: SyncStorageSettings = {
   deptCount: 0,
   seenBrands: {},
   seenBrandCount: 0,
-  searchDepth: 7,
+  searchDepth: 3,
   showAllDepts: false,
   filterRefiner: false,
   filterWithRefiner: false,
