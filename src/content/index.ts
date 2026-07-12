@@ -22,14 +22,16 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
   // check to see if each word is in the map. if we dont stop then we hide it.
   const searchDepth = syncSettings.searchDepth;
   const fullText = shortText[0]?.innerText.toUpperCase() ?? "";
-  const wordList = fullText.replace(", ", " ").split(" ").slice(0, searchDepth);
-  for (let w = 0; w < settings.maxWordCount + 3; w++) {
-    for (let x = 0; x < wordList.length; x++) {
-      const searchTerm = wordList.slice(x, w).join(" ");
+  const wordList = fullText
+    .replace(", ", " ")
+    .split(" ")
+    .slice(0, searchDepth + settings.maxWordCount);
+  for (let w = 0; w < settings.maxWordCount; w++) {
+    for (let x = 0; x < searchDepth; x++) {
+      const searchTerm = wordList.slice(x, x + w + 1).join(" ");
       if (searchTerm.length === 0) {
         continue;
       }
-
       if (settings.brandsMap[searchTerm]) {
         if (syncSettings.usePersonalBlock) {
           // block if found in personal block list
