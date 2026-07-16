@@ -284,6 +284,7 @@ const filterBrands = async (settings: StorageSettings) => {
 
   const divs = getItemDivs();
   for (const div of divs) {
+    // check for the dedicated brand page first
     const itemHeader = div.getElementsByClassName("s-line-clamp-1") as HTMLCollectionOf<HTMLDivElement>;
     if (itemHeader.length !== 0) {
       const searchTerm = itemHeader[0]?.innerText.toUpperCase();
@@ -291,8 +292,9 @@ const filterBrands = async (settings: StorageSettings) => {
         if (syncSettings.usePersonalBlock) {
           if (syncSettings.personalBlockMap && syncSettings.personalBlockMap[searchTerm]) {
             if (settings.useDebugMode) {
-              div.style.display = "block";
-              div.style.backgroundColor = "yellow";
+              setBackgroundColor(div, debugYellow);
+            } else if (syncSettings.filterMode === "color") {
+              setBackgroundColor(div, debugGreen);
             } else {
               hideItem(div);
             }
@@ -300,16 +302,18 @@ const filterBrands = async (settings: StorageSettings) => {
           } else {
             unHideItem(div);
             if (settings.useDebugMode) {
-              div.style.backgroundColor = debugGreen;
+              setBackgroundColor(div, debugGreen);
             } else {
-              div.style.backgroundColor = "white";
+              setBackgroundColor(div, "white");
             }
             continue;
           }
         } else {
           unHideItem(div);
           if (settings.useDebugMode) {
-            div.style.backgroundColor = debugGreen;
+            setBackgroundColor(div, debugGreen);
+          } else if (syncSettings.filterMode === "color") {
+            setBackgroundColor(div, debugGreen);
           } else {
             setBackgroundColor(div, "white");
           }
@@ -341,7 +345,7 @@ const resetBrandsSearchResults = () => {
   const divs = [...getItemDivs()] as HTMLDivElement[];
   divs.forEach((div) => {
     removeDebugLabel(div);
-    div.style.backgroundColor = "white";
+    setBackgroundColor(div, "white");
     div.style.display = "block";
   });
 };
