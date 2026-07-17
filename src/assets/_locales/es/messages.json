@@ -7,6 +7,22 @@
     "message": "Si está marcado, la extensión filtrará las marcas que no deseas ver. ",
     "description": "enabled checkbox tooltip"
   },
+  "popup_filter_hide": {
+    "message": "Hide",
+    "description": "filter mode hide"
+  },
+  "popup_filter_hide_tooltip": {
+    "message": "Ocultar completamente los elementos no reconocidos",
+    "description": "filter mode hide tooltip"
+  },
+  "popup_filter_color": {
+    "message": "Destacar",
+    "description": "filter mode highlight"
+  },
+  "popup_filter_color_tooltip": {
+    "message": "Resaltar los elementos con color en lugar de ocultar los que no están en la lista.",
+    "description": "Filter mode highlight tooltip"
+  },
   "popup_filter_sidebar": {
     "message": "Filtrar barra lateral",
     "description": "También ocultar marcas en la barra lateral"

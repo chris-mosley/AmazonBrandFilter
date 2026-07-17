@@ -20,6 +20,7 @@ export interface StorageSettings {
   maxWordCount: number;
   enabled: boolean;
   filterRefiner: boolean;
+  filterMode: "hide" | "color";
   refinerMode: "grey" | "hide";
   refinerBypass: boolean;
   usePersonalBlock: boolean;

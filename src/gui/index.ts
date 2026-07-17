@@ -19,6 +19,8 @@ if (location.pathname === "/dashboard.html") {
 // checkboxes
 const abfEnabled = document.getElementById("abf-enabled")! as HTMLInputElement;
 const abfFilterRefiner = document.getElementById("abf-filter-refiner")! as HTMLInputElement;
+const abfFilterModeHide = document.getElementById("abf-filter-hide")! as HTMLInputElement;
+const abfFilterModeColor = document.getElementById("abf-filter-color")! as HTMLInputElement;
 const abfFilterRefinerHide = document.getElementById("abf-filter-refiner-hide")! as HTMLInputElement;
 const abfFilterRefinerGrey = document.getElementById("abf-filter-refiner-grey")! as HTMLInputElement;
 const abfAllowRefineBypass = document.getElementById("abf-allow-refine-bypass")! as HTMLInputElement;
@@ -48,6 +50,8 @@ const abfSeenBrandsListDiv = document.getElementById("abf-dashboard-seen-brands"
 const abfSearchDepthText = document.getElementById("abf-search-depth-text")! as HTMLTextAreaElement;
 
 const abfEnabledText = document.getElementById("abf-enabled-text")! as HTMLInputElement;
+const abfFilterModeHideText = document.getElementById("abf-filter-hide-text")! as HTMLInputElement;
+const abfFilterModeColorText = document.getElementById("abf-filter-color-text")! as HTMLInputElement;
 const abfFilterRefinerText = document.getElementById("abf-filter-refiner-text")! as HTMLInputElement;
 const abfFilterRefinerHideText = document.getElementById("abf-filter-refiner-hide-text")! as HTMLInputElement;
 const abfFilterRefinerGreyText = document.getElementById("abf-filter-refiner-grey-text")! as HTMLInputElement;
@@ -74,6 +78,10 @@ const setText = async (locationPath: GuiLocation) => {
   // these have to be snake_case because chrome doesnt support hyphens in i18n
   abfEnabledText.innerText = await getMessage("popup_enabled");
   abfEnabledText.title = await getMessage("popup_enabled_tooltip");
+  abfFilterModeHideText.innerText = await getMessage("popup_filter_hide");
+  abfFilterModeHideText.title = await getMessage("popup_filter_hide_tooltip");
+  abfFilterModeColorText.innerText = await getMessage("popup_filter_color");
+  abfFilterModeColorText.title = await getMessage("popup_filter_color_tooltip");
   abfFilterRefinerText.innerText = await getMessage("popup_filter_sidebar");
   abfFilterRefinerText.title = await getMessage("popup_filter_sidebar_tooltip");
   abfFilterRefinerHideText.innerText = await getMessage("popup_sidebar_hide");
@@ -160,7 +168,13 @@ const setCheckBoxStates = async (locationPath: GuiLocation) => {
   } else {
     abfEnabled.checked = false;
   }
-
+  if (syncSettings.filterMode === "hide") {
+    abfFilterModeHide.checked = true;
+    abfFilterModeColor.checked = false;
+  } else {
+    abfFilterModeHide.checked = false;
+    abfFilterModeColor.checked = true;
+  }
   if (syncSettings.filterRefiner) {
     abfFilterRefiner.checked = true;
   } else {
@@ -224,6 +238,20 @@ const enableDisable = async (_event: Event) => {
   await setStorageValue({ enabled: abfEnabled.checked });
   await setIcon();
   sendMessageToContentScriptPostClick({ type: "enabled", isChecked: abfEnabled.checked });
+};
+
+const setFilterModeHide = async (_event: Event) => {
+  abfFilterModeColor.checked = !abfFilterModeHide.checked;
+  await setStorageValue({ filterMode: abfFilterModeHide.checked ? "hide" : "color" }, "sync");
+  await setStorageValue({ filterMode: abfFilterModeHide.checked ? "hide" : "color" });
+  sendMessageToContentScriptPostClick({ type: "filterMode", isChecked: abfFilterModeHide.checked });
+};
+
+const setFilterModeColor = async (_event: Event) => {
+  abfFilterModeHide.checked = !abfFilterModeColor.checked;
+  await setStorageValue({ filterMode: abfFilterModeColor.checked ? "color" : "hide" }, "sync");
+  await setStorageValue({ filterMode: abfFilterModeColor.checked ? "color" : "hide" });
+  sendMessageToContentScriptPostClick({ type: "filterMode", isChecked: abfFilterModeColor.checked });
 };
 
 const setFilterRefiner = async (_event: Event) => {
@@ -412,6 +440,8 @@ const sendMessageToContentScriptPostClick = (message: PopupMessage) => {
 };
 
 abfEnabled.addEventListener("click", enableDisable);
+abfFilterModeHide.addEventListener("click", setFilterModeHide);
+abfFilterModeColor.addEventListener("click", setFilterModeColor);
 abfFilterRefiner.addEventListener("click", setFilterRefiner);
 abfFilterRefinerHide.addEventListener("click", setRefinerHide);
 abfFilterRefinerGrey.addEventListener("click", setRefinerGrey);

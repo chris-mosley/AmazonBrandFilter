@@ -22,47 +22,61 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
   // check to see if each word is in the map. if we dont stop then we hide it.
   const searchDepth = syncSettings.searchDepth;
   const fullText = shortText[0]?.innerText.toUpperCase() ?? "";
-  const wordList = fullText.replace(", ", " ").split(" ").slice(0, searchDepth);
-  for (let w = 0; w < settings.maxWordCount + 3; w++) {
-    for (let x = 0; x < wordList.length; x++) {
-      const searchTerm = wordList.slice(x, w).join(" ");
+  const wordList = fullText
+    .replace(", ", " ")
+    .split(" ")
+    .slice(0, searchDepth + settings.maxWordCount);
+  for (let w = 0; w < settings.maxWordCount; w++) {
+    for (let x = 0; x < searchDepth; x++) {
+      const searchTerm = wordList.slice(x, x + w + 1).join(" ");
       if (searchTerm.length === 0) {
         continue;
       }
-
       if (settings.brandsMap[searchTerm]) {
         if (syncSettings.usePersonalBlock) {
           // block if found in personal block list
           if (syncSettings.personalBlockMap && syncSettings.personalBlockMap[searchTerm]) {
             if (settings.useDebugMode) {
-              div.style.display = "block";
-              div.style.backgroundColor = debugYellow;
+              unHideItem(div);
+              setBackgroundColor(div, debugYellow);
               addDebugLabel(div, searchTerm);
             } else {
-              div.style.display = "none";
-              div.style.backgroundColor = "white";
+              if (settings.filterMode === "hide") {
+                hideItem(div);
+              } else {
+                setBackgroundColor(div, debugRed);
+              }
             }
+
             return;
           } else {
             // if personal block is not enabled then we want to show the item again
-            div.style.display = "block";
             if (settings.useDebugMode) {
-              div.style.backgroundColor = debugGreen;
+              setBackgroundColor(div, debugGreen);
               addDebugLabel(div, searchTerm);
             } else {
               removeDebugLabel(div);
+              if (settings.filterMode === "hide") {
+                hideItem(div);
+              } else {
+                setBackgroundColor(div, debugGreen);
+              }
             }
             return;
           }
         } else {
           // if personal block is not enabled then we want to show the item again
-          div.style.display = "block";
+          unHideItem(div);
+          // div.style.display = "block";
           if (settings.useDebugMode) {
-            div.style.backgroundColor = debugGreen;
+            setBackgroundColor(div, debugGreen);
             addDebugLabel(div, searchTerm);
+          } else if (settings.filterMode === "color") {
+            removeDebugLabel(div);
+            setBackgroundColor(div, debugGreen);
           } else {
             removeDebugLabel(div);
-            div.style.backgroundColor = "white";
+            removeBackgoundColor(div);
           }
           return;
         }
@@ -71,7 +85,7 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
           addDebugLabel(div, searchTerm);
         } else {
           removeDebugLabel(div);
-          div.style.backgroundColor = "white";
+          removeBackgoundColor(div);
         }
         return;
       }
@@ -79,12 +93,31 @@ const descriptionSearch = async (settings: StorageSettings, div: HTMLDivElement)
   }
 
   if (settings.useDebugMode) {
-    div.style.display = "block";
-    div.style.backgroundColor = debugRed;
+    unHideItem(div);
+    setBackgroundColor(div, debugRed);
+  } else if (settings.filterMode === "color") {
+    unHideItem(div);
+    setBackgroundColor(div, debugRed);
   } else {
-    div.style.display = "none";
-    div.style.backgroundColor = "white";
+    hideItem(div);
+    removeBackgoundColor(div);
   }
+};
+
+export const hideItem = (div: HTMLDivElement) => {
+  div.closest<HTMLDivElement>("[data-component-type='s-search-result']")?.style.setProperty("display", "none");
+};
+
+export const unHideItem = (div: HTMLDivElement) => {
+  div.closest<HTMLDivElement>("[data-component-type='s-search-result']")?.style.setProperty("display", "block");
+};
+
+const setBackgroundColor = (div: HTMLDivElement, color: string) => {
+  div.style.backgroundColor = color;
+};
+
+const removeBackgoundColor = (div: HTMLDivElement) => {
+  div.style.backgroundColor = "white";
 };
 
 const addDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
@@ -97,11 +130,11 @@ const addDebugLabel = (div: HTMLDivElement, searchTerm: string) => {
     div.insertAdjacentElement("afterbegin", abflabel);
   }
 };
+
 const removeDebugLabel = (div: HTMLDivElement) => {
-  if (div.getElementsByClassName("ABF-DebugLabel").length > 0) {
-    div.getElementsByClassName("ABF-DebugLabel")[0]!.remove();
-  }
+  div.getElementsByClassName("ABF-DebugLabel")[0]?.remove();
 };
+
 const runFilterRefiner = async (settings: StorageSettings) => {
   if (!settings.enabled || !settings.filterRefiner) {
     return;
@@ -132,19 +165,29 @@ const runFilterRefiner = async (settings: StorageSettings) => {
           ?.setAttribute("style", "display: inlne-block; color: grey !important;");
       } else {
         div.style.display = "none";
-        div
-          .getElementsByClassName("a-size-base a-color-base")[0]
-          ?.setAttribute("style", "display: inline-block; color: black !important;");
       }
 
       if (settings.useDebugMode) {
-        div.style.display = "inline-block";
-        div.style.backgroundColor = debugRed;
+        div.style.display = "block";
+        div.getElementsByClassName("a-size-base a-color-base")[0]?.setAttribute("style", "display: inlne-block;");
+        setBackgroundColor(div, debugRed);
       } else {
-        div.style.backgroundColor = "white";
+        setBackgroundColor(div, "white");
       }
     }
   }
+};
+
+const resetBrandsRefiner = () => {
+  const divs = [
+    ...(document.getElementById("brandsRefinements")?.getElementsByClassName("a-list-item") ?? []),
+  ] as HTMLDivElement[];
+  divs.forEach((div) => {
+    setBackgroundColor(div, "white");
+    div.style.display = "block";
+    div.getElementsByClassName("a-size-base a-color-base")[0]?.setAttribute("style", "display: inlne-block;");
+    div.style.display = "block";
+  });
 };
 
 const updateSeenBrands = async () => {
@@ -241,6 +284,7 @@ const filterBrands = async (settings: StorageSettings) => {
 
   const divs = getItemDivs();
   for (const div of divs) {
+    // check for the dedicated brand page first
     const itemHeader = div.getElementsByClassName("s-line-clamp-1") as HTMLCollectionOf<HTMLDivElement>;
     if (itemHeader.length !== 0) {
       const searchTerm = itemHeader[0]?.innerText.toUpperCase();
@@ -248,37 +292,41 @@ const filterBrands = async (settings: StorageSettings) => {
         if (syncSettings.usePersonalBlock) {
           if (syncSettings.personalBlockMap && syncSettings.personalBlockMap[searchTerm]) {
             if (settings.useDebugMode) {
-              div.style.display = "block";
-              div.style.backgroundColor = "yellow";
+              setBackgroundColor(div, debugYellow);
+            } else if (syncSettings.filterMode === "color") {
+              setBackgroundColor(div, debugGreen);
             } else {
-              div.style.display = "none";
+              hideItem(div);
             }
             continue;
           } else {
-            div.style.display = "block";
+            unHideItem(div);
             if (settings.useDebugMode) {
-              div.style.backgroundColor = debugGreen;
+              setBackgroundColor(div, debugGreen);
             } else {
-              div.style.backgroundColor = "white";
+              setBackgroundColor(div, "white");
             }
             continue;
           }
         } else {
-          div.style.display = "block";
+          unHideItem(div);
           if (settings.useDebugMode) {
-            div.style.backgroundColor = debugGreen;
+            setBackgroundColor(div, debugGreen);
+          } else if (syncSettings.filterMode === "color") {
+            setBackgroundColor(div, debugGreen);
           } else {
-            div.style.backgroundColor = "white";
+            setBackgroundColor(div, "white");
           }
           continue;
         }
       } else {
         if (settings.useDebugMode) {
           div.style.display = "block";
-          div.style.backgroundColor = debugRed;
+          unHideItem(div);
+          setBackgroundColor(div, debugRed);
         } else {
-          div.style.display = "none";
-          div.style.backgroundColor = "white";
+          hideItem(div);
+          setBackgroundColor(div, "white");
         }
         continue;
       }
@@ -290,30 +338,14 @@ const filterBrands = async (settings: StorageSettings) => {
     }
     await descriptionSearch(settings, div);
   }
-
-  if (settings.filterRefiner) {
-    runFilterRefiner(settings);
-  }
-};
-
-const resetBrandsRefiner = () => {
-  const divs = [
-    ...(document.getElementById("brandsRefinements")?.getElementsByClassName("a-spacing-micro") ?? []),
-  ] as HTMLDivElement[];
-  divs.forEach((div) => {
-    div.style.backgroundColor = "white";
-    div
-      .getElementsByClassName("a-size-base a-color-base")[0]
-      ?.setAttribute("style", "display: block; color: black !important;");
-    div.style.display = "block";
-  });
+  runFilterRefiner(settings);
 };
 
 const resetBrandsSearchResults = () => {
   const divs = [...getItemDivs()] as HTMLDivElement[];
   divs.forEach((div) => {
     removeDebugLabel(div);
-    div.style.backgroundColor = "white";
+    setBackgroundColor(div, "white");
     div.style.display = "block";
   });
 };
@@ -350,6 +382,9 @@ const listenForMessages = () => {
         }
         break;
       case "useDebugMode":
+        filterBrands(settings);
+        break;
+      case "filterMode":
         filterBrands(settings);
         break;
       case "filterRefiner":
