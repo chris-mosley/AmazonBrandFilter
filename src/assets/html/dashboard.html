@@ -2,26 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="dashboard.css" />
     <link rel="stylesheet" href="bootstrap.css" />
-    <link rel="stylesheet" href="bootstrap-icons.css" />
-    <link rel="stylesheet" href="bootstrap-icons.svg" />
   </head>
 
   <body>
-    <div class="mode-switch">
-      <button title="Use dark mode" id="dark" class="btn btn-sm btn-default text-secondary">
-          <i class="bi bi-moon"></i>
-      </button>
-      <button title="Use light mode" id="light" class="btn btn-sm btn-default text-secondary">
-          <i class="bi bi-sun"></i>
-      </button>
-      <button title="Use system preferred mode" id="system" class="btn btn-sm btn-default text-secondary">
-          <i class="bi bi-display"></i>
-      </button>
-  </div>
-    <div class="container" id="option-boxes">
+    <div class="container">
+      <div class="row">
+    <div class="options col-md-10" id="option-boxes">
       <!-- Version -->
       <span id="abf-version" class="abf-version"></span>
 
@@ -61,14 +49,14 @@
       <div>
         <input type="checkbox" id="abf-personal-block-enabled" option="abf-personal-block-enabled" />
         <label for="abf-personal-block-enabled" id="abf-personal-block-enabled-text"></label>
-        <span><input type="button" id="abf-personal-block-button" class="btn btn-primary abf-personal-block-button"/></span>
+        <span><input type="button" id="abf-personal-block-button" class="abf-personal-block-button btn btn-primary"/></span>
         <span id="abf-personal-block-saved-confirm" class="abf-personal-block-saved-confirm"></span>
       </div>
       <div class="indent spaced">
-        <textarea id="abf-personal-block-textbox" class="abf-personal-block-text" cols="45"></textarea>
+        <textarea id="abf-personal-block-textbox" class="form-control" cols="45"></textarea>
       </div>
       
-      <div class="spaced">
+      <div>
         <span>
           <span id="brand-version-text"></span>
           <span id="version-number"></span>
@@ -79,7 +67,7 @@
         <span id="known-brands-list-text"></span>
         <span id="brand-count"></span>
         <span>
-          <input type="button" id="abf-known-brand-view-control" class="btn btn-primary abf-known-brand-view-control-button"/>
+          <input type="button" id="abf-known-brand-view-control" class="abf-known-brand-view-control-button btn btn-secondary"/>
         </span>
       </div>
       <div id="abf-dashboard-known-brands"></div>
@@ -87,14 +75,10 @@
       <div class="spaced">
         <span id="seen-brands-list-text"></span>
         <span id="seen-brand-count"></span>
-        <span>
-          <input type="button" id="abf-seen-brand-view-control" class="btn btn-primary abf-seen-brand-view-control-button"/>
-        </span>
+        <span><input type="button" id="abf-seen-brand-view-control" class="abf-seen-brand-view-control-button btn btn-secondary"/></span>
+        <span><input type="button" id="abf-seen-brand-clear" class="abf-seen-brand-view-control-button btn btn-danger"></span>
       </div>
-      <table id="abf-dashboard-seen-brands">
-        <th>Name</th>
-        <th>Enabled</th>
-      </table>
+      <div id="abf-dashboard-seen-brands"></div>
       
       <div class="spaced">
         <div id="abf-experimental-features"></div>
@@ -109,10 +93,10 @@
           <div class="double-spaced"></div>
           <span id="abf-search-depth-text"></span>
           <span>
-            <input type="number" id="abf-search-depth" option="abf-search-depth" />
+            <input type="number" id="abf-search-depth" option="abf-search-depth" class="dropdown" />
             <label for="abf-search-depth" id="abf-search-depth"></label>
           </span>
-          <span><input type="button" id="abf-save-search-depth-button" class="btn btn-primary abf-save-search-depth-button" value="Save"/></span>
+          <span><input type="button" id="abf-save-search-depth-button" class="abf-save-search-depth-button btn btn-primary" value="Save"/></span>
           <span id="abf-search-depth-saved-confirm" class="abf-search-depth-saved-confirm"></span>
         </div>
         
@@ -131,7 +115,8 @@
         <span id="last-run"></span>
       </div>
     </div>
-
+    </div>
+  </div>
     <script src="gui.js"></script>
   </body>
 </html>

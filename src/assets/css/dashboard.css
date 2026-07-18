@@ -1,16 +1,3 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-/* body {
-  width: 25rem;
-  font-family: "Open Sans Light", sans-serif;
-  font-size: 16px;
-  font-weight: normal;
-  padding: 0.6rem;
-} */
 
 label,
 input[type="checkbox"],
@@ -37,10 +24,6 @@ input[type="button"]{
   padding: 0 0.6rem;
 }
 
-/* label:hover {
-  background-color: #eaeff2;
-} */
-
 /* Version span style */
 .abf-version {
   position: absolute;
@@ -63,10 +46,8 @@ input[type="button"]{
 .options {
   position: relative;
   width: 100%;
-
   display: flex;
   flex-flow: column nowrap;
-  gap: 0.2rem 0;
 }
 
 .options-links > a {
@@ -81,7 +62,7 @@ input[type="button"]{
 /* Instead of creating a spacer element, use this in 
     a div to add spacings above that div */
 .spaced {
-  margin-top: 0.1rem;
+  margin-top: 0.5rem;
 }
 
 .double-spaced {
@@ -91,7 +72,7 @@ input[type="button"]{
 
 /* Other */
 section.clear-options {
-  padding: 0.5em 0;
+  padding: 0.1em 0;
   margin: 1em 0;
 }
 
@@ -148,10 +129,13 @@ section.clear-options > select,
 
 
 #abf-seen-brand-view-control {
-  position: right;
   float: right;
+  margin-left: 1em;
 }
 
+#abf-seen-brand-clear {
+  float: right; 
+}
 
 .abf-personal-block-saved-confirm {
   display: none;

@@ -21,9 +21,7 @@ export const getItemDivs = (): HTMLCollectionOf<HTMLDivElement> => {
 
 export const getRefinerBrands = (): string[] => {
   // i hate this.
-  const visibleRefinerDivs = document
-    .getElementById("brandsRefinements")
-    ?.getElementsByClassName("a-unordered-list a-nostyle a-vertical a-spacing-medium")[0];
+  const visibleRefinerDivs = document.getElementById("brandsRefinements")?.getElementsByClassName("a-spacing-micro");
 
   const hiddenRefinerDivs = document
     .getElementById("brandsRefinements")
@@ -33,23 +31,17 @@ export const getRefinerBrands = (): string[] => {
   }
 
   const refinerBrands: string[] = [];
-  if (visibleRefinerDivs?.children[0] !== undefined) {
-    for (const div of visibleRefinerDivs?.children as HTMLCollectionOf<HTMLDivElement>) {
-      console.debug("AmazonBrandFilter: getRefinerBrands - visible - found div: " + div.innerText);
-      if (div.innerText === "Brand" || div.innerText === "Brands" || div.innerText === "See more") {
+  if (visibleRefinerDivs) {
+    for (const div of visibleRefinerDivs as HTMLCollectionOf<HTMLElement>) {
+      if (div.id?.match("p_123/.*")) {
+        console.debug("AmazonBrandFilter: getRefinerBrands - visible - found div with id: " + div.id);
+        refinerBrands.push(div.innerText.trimStart().trimEnd());
+      } else {
         continue;
       }
-      refinerBrands.push(div.innerText.trimStart().trimEnd());
-      console.debug("AmazonBrandFilter: getRefinerBrands pushing brand: " + div.innerText.trimStart().trimEnd());
     }
   }
-  for (const div of hiddenRefinerDivs?.children as HTMLCollectionOf<HTMLDivElement>) {
-    if (div.innerText === "Brand" || div.innerText === "Brands" || div.innerText === "See more") {
-      continue;
-    }
-    refinerBrands.push(div.innerText.trimStart().trimEnd());
-    console.debug("AmazonBrandFilter: getRefinerBrands pushing brand: " + div.innerText.trimStart().trimEnd());
-  }
+
   return refinerBrands;
 };
 

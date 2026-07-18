@@ -27,7 +27,6 @@ const abfAllowRefineBypass = document.getElementById("abf-allow-refine-bypass")!
 const abfDebugMode = document.getElementById("abf-debug-mode")! as HTMLInputElement;
 const abfPersonalBlockEnabled = document.getElementById("abf-personal-block-enabled")! as HTMLInputElement;
 const abfPersonalBlockTextBox = document.getElementById("abf-personal-block-textbox")! as HTMLTextAreaElement;
-const abfPersonalBlockButton = document.getElementById("abf-personal-block-button")! as HTMLButtonElement;
 const abfVersion = document.getElementById("abf-version")! as HTMLSpanElement;
 const abfPersonalBlockSavedConfirm = document.getElementById("abf-personal-block-saved-confirm")! as HTMLSpanElement;
 const abfSearchDepthSavedConfirm = document.getElementById("abf-search-depth-saved-confirm")! as HTMLSpanElement;
@@ -39,11 +38,13 @@ const brandCount = document.getElementById("brand-count")! as HTMLSpanElement;
 const seenBrandCount = document.getElementById("seen-brand-count")! as HTMLSpanElement;
 const lastRun = document.getElementById("last-run")! as HTMLSpanElement;
 const abfSearchDepth = document.getElementById("abf-search-depth")! as HTMLInputElement;
-// buttons
 
+// buttons
+const abfPersonalBlockButton = document.getElementById("abf-personal-block-button")! as HTMLButtonElement;
 const knownBrandViewControlButton = document.getElementById("abf-known-brand-view-control")! as HTMLButtonElement;
 const seenBrandViewControlButton = document.getElementById("abf-seen-brand-view-control")! as HTMLButtonElement;
 const abfSaveSearchDepthButton = document.getElementById("abf-save-search-depth-button")! as HTMLButtonElement;
+const clearSeenBrandsButton = document.getElementById("abf-seen-brand-clear")! as HTMLInputElement;
 // text
 const abfKnownBrandsListDiv = document.getElementById("abf-dashboard-known-brands")! as HTMLTextAreaElement;
 const abfSeenBrandsListDiv = document.getElementById("abf-dashboard-seen-brands")! as HTMLTextAreaElement;
@@ -118,6 +119,8 @@ const setText = async (locationPath: GuiLocation) => {
     abfSearchDepth.value = syncSettings.searchDepth.toString();
     abfSearchDepthSavedConfirm.innerText = await getMessage("save_confirm");
     abfSearchDepthSavedConfirm.style.display = "none";
+    clearSeenBrandsButton.value = await getMessage("clear_seen_brands");
+    clearSeenBrandsButton.title = await getMessage("clear_seen_brands_tooltip");
 
     if (syncSettings.showKnownBrands === null) {
       if (settings.showKnownBrands) {
@@ -141,16 +144,20 @@ const setText = async (locationPath: GuiLocation) => {
       if (settings.showSeenBrands) {
         seenBrandViewControlButton.value = await getMessage("hide_all");
         abfSeenBrandsListDiv.style.display = "block";
+        clearSeenBrandsButton.style.display = "block";
       } else {
         abfSeenBrandsListDiv.style.display = "none";
+        clearSeenBrandsButton.style.display = "none";
       }
     } else {
       if (syncSettings.showSeenBrands) {
         seenBrandViewControlButton.value = await getMessage("hide_all");
         abfSeenBrandsListDiv.style.display = "block";
+        clearSeenBrandsButton.style.display = "block";
       } else {
         seenBrandViewControlButton.value = await getMessage("show_all");
         abfSeenBrandsListDiv.style.display = "none";
+        clearSeenBrandsButton.style.display = "none";
       }
     }
   } else {
@@ -299,6 +306,17 @@ const setPersonalBlockEnabled = async (_event: Event) => {
   sendMessageToContentScriptPostClick({ type: "usePersonalBlock", isChecked: abfPersonalBlockEnabled.checked });
 };
 
+const clearSeenBrands = async () => {
+  await setStorageValue({ seenBrands: {} }, "sync");
+  await setStorageValue({ seenBrands: {} }, "local");
+  await setStorageValue({ seenBrandCount: 0 }, "sync");
+  await setStorageValue({ seenBrandCount: 0 }, "local");
+  seenBrandViewControlButton.value = await getMessage("show_all");
+  abfSeenBrandsListDiv.style.display = "none";
+  clearSeenBrandsButton.style.display = "none";
+  seenBrandCount.innerText = "0";
+};
+
 const savePersonalBlock = async () => {
   const userInput = getSanitizedUserInput(abfPersonalBlockTextBox.value);
   const personalBlockMap: Record<string, boolean> = {};
@@ -365,11 +383,13 @@ const showKnownBrands = async (_event: Event) => {
 const showSeenBrands = async (_event: Event) => {
   if (abfSeenBrandsListDiv.style.display === "none") {
     abfSeenBrandsListDiv.style.display = "block";
+    clearSeenBrandsButton.style.display = "block";
     seenBrandViewControlButton.value = await getMessage("hide_all");
     setStorageValue({ showSeenBrands: true }, "local");
     setStorageValue({ showSeenBrands: true }, "sync");
   } else {
     abfSeenBrandsListDiv.style.display = "none";
+    clearSeenBrandsButton.style.display = "none";
     seenBrandViewControlButton.value = await getMessage("show_all");
     setStorageValue({ showSeenBrands: false }, "local");
     setStorageValue({ showSeenBrands: false }, "sync");
@@ -395,14 +415,13 @@ const createKnownBrandList = async () => {
   brandsTable.className = "table";
   const brandsTableHead = brandsTable.appendChild(document.createElement("thead"));
   const header = brandsTableHead.appendChild(document.createElement("th"));
-  header.innerText = "brands";
+  header.innerText = await getMessage("brand");
+  header.scope = "col";
   const brandsTableBody = brandsTable.appendChild(document.createElement("tbody"));
   for (const key of textValue) {
     const brandDiv = brandsTableBody.appendChild(document.createElement("tr"));
-    brandDiv.innerText = key;
-    // const deptEntryLabel = document.createElement("label");
-    // deptEntryLabel.htmlFor = deptCheckbox.id;
-    // deptEntryLabel.innerText = key;
+    const brandData = brandDiv.appendChild(document.createElement("td"));
+    brandData.innerText = key;
     abfKnownBrandsListDiv.appendChild(brandsTable);
   }
 };
@@ -421,11 +440,18 @@ const createSeenBrandList = async () => {
   }
   console.debug(`createSeenBrandList: ${Object.keys(result.seenBrands).length} brands found in seenBrands storage`);
   const textValue = Object.keys(result.seenBrands).sort();
-
+  const seenBrands = document.createElement("table");
+  seenBrands.className = "table";
+  const brandsTableHead = seenBrands.appendChild(document.createElement("thead"));
+  const header = brandsTableHead.appendChild(document.createElement("th"));
+  header.innerText = await getMessage("brand");
+  header.scope = "col";
+  const brandsTableBody = seenBrands.appendChild(document.createElement("tbody"));
   for (const key of textValue) {
-    const brandRow = document.createElement("tr");
-    brandRow.innerText = key;
-    abfSeenBrandsListDiv.appendChild(brandRow);
+    const brandDiv = brandsTableBody.appendChild(document.createElement("tr"));
+    const brandData = brandDiv.appendChild(document.createElement("td"));
+    brandData.innerText = key;
+    abfSeenBrandsListDiv.appendChild(seenBrands);
   }
 };
 
@@ -458,6 +484,7 @@ if (guiLocation === "dashboard") {
   createKnownBrandList();
   createSeenBrandList();
   abfSaveSearchDepthButton.addEventListener("click", saveSearchDepth);
+  clearSeenBrandsButton.addEventListener("click", clearSeenBrands);
 }
 // abfHideAll.addEventListener("click", hideAll)
 

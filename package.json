@@ -1,7 +1,7 @@
 {
   "name": "AmazonBrandFilter",
   "description": "Filters out all unknown brands from Amazon search results.",
-  "version": "0.8.5",
+  "version": "0.9.0",
   "keywords": [],
   "author": "",
   "license": "MIT",
@@ -35,6 +35,7 @@
   "dependencies": {
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
+    "bootstrap-js": "^5.3.8",
     "compile-sass": "^2.0.0",
     "lodash": "^4.17.21",
     "sass-loader": "^16.0.6"
