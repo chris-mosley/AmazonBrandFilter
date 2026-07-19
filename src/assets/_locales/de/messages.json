@@ -71,29 +71,33 @@
     "message": "Marken, die zu dieser Liste hinzugefügt werden, werden blockiert, unabhängig davon, ob sie auf der bekannten Liste stehen oder nicht. ",
     "description": "personal blocklist tooltip"
   },
-  "popup_save_button": {
+  "save_button": {
     "message": "Speichern Sie",
     "description": "Schaltfläche Speichern"
   },
-  "popup_save_confirm": {
+  "save_confirm": {
     "message": "Gerettet!",
     "description": "Persönliche Liste gespeicherte Bestätigung"
   },
-  "popup_department_header": {
-    "message": "Departments",
+  "department_header": {
+    "message": "Abteilungen",
     "description": "Current Departments, uncheck to disable filtering for a department"
   },
   "department_header_tooltip": {
     "message": "Alle jemals gesehenen Abteilungen. Das Deaktivieren einer Abteilung wird das Filtern jedes Mal deaktivieren, wenn diese Abteilung gesehen wird. ",
     "description": "Current Departments, uncheck to disable filtering for a department"
   },
-  "popup_list_version": {
-    "message": "Liste Version: ",
-    "description": "Zeigen, welche Version der Liste wir haben"
+  "brand_list_version": {
+    "message": "Listenversion: ",
+    "description": "Show what version of the list we have"
   },
-  "popup_list_count": {
-    "message": "Bekannte Marken: ",
-    "description": "Wie viele Marken wir kennen"
+  "brand_list_count": {
+    "message": "Brands: ",
+    "description": "How many brands we know about"
+  },
+  "brand": {
+    "message": "Marke",
+    "description": "For use when you just want to use the word 'brand'"
   },
   "popup_feedback_link": {
     "message": "Feedback (Englisch)",
@@ -114,6 +118,14 @@
   "popup_help_translate": {
     "message": "Help translate",
     "description": "Link to help translate the extension"
+  },
+  "clear_seen_brands": {
+    "message": "Alles löschen",
+    "description": "For clearing the seen brand list"
+  },
+  "clear_seen_brands_tooltip": {
+    "message": "Die Liste der angezeigten Marken ermöglicht den Neuaufbau. Sie wird hauptsächlich verwendet, um fehlerhafte Daten von Amazon zu entfernen.",
+    "description": "Clear Brand list Tooltip"
   },
   "show_all": {
     "message": "Alles anzeigen",
@@ -167,7 +179,6 @@
     "message": "Bekannte Marken: ",
     "description": "All brands known by AmazonBrandFilter"
   },
-
   "search_depth": {
     "message": "Suchtiefe: ",
     "description": "Searth Depth label"

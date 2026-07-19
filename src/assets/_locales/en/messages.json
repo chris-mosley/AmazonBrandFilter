@@ -95,6 +95,10 @@
     "message": "Brands: ",
     "description": "How many brands we know about"
   },
+  "brand": {
+    "message": "Brand",
+    "description": "For use when you just want to use the word 'brand'"
+  },
   "popup_feedback_link": {
     "message": "Feedback",
     "description": "Link to github to report issues or request features"
@@ -114,6 +118,14 @@
   "popup_help_translate": {
     "message": "Help translate",
     "description": "Link to help translate the extension"
+  },
+  "clear_seen_brands": {
+    "message": "Clear All",
+    "description": "For clearing the seen brand list"
+  },
+  "clear_seen_brands_tooltip": {
+    "message": "Will seen brands list to allow it to rebuild.  Mostly used to clear out faulty data from Amazon.",
+    "description": "Clear Brand list Tooltip"
   },
   "show_all": {
     "message": "Show All",

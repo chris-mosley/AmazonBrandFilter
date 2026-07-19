@@ -2,5 +2,8 @@
   { "from": "src/assets/css", "to": "./" },
   { "from": "src/assets/html", "to": "./" },
   { "from": "src/assets/icons", "to": "icons" },
-  { "from": "src/assets/_locales", "to": "_locales" }
+  { "from": "src/assets/_locales", "to": "_locales" },
+  { "from": "node_modules/bootstrap/dist/css/bootstrap.min.css", "to": "./" },
+  { "from": "node_modules/bootstrap-icons/bootstrap-icons.svg", "to": "./" },
+  { "from": "node_modules/bootstrap-icons/font/bootstrap-icons.css", "to": "./" }
 ]

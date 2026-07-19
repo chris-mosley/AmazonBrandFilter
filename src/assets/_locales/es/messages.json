@@ -31,6 +31,14 @@
     "message": "Si está marcado, esto ocultará (o atenuará) las marcas en la barra lateral que no están en la lista. ",
     "description": "filter sidebar tooltip"
   },
+  "brand_list_version": {
+    "message": "Versión de lista: ",
+    "description": "Show what version of the list we have"
+  },
+  "brand_list_count": {
+    "message": "Brands: ",
+    "description": "How many brands we know about"
+  },
   "popup_sidebar_hide": {
     "message": "Ocultar",
     "description": "Ocultar los elementos filtrados en la barra lateral"
@@ -71,27 +79,27 @@
     "message": "Las marcas añadidas a esta lista serán bloqueadas independientemente de si están en la lista conocida o no. ",
     "description": "personal blocklist tooltip"
   },
-  "popup_save_button": {
+  "save_button": {
     "message": "Ahorrar",
     "description": "botón guardar"
   },
   "department_header": {
-    "message": "Departments",
+    "message": "Departamentos",
     "description": "Current Departments, uncheck to disable filtering for a department"
   },
   "department_header_tooltip": {
     "message": "Todos los departamentos vistos alguna vez. Desmarcar un departamento deshabilitará el filtrado cada vez que se vea ese departamento. ",
     "description": "Current Departments, uncheck to disable filtering for a department"
   },
-  "popup_save_confirm": {
+  "save_confirm": {
     "message": "Salvado!",
     "description": "Confirmación de lista personal guardada"
   },
-  "popup_list_version": {
-    "message": "Versión de lista: ",
-    "description": "Mostrar qué versión de la lista tenemos"
+  "brand": {
+    "message": "Marca",
+    "description": "For use when you just want to use the word 'brand'"
   },
-  "popup_list_count": {
+  "list_count": {
     "message": "Marcas conocidas: ",
     "description": "Cuántas marcas conocemos"
   },
@@ -114,6 +122,14 @@
   "popup_help_translate": {
     "message": "Help translate",
     "description": "Link to help translate the extension"
+  },
+  "clear_seen_brands": {
+    "message": "Borrar todo",
+    "description": "For clearing the seen brand list"
+  },
+  "clear_seen_brands_tooltip": {
+    "message": "Se mostrará la lista de marcas para permitir su reconstrucción. Se utiliza principalmente para eliminar datos erróneos de Amazon.",
+    "description": "Clear Brand list Tooltip"
   },
   "show_all": {
     "message": "Mostrar todo",

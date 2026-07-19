@@ -59,7 +59,7 @@ input[type="button"] {
 
   display: flex;
   flex-flow: column nowrap;
-  gap: 0.2rem 0;
+  /* gap: 0.2rem 0; */
 }
 
 .options-links > a {
