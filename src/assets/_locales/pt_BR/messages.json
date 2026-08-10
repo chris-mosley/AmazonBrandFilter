@@ -1,0 +1,198 @@
+{
+  "popup_enabled": {
+    "message": "Ativar Filtro de Marcas da Amazon",
+    "description": "Ativa ou desativa o Filtro de Marcas da Amazon"
+  },
+  "popup_enabled_tooltip": {
+    "message": "Quando ativado, a extensão filtrará as marcas que você não deseja ver",
+    "description": "Dica da opção de ativação do filtro"
+  },
+  "popup_filter_hide": {
+    "message": "Ocultar",
+    "description": "Modo de filtro que oculta os itens"
+  },
+  "popup_filter_hide_tooltip": {
+    "message": "Oculta completamente os itens de marcas não reconhecidas",
+    "description": "Dica do modo Ocultar"
+  },
+  "popup_filter_color": {
+    "message": "Destacar",
+    "description": "Modo de filtro que destaca os itens"
+  },
+  "popup_filter_color_tooltip": {
+    "message": "Destaca os itens com uma cor em vez de ocultar aqueles que não estão na lista",
+    "description": "Dica do modo Destacar"
+  },
+  "popup_filter_sidebar": {
+    "message": "Filtrar Barra Lateral",
+    "description": "Aplica o filtro de marcas também à barra lateral"
+  },
+  "popup_filter_sidebar_tooltip": {
+    "message": "Quando ativado, as marcas da barra lateral que não estiverem na lista serão ocultadas ou exibidas em cinza",
+    "description": "Dica da filtragem da barra lateral"
+  },
+  "popup_sidebar_hide": {
+    "message": "Ocultar",
+    "description": "Oculta as marcas filtradas da barra lateral"
+  },
+  "popup_sidebar_hide_tooltip": {
+    "message": "Oculta da barra lateral as marcas que não estiverem na lista",
+    "description": "Dica da opção Ocultar na barra lateral"
+  },
+  "popup_sidebar_grey": {
+    "message": "Deixar em Cinza",
+    "description": "Exibe em cinza as marcas filtradas da barra lateral"
+  },
+  "popup_sidebar_grey_tooltip": {
+    "message": "Exibe em cinza o nome das marcas desconhecidas na barra lateral",
+    "description": "Dica da opção Deixar em Cinza"
+  },
+  "popup_allow_refine_bypass": {
+    "message": "Permitir Exceção pelo Filtro Lateral",
+    "description": "Permite ignorar o filtro ao selecionar uma marca na barra lateral"
+  },
+  "popup_allow_refine_bypass_tooltip": {
+    "message": "Quando ativado, selecionar uma marca na barra lateral mostrará seus resultados mesmo que ela não esteja na lista de marcas permitidas",
+    "description": "Dica da exceção pelo filtro lateral"
+  },
+  "popup_debug": {
+    "message": "Modo de Depuração",
+    "description": "Ativa ou desativa o modo de depuração"
+  },
+  "popup_debug_tooltip": {
+    "message": "Destaca os resultados em vermelho ou verde para mostrar o que seria filtrado, sem ocultar os itens. Também registra informações adicionais no console.",
+    "description": "Dica do modo de depuração"
+  },
+  "popup_personal_blocklist": {
+    "message": "Lista Pessoal de Bloqueio",
+    "description": "Ativa ou desativa sua lista pessoal de marcas bloqueadas"
+  },
+  "popup_personal_blocklist_tooltip": {
+    "message": "As marcas adicionadas a esta lista serão sempre bloqueadas, mesmo que estejam na lista de marcas conhecidas",
+    "description": "Dica da lista pessoal de bloqueio"
+  },
+  "save_button": {
+    "message": "Salvar",
+    "description": "Botão para salvar as configurações"
+  },
+  "save_confirm": {
+    "message": "Salvo!",
+    "description": "Confirmação de que as alterações foram salvas"
+  },
+  "department_header": {
+    "message": "Departamentos: ",
+    "description": "Departamentos conhecidos; desmarque um para desativar a filtragem nele"
+  },
+  "department_header_tooltip": {
+    "message": "Lista todos os departamentos já encontrados. Ao desmarcar um departamento, a filtragem será desativada sempre que ele estiver ativo.",
+    "description": "Dica da lista de departamentos"
+  },
+  "brand_list_version": {
+    "message": "Versão da Lista: ",
+    "description": "Mostra a versão atual da lista de marcas"
+  },
+  "brand_list_count": {
+    "message": "Marcas: ",
+    "description": "Quantidade de marcas conhecidas"
+  },
+  "brand": {
+    "message": "Marca",
+    "description": "Texto usado para representar uma marca"
+  },
+  "popup_feedback_link": {
+    "message": "Enviar Feedback",
+    "description": "Link para relatar problemas ou sugerir novos recursos no GitHub"
+  },
+  "popup_dashboard": {
+    "message": "Painel",
+    "description": "Painel do Amazon Brand Filter"
+  },
+  "popup_missing_brand": {
+    "message": "Não encontrou uma marca?",
+    "description": "Link para solicitar a inclusão de uma marca no Amazon Brand Filter"
+  },
+  "popup_last_run": {
+    "message": "Última Execução",
+    "description": "Mostra quanto tempo levou a última execução do filtro"
+  },
+  "popup_help_translate": {
+    "message": "Ajude a Traduzir",
+    "description": "Link para colaborar com a tradução da extensão"
+  },
+  "clear_seen_brands": {
+    "message": "Limpar Tudo",
+    "description": "Limpa a lista de marcas já encontradas"
+  },
+  "clear_seen_brands_tooltip": {
+    "message": "Limpa a lista de marcas encontradas para que ela seja criada novamente. Útil principalmente para remover informações incorretas recebidas da Amazon.",
+    "description": "Dica para limpar a lista de marcas encontradas"
+  },
+  "show_all": {
+    "message": "Mostrar Todos",
+    "description": "Mostra todos os departamentos conhecidos no painel"
+  },
+  "hide_all": {
+    "message": "Ocultar Todos",
+    "description": "Oculta todos os departamentos conhecidos no painel"
+  },
+  "dept_count": {
+    "message": "Departamentos: ",
+    "description": "Quantidade de departamentos conhecidos"
+  },
+  "dept_unknown": {
+    "message": "Desconhecido",
+    "description": "Departamento não identificado"
+  },
+  "current_departments": {
+    "message": "Departamentos Atuais",
+    "description": "Departamentos encontrados na página atual"
+  },
+  "current_departments_tooltip": {
+    "message": "Mostra os departamentos encontrados nesta página. Ao desmarcar um departamento, a filtragem será desativada sempre que ele estiver ativo.",
+    "description": "Dica dos departamentos atuais"
+  },
+  "use_filter_with_refiner": {
+    "message": "Usar Marcas do Filtro Lateral",
+    "description": "Usa as marcas exibidas no filtro lateral da Amazon como referência"
+  },
+  "use_filter_with_refiner_tooltip": {
+    "message": "Usa como referência as marcas exibidas no filtro lateral esquerdo da Amazon. Isso pode reduzir falsos positivos, mas também pode deixar algumas marcas sem identificação caso a Amazon não mostre todas elas.",
+    "description": "Dica para usar as marcas do filtro lateral"
+  },
+  "experimental_features": {
+    "message": "Recursos Experimentais",
+    "description": "Opções e recursos ainda em fase experimental"
+  },
+  "experimental_features_tooltip": {
+    "message": "Estes recursos ainda estão em testes e podem não funcionar como esperado. Informe qualquer problema que encontrar.",
+    "description": "Dica dos recursos experimentais"
+  },
+  "dashboard_notice": {
+    "message": "(Novos recursos aqui!)",
+    "description": "Aviso sobre novos recursos disponíveis no painel"
+  },
+  "known_brands_list_text": {
+    "message": "Marcas Conhecidas: ",
+    "description": "Cabeçalho da lista de marcas conhecidas"
+  },
+  "known_brands_list_text_tooltip": {
+    "message": "Marcas reconhecidas pelo Amazon Brand Filter",
+    "description": "Lista de todas as marcas conhecidas pelo Amazon Brand Filter"
+  },
+  "search_depth": {
+    "message": "Profundidade da Busca: ",
+    "description": "Quantidade de palavras do título analisadas durante a busca"
+  },
+  "search_depth_tooltip": {
+    "message": "Define quantas palavras do título do produto serão analisadas. Valores maiores identificam mais marcas, mas podem aumentar os falsos positivos. Valores menores são mais restritivos, mas podem deixar algumas marcas sem identificação.",
+    "description": "Dica da profundidade da busca"
+  },
+  "seen_brands_list_text": {
+    "message": "Marcas Encontradas: ",
+    "description": "Cabeçalho da lista de marcas encontradas"
+  },
+  "seen_brands_list_text_tooltip": {
+    "message": "Todas as marcas que já foram encontradas durante as pesquisas",
+    "description": "Lista de marcas encontradas anteriormente"
+  }
+}
